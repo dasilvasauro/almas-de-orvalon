@@ -1,0 +1,7 @@
+{
+  "appId": "com.orvalon.almas",
+  "appName": "Almas de Orvalon",
+  "webDir": "www",
+  "backgroundColor": "#100a15",
+  "android": { "backgroundColor": "#100a15", "allowMixedContent": false }
+}

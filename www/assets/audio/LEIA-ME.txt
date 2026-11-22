@@ -1,0 +1,5 @@
+Sons personalizados (opcional)
+Coloque arquivos .mp3/.ogg nesta pasta e liste-os em manifest.json, por exemplo:
+{ "slash": "corte.mp3", "blood": "sangue.ogg", "scream": "grito.mp3", "choir": "coro.mp3" }
+Nomes disponíveis: ui card draw shuffle place charge slash hit blood scream groan coin bell drum horn heal cond tear whoosh choir rare legend ko victory defeat turn error
+Qualquer som listado substitui o sintetizado; os demais continuam sintetizados.

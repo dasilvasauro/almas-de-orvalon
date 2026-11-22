@@ -1,0 +1,66 @@
+name: Android APK
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+      - name: Dependências
+        run: npm ci
+      - name: Projeto Android (Capacitor)
+        run: node scripts/android-setup.js
+      - name: Ícones e splash
+        continue-on-error: true
+        run: npx capacitor-assets generate --android --iconBackgroundColor '#100a15' --splashBackgroundColor '#100a15' && npx cap sync android
+      - name: APK de teste (debug)
+        run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+      - run: cp android/app/build/outputs/apk/debug/app-debug.apk almas-de-orvalon-debug.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: almas-de-orvalon-apk
+          path: almas-de-orvalon-debug.apk
+      - name: APK de release assinado (opcional, precisa dos secrets)
+        if: env.HAS_KEYSTORE == 'true'
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          cd android && ./gradlew assembleRelease && cd ..
+          echo "$KS" | base64 -d > release.jks
+          BT="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
+          "$BT/zipalign" -f -p 4 android/app/build/outputs/apk/release/app-release-unsigned.apk aligned.apk
+          "$BT/apksigner" sign --ks release.jks --ks-pass env:KS_PASS --key-pass env:KEY_PASS --ks-key-alias "$KEY_ALIAS" --out almas-de-orvalon.apk aligned.apk
+          rm release.jks
+      - uses: actions/upload-artifact@v4
+        if: env.HAS_KEYSTORE == 'true'
+        with:
+          name: almas-de-orvalon-apk-release
+          path: almas-de-orvalon.apk
+      - name: Publicar na Release (tags v*)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            almas-de-orvalon-debug.apk
+            almas-de-orvalon.apk
+          fail_on_unmatched_files: false
