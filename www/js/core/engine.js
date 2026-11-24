@@ -38,6 +38,7 @@
       this.turnEnded = false; this.busy = false; this._turnWait = null;
       this.abortP = new Promise((_, rej) => { this._abort = rej; }); this.abortP.catch(() => { });
       this.P = [0, 1].map((i) => this.makePlayer(i, o.players[i]));
+      this.P.forEach((pl, i) => { pl.runes = G.runeKeys ? G.runeKeys(o.players[i].runes) : {}; pl.rs = {}; });
     }
     makePlayer(i, p) {
       const pl = {
@@ -85,10 +86,19 @@
       if (this.contsOf(this.inst[u].owner, 'condWard').length) return true;
       return false;
     }
+    // ---- runas (Quintessências) ----
+    rk(p, k) { const r = this.P[p].runes; return r ? r[k] || 0 : 0; }
+    rs(p) { return this.P[p].rs || (this.P[p].rs = {}); }
+    runeTick(p, kind) { if (kind === 'burn') { if (this.rk(p, 'burnAll')) return 10; if (this.rk(p, 'burnFirst') && !this.rs(p).burn1) { this.rs(p).burn1 = 1; return 10; } } if (kind === 'poison' && this.rk(p, 'poisonFirst') && !this.rs(p).poison1) { this.rs(p).poison1 = 1; return 10; } return 0; }
+    async runePrize(q) { const o = 1 - q; const Sq = this.rs(q), So = this.rs(o);
+      if (this.rk(q, 'harvest') && !Sq.harvest) { Sq.harvest = 1; await this.draw(q, 1); }
+      if (this.rk(o, 'lossDraw') && !So.lossDraw) { So.lossDraw = 1; await this.draw(o, 1); }
+      const a = this.P[o].active; if (this.rk(o, 'grace') && !So.grace && a) { So.grace = 1; const h = this.heal(a, 20); if (h) await this.emit('heal', { u: a, v: h }); } }
     canBeHealed(u) { const r = this.relic(u); return !(r && r.noHeal); }
 
     retreatCost(u) {
-      const c = this.c(u); const r = this.relic(u);
+      const c = this.c(u); const r = this.relic(u); const ow = this.inst[u].owner;
+      if (this.rk(ow, 'freeRetreat') && !this.rs(ow).retreated) return 0;
       if (r && r.freeRetreat) return 0;
       let v = c.ret - (r && r.retreatDown ? r.retreatDown : 0);
       if (this.isActive(u) && this.contsOf(this.inst[u].owner, 'retreatDown').length) v -= 1;
@@ -193,7 +203,7 @@
     }
     heal(u, v) {
       if (!this.canBeHealed(u)) return 0;
-      const I = this.inst[u]; const h = Math.min(I.dmg || 0, v); I.dmg -= h;
+      const I = this.inst[u]; if ((I.dmg || 0) > 0 && this.rk(I.owner, 'healFirst') && !this.rs(I.owner).heal1) { this.rs(I.owner).heal1 = 1; v += 10; } const h = Math.min(I.dmg || 0, v); I.dmg -= h;
       if (h > 0) { this.P[I.owner].st.heals += h; }
       return h;
     }
@@ -293,6 +303,9 @@
       if (!pl.deck.length) { await this.fatigue(p); if (this.over) return; }
       else await this.draw(p, 1);
       if (this.contsOf(p, 'drawExtra').length) await this.draw(p, 1);
+      if (this.rk(p, 'spark') && pl.st.turns === 1) await this.draw(p, 1);
+      if (this.rk(p, 'surge') && pl.st.turns === 2) await this.draw(p, 1);
+      { const a = pl.active; if (a && (this.inst[a].dmg || 0) > 0) { let hv = 0; if (this.rk(p, 'prayer') && pl.st.turns === 2) hv += 10; if (this.rk(p, 'dawn') && (this.inst[a].dmg || 0) >= 50 && (this.rs(p).dawn || 0) < 2) { this.rs(p).dawn = (this.rs(p).dawn || 0) + 1; hv += 10; } if (hv) { const h = this.heal(a, hv); if (h) await this.emit('heal', { u: a, v: h }); } } }
       await this.resolveMarkers();
       await this.sync();
     }
@@ -509,7 +522,7 @@
       this.busy = true;
       try {
         switch (a.type) {
-          case 'bench': await this.doBench(p, a.u); break;
+          case 'bench': await this.doBench(p, a.u); if (this.rk(p, 'instinct') && !this.rs(p).instinct) { this.rs(p).instinct = 1; await this.draw(p, 1); } if (this.rk(p, 'packKing') && !this.rs(p).packKing && this.P[p].bench.length >= 4) { this.rs(p).packKing = 1; await this.draw(p, 2); } break;
           case 'ascend': await this.doAscend(p, a.u, a.target); break;
           case 'attach': await this.doAttach(p, a.u, a.target); break;
           case 'relic': await this.doRelic(p, a.u, a.target); break;
@@ -596,7 +609,7 @@
       await this.emit('god', { p, u }); await this.sync();
     }
     async doRetreat(p, target) {
-      const pl = this.P[p]; const a = pl.active; const cost = this.retreatCost(a);
+      const pl = this.P[p]; const a = pl.active; const cost = this.retreatCost(a); this.rs(p).retreated = 1;
       const disc = this.chooseChargesToDiscard(a, cost);
       disc.forEach((x) => this.toDiscard(x));
       const r = this.relic(a);
@@ -923,6 +936,10 @@
       if (this.hasEff(att, 'force')) { d += 20; if (ctx) ctx.useForce = true; }
       if (this.P[p].bench.some((x) => { const r = this.relic(x); return r && r.benchAura; })) d += 10;
       d -= this.effMax(att, 'feeble');
+      { const R = (k) => this.rk(p, k); const S = this.rs(p); const nch = (this.inst[att].att || []).length; const nb = this.P[p].bench.length;
+        if (R('firstStrike') && !S.struck) d += 10; if (R('vsBurn') && this.hasCond(def, 'burn')) d += 10; if (R('veng') && S.veng === 1) d += 20;
+        if (R('charged') && nch >= 4 && !S.charged) d += 20; if (R('storm') && nch >= 5) d += 10;
+        if (R('pack') && nb > this.P[1 - p].bench.length) d += 10; }
       let weak = false, res = false;
       if (G.WEAK[dc.aff] === ac.aff) { d += 30; weak = true; }
       const ignore = ar && ar.ignoreReduce;
@@ -935,6 +952,9 @@
         if (this.godIs('sylvarok') && dc.aff === 'pri') d -= 20;
         d -= this.effSum(def, 'guard');
         if (this.hasEff(def, 'aegis')) { d -= 30; if (ctx) ctx.useAegis = true; }
+        { const q = this.inst[def].owner; const R = (k) => this.rk(q, k); const nb = this.P[q].bench.length;
+          if (R('shieldFirst') && !this.rs(q).shielded) d -= 10; if (R('veil') && !(this.inst[def].dmg || 0)) d -= 10;
+          }
       }
       if (dr && dr.takeMore) d += dr.takeMore;
       d += this.effMax(def, 'expose');
@@ -994,6 +1014,7 @@
           if (ctx.useForce) this.inst[att].effs = this.inst[att].effs.filter((e) => e.k !== 'force');
           if (ctx.useAegis) this.inst[target].effs = this.inst[target].effs.filter((e) => e.k !== 'aegis');
           await this.emit('hit', { from: att, to: target, v: dealt, weak: r.weak, res: r.res, aff: this.c(att).aff, base });
+          { const S = this.rs(p); S.struck = 1; if (S.veng === 1) S.veng = 2; if (this.rk(p, 'charged') && (this.inst[att].att || []).length >= 4) S.charged = 1; if (dealt > 0) this.rs(this.inst[target].owner).shielded = 1; }
           if (dealt > 0) this.placeDamage(target, dealt);
           this.addLog('dmg', { id: this.inst[target].id, v: dealt, weak: r.weak, res: r.res });
           pl.st.dmg += dealt; pl.st.maxHit = Math.max(pl.st.maxHit, dealt);
@@ -1115,6 +1136,8 @@
           claims[other] += Math.max(0, n);
           if (byAtk) { const so = this.P[other].st; so.killsBy = so.killsBy || {}; const aid = this.inst[ctx.attacker].id; so.killsBy[aid] = (so.killsBy[aid] || 0) + 1; }
           { const sw = this.P[owner].st; sw.fallen = sw.fallen || {}; sw.fallen[I.id] = (sw.fallen[I.id] || 0) + 1; }
+          if (byAtk) { if (this.rk(other, 'pact')) this.heal(ctx.attacker, 20); if (this.rk(other, 'reap')) pending.push({ draw: other, n: 1 }); if (this.rk(other, 'crown') && c.legend) pending.push({ draw: other, n: 2 }); }
+          if (this.rk(owner, 'veng') && !this.rs(owner).veng) this.rs(owner).veng = 1;
           const st = this.P[other].st; st.kos++; st.kosAff[c.aff] = (st.kosAff[c.aff] || 0) + 1; if (c.legend) st.legendKos++;
           // ao sair: cargas, relíquia, base
           const att = (I.att || []).slice();
@@ -1132,7 +1155,7 @@
           for (let k = 0; k < n; k++) {
             const pz = this.P[q].prizes[0]; this.toHand(q, pz); this.P[q].st.prizes++;
           }
-          if (n) { this.addLog('prize', { p: q, n }); await this.emit('prize', { p: q, n }); }
+          if (n) { this.addLog('prize', { p: q, n }); await this.emit('prize', { p: q, n }); await this.runePrize(q); }
         }
         this.updateDiff();
         this.checkWin();
@@ -1220,9 +1243,11 @@
       for (const q of [ended, 1 - ended]) {
         const a = this.P[q].active; if (!a) continue;
         const I = this.inst[a];
-        if (I.conds.poison) { this.placeDamage(a, 20); this.addLog('poisonTick', { id: I.id }); await this.emit('damage', { u: a, v: 20, placed: true, cond: 'poison' }); }
+        if (this.rk(q, 'cleanse') && !this.rs(q).cleansed && this.anyCond(a)) { this.rs(q).cleansed = 1; I.conds = {}; await this.emit('sync', {}); }
+        if (q === ended && this.rk(q, 'sap') && !this.rs(q).sap && (I.dmg || 0) > 0) { this.rs(q).sap = 1; const h = this.heal(a, 10); if (h) await this.emit('heal', { u: a, v: h }); }
+        if (I.conds.poison) { const pv = 20 + this.runeTick(1 - q, 'poison') - (this.rk(q, 'roots') && this.P[q].bench.length >= 4 ? 10 : 0); this.placeDamage(a, pv); this.addLog('poisonTick', { id: I.id }); await this.emit('damage', { u: a, v: pv, placed: true, cond: 'poison' }); }
         if (I.conds.burn) {
-          this.placeDamage(a, 20); this.addLog('burnTick', { id: I.id }); await this.emit('damage', { u: a, v: 20, placed: true, cond: 'burn' });
+          const bv = 20 + this.runeTick(1 - q, 'burn') - (this.rk(q, 'roots') && this.P[q].bench.length >= 4 ? 10 : 0); this.placeDamage(a, bv); this.addLog('burnTick', { id: I.id }); await this.emit('damage', { u: a, v: bv, placed: true, cond: 'burn' });
           if (await this.flip('burnCure')) { delete I.conds.burn; this.addLog('condEnd', { id: I.id, k: 'burn' }); }
         }
         if (I.conds.trance) { if (await this.flip('trance')) { delete I.conds.trance; this.addLog('condEnd', { id: I.id, k: 'trance' }); } }

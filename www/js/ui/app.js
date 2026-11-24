@@ -13,7 +13,7 @@
     if (name !== 'duel') { G.fx.ambient(null); G.audio.music('menu'); if (G.audio.warm) G.audio.warm(['menu'].concat(G.Prog.arenasUnlocked().map((a) => 'arena_' + a.id), ['victory', 'defeat'])); if (!G.$('.bgglow')) document.body.prepend(el('div.bgglow')); }
     const fn = S[name]; const node = fn(arg);
     if (node) { node.classList.add('fadein'); s.appendChild(node); }
-    if (NAV.some((n) => n[0] === name) || ['achievements', 'ranking', 'settings', 'tutorial', 'deckEdit', 'calendar', 'chronicle'].includes(name)) {
+    if (NAV.some((n) => n[0] === name) || ['achievements', 'ranking', 'settings', 'tutorial', 'deckEdit', 'calendar', 'chronicle', 'runes', 'cup'].includes(name)) {
       s.classList.add('has-nav');
       const nav = el('nav.nav', NAV.map(([k, ic, lb]) => el('button' + ((name === k || (name === 'deckEdit' && k === 'decks')) ? '.on' : ''), { onclick: () => App.go(k) }, el('span', { html: G.ICON[ic] }), t(lb))));
       s.appendChild(nav);
@@ -100,6 +100,8 @@
         mode('spectate', 'h2_04', 'mode.spectateDesc', () => App.setup('spectate')),
         mode('learn', 'e2_11', 'mode.learnDesc', () => App.go('tutorial', 0)),
         mode('ranking', 'h2_01', 'mode.rankingDesc', () => App.go('ranking')),
+        mode('cup', 'h2_15', 'mode.cupDesc', () => App.go('cup')),
+        mode('runes', 'h2_14', 'mode.runesDesc', () => App.go('runes')),
         mode('cal', 'r1_05', 'mode.calDesc', () => App.go('calendar')),
         mode('chron', 'h2_01', 'mode.chronDesc', () => App.go('chronicle')),
         mode('ach', 'e1_25', 'mode.achDesc', () => App.go('achievements'))));
@@ -130,7 +132,7 @@
   function deckAffOf(cards) { const cnt = {}; cards.forEach((id) => { const c = G.CARDS[id]; if (c.kind === 'creature') cnt[c.aff] = (cnt[c.aff] || 0) + 1; }); return Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0] || 'pri'; }
   App.deckAffOf = deckAffOf;
   App.launch = async function (mode, o) {
-    const d = P(); const me = { name: d.name, avatar: d.avatar, deck: o.deck ? o.deck.cards.slice() : null, mmr: d.mmr, level: d.level };
+    const d = P(); const me = { name: d.name, avatar: d.avatar, deck: o.deck ? o.deck.cards.slice() : null, mmr: d.mmr, level: d.level, runes: o.deck ? G.Prog.runesForDeck(o.deck.id) : [] };
     if (mode === 'train') return G.Duel.start({ mode, arena: o.arena, players: [Object.assign({}, me, { name: d.name + ' I' }), { name: d.name + ' II', avatar: G.CARDS[o.deck2.cover || o.deck2.cards[0]] ? (o.deck2.cover || 'h3_03') : 'h3_03', deck: o.deck2.cards.slice() }], humans: [true, true] });
     if (mode === 'spectate') {
       const f1 = G.Prog.findOpponent('quick'), f2 = G.Prog.findOpponent('quick');
@@ -142,7 +144,7 @@
     const oppDeck = G.fairDeck({ aff: opp.aff, aff2: opp.aff2, q: opp.q, seed: opp.seed, cap: G.Prog.aiCap() }, target);
     if (mode === 'ranked') { await App.matchmaking(opp); d.inMatch = { mode, oppMmr: opp.mmr }; G.Prog.save(); }
     await App.versus(me, opp, mode);
-    G.Duel.start({ mode, arena: o.arena, mentor: mode === 'adv', deckAff: deckAffOf(me.deck), players: [me, { name: opp.name, avatar: opp.avatar, deck: oppDeck, skill: opp.skill, mmr: opp.mmr, aff: opp.aff, level: opp.level }], humans: [true, false] });
+    G.Duel.start({ mode, arena: o.arena, mentor: mode === 'adv', deckAff: deckAffOf(me.deck), players: [me, { name: opp.name, avatar: opp.avatar, deck: oppDeck, skill: opp.skill, mmr: opp.mmr, aff: opp.aff, level: opp.level, runes: me.runes.length ? G.AI_RUNES[opp.aff] : [] }], humans: [true, false] });
   };
   App.matchmaking = (opp) => new Promise((res) => {
     const s = scr(); const box = el('div.vs', el('div.col', { style: { alignItems: 'center', textAlign: 'center' } }, App.logo(), el('h2', t('mm.searching')), el('p.muted', t('online', { n: G.fmtN(G.Prog.onlineCount()) })), el('small.muted', t('mm.ping', { n: 28 + Math.floor(Math.random() * 40) }))));
@@ -153,6 +155,7 @@
     const side = (p, right) => el('div.side2' + (right ? '.opp' : '.me'), el('div.big', { style: { backgroundImage: `url(${G.artUrl(p.avatar)})` } }), el('h2', p.name), el('div.row', el('small.muted', t('level') + ' ' + (p.level || 1)), mode === 'ranked' && p.mmr ? rankBadge(p.mmr) : null));
     const v = el('div.vs', side(me), el('h1', 'VS'), side(opp, true));
     scr().appendChild(v); G.audio.play('slash'); G.audio.play('drum');
+    const bm = me.deck && G.Prog.deckMastery(me.deck); if (bm && bm.lv >= 1) { const sm = v.querySelector('.side2.me'); if (sm) sm.appendChild(el('div.vsm.lv' + bm.lv, el('div.thumb', { style: { backgroundImage: `url(${G.artUrl(G.CARDS[bm.id].art)})` } }), el('span', G.cardName(bm.id) + ' · ' + t('mas.lv' + bm.lv)))); }
     setTimeout(() => { v.style.transition = 'opacity .35s'; v.style.opacity = '0'; setTimeout(() => { v.remove(); res(); }, 360); }, 2100);
   });
 
@@ -484,12 +487,12 @@
   // ---------- calendário lunar ----------
   App.moon = (k) => { const ph = (k % 8) / 8; const r = 20; const lit = ph <= 0.5 ? ph * 2 : (1 - ph) * 2; const wax = ph <= 0.5; const rx = Math.abs(1 - 2 * lit) * r; const sw = wax ? 1 : 0; const term = lit > 0.5 ? (wax ? 1 : 0) : (wax ? 0 : 1);
     return el('div.moon', { html: `<svg viewBox="0 0 48 48"><defs><radialGradient id="mg${k}" cx=".4" cy=".35"><stop offset="0" stop-color="#fff8e1"/><stop offset="1" stop-color="#c9a24e"/></radialGradient></defs><circle cx="24" cy="24" r="${r}" fill="#160d22" stroke="#c9a24e" stroke-opacity=".55"/>${lit > 0.02 ? `<path d="M24 ${24 - r} A${r} ${r} 0 0 ${sw} 24 ${24 + r} A${rx} ${r} 0 0 ${term} 24 ${24 - r}Z" fill="url(#mg${k})"/>` : ''}</svg>` }); };
-  App.calRw = (rw) => [rw.ess ? G.fmtN(rw.ess) + ' ' + t('shards') : null].concat((rw.packs || []).map(([id, n]) => (n > 1 ? n + '× ' : '') + G.L(G.Prog.packById(id).name))).filter(Boolean).join(' + ');
+  App.calRw = (rw) => [rw.ess ? G.fmtN(rw.ess) + ' ' + t('shards') : null, rw.frags ? t('cal.frags', { n: rw.frags }) : null, rw.prim ? t('cal.prim', { n: rw.prim }) : null].filter(Boolean).join(' + ');
   S.calendar = function () {
     const c = P().calendar; const can = G.Prog.calCanClaim();
-    const claim = () => { const rw = G.Prog.claimCalendar(); if (!rw) return; G.audio.play('choir', [57, 64, 69]); G.fx.soul(innerWidth / 2, innerHeight * 0.4, ['#fff8e1', '#e7c873', '#c98bff']); G.ui.modal(el('div.col', { style: { alignItems: 'center', textAlign: 'center' } }, App.moon(4), el('h2', t('cal.claimed')), el('p', App.calRw(rw)), el('button.btn.primary', { onclick: () => { G.$$('.veil').forEach((v) => v.remove()); App.go('calendar'); } }, t('continue'))), { narrow: true }); };
+    const claim = () => { const rw = G.Prog.claimCalendar(); if (!rw) return; G.audio.play('choir', [57, 64, 69]); G.fx.soul(innerWidth / 2, innerHeight * 0.4, ['#fff8e1', '#e7c873', '#c98bff']); G.ui.modal(el('div.col', { style: { alignItems: 'center', textAlign: 'center' } }, App.moon(4), el('h2', t('cal.claimed')), el('p', App.calRw(rw)), (rw.got || []).length ? el('div.list', { style: { width: '100%' } }, rw.got.map((x) => el('div.li', el('div.thumb', { style: { backgroundImage: `url(${G.artUrl(G.CARDS[x.id].art)})` } }), el('span.grow', G.L(G.CARDS[x.id].name)), el('b', '+' + x.n)))) : null, el('button.btn.primary', { onclick: () => { G.$$('.veil').forEach((v) => v.remove()); App.go('calendar'); } }, t('continue'))), { narrow: true }); };
     const grid = el('div.calgrid', G.Prog.CAL.map((rw, k) => { const done = k < c.day; const today = k === c.day && can; return el('button.calday' + (done ? '.done' : '') + (today ? '.today' : '') + (rw.big ? '.big' : ''), { onclick: today ? claim : () => G.ui.toast(done ? t('cal.done') : k === c.day ? t('cal.tomorrow') : t('cal.locked')) }, el('b', String(k + 1)), App.moon(k), el('span.rw', rw.big ? App.calRw(rw) : G.fmtN(rw.ess))); }));
-    const ev = el('div.evlist', el('h3', t('cal.events')), G.Prog.events().map((e) => el('div.ev', el('i'), el('div.grow', el('b', G.L(e.name)), el('div', el('small.muted', G.L(e.desc)))), el('small.muted', e.when))));
+    const ev = el('div.evlist', el('h3', t('cal.events')), G.Prog.events().map((e) => el('div.ev', { onclick: () => App.go('cup'), style: { cursor: 'pointer' } }, el('i'), el('div.grow', el('b', G.L(e.name)), el('div', el('small.muted', G.L(e.desc)))), el('small.muted', e.when))));
     return el('div.scr', top(t('mode.cal')), el('div.scroll', el('div.calhead', el('h2', t('cal.title', { n: c.cycle })), el('p', t('cal.desc'))), grid, can ? el('div.row', { style: { justifyContent: 'center', marginTop: '1rem' } }, el('button.btn.primary', { onclick: claim }, t('cal.claim'))) : el('p.muted', { style: { textAlign: 'center' } }, t('cal.come')), ev));
   };
   // ---------- crônicas ----------
@@ -509,7 +512,7 @@
     const body = el('div.scroll',
       el('div.section.row.wrap', el('button.avatar', { style: { width: '84px', height: '84px' , backgroundImage: `url(${G.artUrl(d.avatar)})` }, onclick: pickAvatar, 'aria-label': t('prof.avatar') }),
         el('div.col.grow', el('div.field', nameIn), el('div.row.wrap', el('span.rankb', { style: { color: r.t.color } }, r.label), el('small.muted', d.mmr + ' ' + t('mmr') + ' · ' + t('prof.peak') + ' ' + d.peak), el('small.muted', t('level') + ' ' + d.level)))),
-      App.eloPanel(),
+      App.eloPanel(), App.trophyShelf(), App.masteryPanel(),
       el('div.section', el('h3', t('prof.style')), el('div.row.wrap', radar(ps.ax), el('div.col', { style: { maxWidth: '40ch' } }, el('span.tag', t('pstyle.' + ps.key)), el('p.muted', t('pstyleDesc.' + ps.key)), el('div', el('b', t('prof.rep') + ': '), G.L(rep), ' (' + d.rep + '/100)'), el('small.muted', t('prof.repDesc'))))),
       el('div.section', el('h3', t('prof.stats')), el('div.stats', stat(s.matches, t('st.matches')), stat(s.wins, t('st.wins')), stat(s.matches ? Math.round(100 * s.wins / s.matches) + '%' : '—', t('st.wr')), stat(s.rankedWins, t('st.rwins')), stat(G.fmtN(s.kos), t('st.kos')), stat(G.fmtN(s.dmg), t('st.dmg')), stat(s.maxHit, t('st.maxHit')), stat(s.bestStreak, t('st.streak')), stat(s.perfect, t('st.perfect')), stat(Object.keys(d.ach).length + '/' + G.Prog.ACH.length, t('st.ach')))),
       el('div.section.row.wrap', el('button.btn', { onclick: () => App.go('achievements') }, t('mode.ach')), el('button.btn', { onclick: () => App.go('ranking') }, t('mode.ranking')), el('button.btn', { onclick: () => App.go('settings') }, t('settings')), el('button.btn', { onclick: () => App.go('chronicle') }, t('mode.chron')), el('button.btn', { onclick: () => App.go('calendar') }, t('mode.cal'))),
@@ -531,10 +534,95 @@
   };
   // ---------- ranking ----------
   S.ranking = function () {
-    const lb = G.Prog.leaderboard(); const me = lb.find((x) => x.you);
-    const row = (x) => el('div.li' + (x.you ? '.me' : ''), el('b', { style: { width: '3em', fontFamily: 'var(--disp)', fontSize: '1.1rem' } }, '#' + x.pos), el('div.thumb', { style: { backgroundImage: `url(${G.artUrl(x.avatar)})`, borderRadius: '50%' } }), el('div.grow', el('b', x.name + (x.you ? ' (' + t('you') + ')' : '')), el('div', el('small.muted', t('level') + ' ' + x.level))), x.aff ? G.orb(x.aff) : null, rankBadge(x.mmr), el('small', x.mmr));
-    const list = el('div.list.section', el('p.muted', t('rank.info')), lb.slice(0, 100).map(row), me.pos > 100 ? [el('div', { style: { textAlign: 'center', color: 'var(--bone2)' } }, '⋯'), row(me)] : null);
-    return el('div.scr', top(t('mode.ranking')), el('div.scroll', list));
+    const d = P(); let tab = App._rtab != null ? App._rtab : G.Prog.rankOf(d.mmr).i + 1; const box = el('div.scroll');
+    const row = (x) => el('div.li' + (x.you ? '.me' : ''), el('b', { style: { width: '3em', fontFamily: 'var(--disp)', fontSize: '1.05rem' } }, '#' + x.pos), el('div.thumb', { style: { backgroundImage: `url(${G.artUrl(x.avatar)})`, borderRadius: '50%' } }), el('div.grow', el('b', x.name + (x.you ? ' (' + t('you') + ')' : ''))), el('span', x.mmr + ' ' + t('mmr')));
+    const draw = () => {
+      const tabs = el('div.row.wrap.rtabs', el('button.chip' + (tab === 0 ? '.on' : ''), { onclick: () => { tab = App._rtab = 0; draw(); } }, t('rank.all')), G.Prog.TIERS.map((T, i) => el('button.chip' + (tab === i + 1 ? '.on' : ''), { style: { borderColor: T.color }, onclick: () => { tab = App._rtab = i + 1; draw(); } }, G.L(T.name))));
+      let list;
+      if (tab === 0) { const lb = G.Prog.leaderboard(); const me = lb.find((x) => x.you); list = [el('p.muted', t('rank.info'))].concat(lb.slice(0, 100).map(row), me && me.pos > 100 ? [el('div.muted', { style: { textAlign: 'center' } }, '⋯'), row(me)] : []); }
+      else { const b = G.Prog.eloBoard(tab - 1); list = [el('p.muted', t('rank.tiersInfo'))]; let last = 'x'; b.forEach((x) => { if (x.tier !== last) { last = x.tier; list.push(el('div.tierdiv.' + (x.tier || 'none'), x.tier ? t('cup.' + x.tier) + ' · ' + t('cup.range.' + x.tier) : t('cup.none'))); } list.push(row(x)); }); }
+      G.fill(box, tabs, el('div.list.section', list));
+    };
+    draw(); return el('div.scr', top(t('mode.ranking')), box);
+  };
+  // ---------- Perícia e troféus ----------
+  App.romanLv = (l) => ['—', 'I', 'II', 'III', 'IV'][l] || '—';
+  App.titleOf = () => { const tp = G.Prog.topMastery(1)[0]; return tp && tp.lv >= 2 ? t('mas.title' + tp.lv, { c: G.cardName(tp.id) }) : null; };
+  App.masteryPanel = () => { const top5 = G.Prog.topMastery(5).filter((x) => x.pts > 0); const T = App.titleOf(); const M = G.Prog.MASTERY;
+    return el('div.section', el('h3', t('mas.panel')), T ? el('div.ptitle', '❖ ' + T) : null,
+      top5.length ? el('div.list', top5.map((x) => { const lo = M[x.lv - 1] || 0, hi = M[x.lv]; const pr = hi ? (x.pts - lo) / (hi - lo) : 1; return el('div.li', { onclick: () => G.ui.zoom(x.id), style: { cursor: 'pointer' } }, el('div.thumb.mf-' + x.lv, { style: { backgroundImage: `url(${G.artUrl(G.CARDS[x.id].art)})` } }), el('div.grow', el('b', G.cardName(x.id)), el('div', el('small.muted', t('mas.lv' + x.lv) + ' · ' + x.pts + ' ' + t('mas.pts'))), el('div.bar', el('i', { style: { width: (pr * 100) + '%' } }))), el('b.mlv', App.romanLv(x.lv))); })) : el('p.muted', t('mas.empty')),
+      el('small.muted', t('mas.help'))); };
+  App.cupIcon = (kind) => el('div.cupicon.' + (kind || 'gold'), { html: '<svg viewBox="0 0 64 64"><path d="M18 8h28v10c0 12-6 20-14 22-8-2-14-10-14-22z" fill="currentColor"/><path d="M18 12H8c0 10 5 15 12 16M46 12h10c0 10-5 15-12 16" fill="none" stroke="currentColor" stroke-width="3"/><rect x="28" y="40" width="8" height="10" fill="currentColor"/><rect x="20" y="50" width="24" height="6" rx="2" fill="currentColor"/><path d="M32 14l3 6 6 1-4.5 4 1 6-5.5-3-5.5 3 1-6L23 21l6-1z" fill="#fff" opacity=".55"/></svg>' });
+  App.trophyShelf = () => { const tr = P().trophies || []; return el('div.section', el('h3', t('cup.trophies')),
+    tr.length ? el('div.shelf', tr.map((x) => el('button.trophy', { onclick: () => G.ui.modal(el('div.col', { style: { alignItems: 'center', textAlign: 'center' } }, App.cupIcon(x.kind), el('h3', G.L(x.cup)), el('p', t('cup.place', { n: x.place }) + ' · ' + t('cup.' + x.tier) + ' · ' + G.L(G.Prog.TIERS[x.rank].name)), el('small.muted', t('cup.cycle', { n: x.cycle }) + ' · ' + new Date(x.date).toLocaleDateString()), x.deck.length ? el('div.row.wrap', { style: { justifyContent: 'center' } }, G.uniq(x.deck).slice(0, 30).map((id) => el('span.chip', G.cardName(id)))) : null), { narrow: true, title: t('cup.trophy') }) }, App.cupIcon(x.kind), el('small', G.L(x.cup))))) : el('p.muted', t('cup.noTrophy'))); };
+  // ---------- Quintessências ----------
+  App.runeIntro = () => { let k = 0; const body = el('div.grim'); let m;
+    const draw = () => { G.fill(body, el('div.gpage', el('div.gnum', ['I', 'II', 'III', 'IV'][k]), el('h2', t('rn.i' + (k + 1) + 't')), el('p', t('rn.i' + (k + 1)))),
+      el('div.row', { style: { justifyContent: 'space-between', alignItems: 'center' } }, el('button.btn.ghost', { onclick: () => { if (k > 0) { k--; draw(); } } }, '‹'), el('span.muted', (k + 1) + ' / 4'), el('button.btn.primary', { onclick: () => { if (k < 3) { k++; draw(); } else { P().runeIntro = true; G.Prog.save(); m.close(); } } }, k < 3 ? t('next') : t('rn.begin')))); };
+    draw(); m = G.ui.modal(body, { title: t('rn.introT'), narrow: true, onClose: () => { P().runeIntro = true; G.Prog.save(); } }); };
+  S.runes = function () {
+    const d = P(); const pages = G.Prog.pages(); let pi = App._rpi || 0; let sel = App._rsel || null; const root = el('div.scroll');
+    const ANG = { ign: -90, sac: -18, occ: 54, ene: 126, pri: 198 };
+    const pos = (r) => { if (r.branch === 'neu') { if (r.tier === 3) return [50, 50]; const a = (r.id === 'neu_m1' ? 150 : 30) * Math.PI / 180; return [50 + Math.cos(a) * 11, 50 + Math.sin(a) * 11]; }
+      const last = r.id.slice(-1); const sp = r.tier === 1 ? [21, last === '1' ? -12 : 12] : r.tier === 2 ? [33, last === '1' ? -9 : 9] : [44, 0]; const a = (ANG[r.branch] + sp[1]) * Math.PI / 180; return [50 + Math.cos(a) * sp[0], 50 + Math.sin(a) * sp[0]]; };
+    const col = (b) => b === 'neu' ? '#e7c873' : G.AFF[b].glow;
+    const draw = () => {
+      const pg = pages[pi]; const cost = G.Prog.pageCost(pg); const decks = G.Prog.validDecks();
+      const head = el('div.rhead', el('div.stat', el('b', '✦ ' + (d.essences || 0)), el('span', t('rn.ess'))), el('div.stat', el('b', cost + ' / ' + G.RUNE_BUDGET), el('span', t('rn.points'))), el('button.btn.small', { onclick: () => App.runeIntro() }, t('rn.how')));
+      const tabs = el('div.row.wrap', { style: { alignItems: 'center' } }, pages.map((p2, i) => el('button.chip' + (i === pi ? '.on' : ''), { onclick: () => { pi = App._rpi = i; draw(); } }, t('rn.page') + ' ' + p2.name)),
+        App.dd(t('rn.deck'), [['', t('rn.noDeck')]].concat(decks.map((x) => [x.id, x.name])), pg.deckId || '', (v) => { pages.forEach((q) => { if (v && q.deckId === v) q.deckId = null; }); pg.deckId = v || null; G.Prog.save(); draw(); }, true));
+      const lines = Object.keys(ANG).map((b) => { const a = ANG[b] * Math.PI / 180; return `<line x1="50" y1="50" x2="${50 + Math.cos(a) * 44}" y2="${50 + Math.sin(a) * 44}" stroke="${col(b)}" stroke-opacity=".35" stroke-width=".5"/><text x="${50 + Math.cos(a) * 49.5}" y="${50 + Math.sin(a) * 49.5 + 1}" fill="${col(b)}" font-size="2.6" text-anchor="middle" font-family="Alegreya SC,serif">${G.L(G.RUNE_BRANCH[b].god)}</text>`; }).join('');
+      const svg = `<svg viewBox="0 0 100 100" class="rwsvg"><defs><radialGradient id="rwg"><stop offset="0" stop-color="#3a1f55"/><stop offset="1" stop-color="#0c0614"/></radialGradient></defs><circle cx="50" cy="50" r="47" fill="url(#rwg)" stroke="#c9a24e" stroke-width=".6"/><circle cx="50" cy="50" r="45.5" fill="none" stroke="#c9a24e" stroke-opacity=".35" stroke-width=".3"/>${[11, 21, 33, 44].map((r) => `<circle cx="50" cy="50" r="${r}" fill="none" stroke="#c9a24e" stroke-opacity=".2" stroke-width=".35" stroke-dasharray="1 1.2"/>`).join('')}${lines}</svg>`;
+      const wheel = el('div.rwheel', { html: svg });
+      G.RUNE_LIST.forEach((r) => { const [x, y] = pos(r); const own = G.Prog.runeOwned(r.id), on = pg.runes.includes(r.id);
+        wheel.appendChild(el('button.rnode.t' + r.tier + (own ? '.own' : '') + (on ? '.on' : '') + (sel === r.id ? '.sel' : ''), { style: { left: x + '%', top: y + '%', '--rc': col(r.branch) }, title: G.L(r.name), onclick: () => { sel = App._rsel = r.id; G.click(); draw(); } }, r.tier === 3 ? '❖' : r.tier === 2 ? '✦' : '◆')); });
+      const r = sel && G.RUNES[sel];
+      const det = r ? el('div.rdet', { style: { '--rc': col(r.branch) } }, el('div', el('b', G.L(r.name)), el('small.muted', '  ' + G.L(G.RUNE_BRANCH[r.branch].god) + ' · ' + t('rn.t' + r.tier) + ' · ' + r.cost + ' ' + t('rn.pt'))), el('p', G.L(r.desc)),
+        el('div.row.wrap', !G.Prog.runeOwned(r.id) ? el('button.btn.primary', { onclick: () => { const x = G.Prog.unlockRune(r.id); if (x === 'ok') { G.audio.play('rare'); G.ui.toast(t('rn.unlocked')); } else G.ui.toast(t('rn.' + x)); draw(); } }, t('rn.unlock', { n: r.cost }))
+          : el('button.btn' + (pg.runes.includes(r.id) ? '' : '.primary'), { onclick: () => { const x = G.Prog.toggleRune(pi, r.id); if (x !== 'on' && x !== 'off') G.ui.toast(t('rn.' + x)); else G.audio.play(x === 'on' ? 'charge' : 'card'); draw(); } }, pg.runes.includes(r.id) ? t('rn.remove') : t('rn.equip')))) : el('div.rdet', el('p.muted', t('rn.pick')));
+      G.fill(root, head, tabs, wheel, det, el('div.section', el('h3', t('rn.active')), pg.runes.length ? el('div.row.wrap', pg.runes.map((id) => el('span.chip', G.L(G.RUNES[id].name)))) : el('p.muted', t('rn.empty')), el('small.muted', t('rn.note'))));
+    };
+    draw(); if (!d.runeIntro) setTimeout(() => App.runeIntro(), 350);
+    return el('div.scr', top(t('mode.runes')), root);
+  };
+  // ---------- Campeonato ----------
+  App.cupPlay = async (deck) => {
+    const d = P(); const c = d.cup; const o = G.Prog.cupOpp(); if (!o || !G.Prog.cupCanPlay() || !deck) return;
+    const me = { name: d.name, avatar: d.avatar, deck: deck.cards.slice(), mmr: d.mmr, level: d.level, runes: G.Prog.runesForDeck(deck.id) };
+    const skill = G.clamp(0.3 + (o.mmr - 800) / 1700 * 0.6, 0.25, 0.95); const seed = (c.id * 7919 + c.round * 131 + c.score[0] * 17 + c.score[1] * 5 + 3) >>> 0;
+    const opp = { name: o.name, avatar: o.avatar, aff: o.aff, aff2: o.aff2, mmr: o.mmr, level: o.level, skill, q: G.clamp(skill + 0.08, 0.2, 0.95), seed };
+    const oppDeck = G.fairDeck({ aff: o.aff, aff2: o.aff2, q: opp.q, seed, cap: G.Prog.aiCap() }, G.deckScore(me.deck) * (1 + (skill - d.skill) * 0.25));
+    await App.versus(me, opp, 'cup');
+    G.Duel.start({ mode: 'cup', arena: G.Prog.ARENAS[0], deckAff: deckAffOf(me.deck), players: [me, { name: opp.name, avatar: opp.avatar, deck: oppDeck, skill, mmr: o.mmr, aff: o.aff, level: o.level, runes: me.runes.length ? G.AI_RUNES[o.aff] : [] }], humans: [true, false] });
+  };
+  App.bracketView = (c) => { let r = Math.min(App._bv != null ? App._bv : c.round, 5); const box = el('div.section');
+    const draw = () => { const L2 = c.rounds[r] || []; const nx = c.rounds[r + 1] || []; const pairs = []; for (let i = 0; i < L2.length; i += 2) pairs.push([L2[i], L2[i + 1]]);
+      const row = (i, X, w) => el('div.bp' + (w === i ? '.w' : '') + (X.you ? '.you' : ''), el('span', X.name), el('small', String(X.mmr)));
+      G.fill(box, el('h3', t('cup.bracket')), el('div.row.wrap', [0, 1, 2, 3, 4, 5].map((k) => el('button.chip' + (k === r ? '.on' : ''), { onclick: () => { r = App._bv = k; draw(); } }, t('cup.rs' + (k + 1))))),
+        pairs.length ? el('div.brk', pairs.map(([a, b]) => { const w = nx.includes(a) ? a : nx.includes(b) ? b : null; return el('div.bm' + (c.bracket[a].you || c.bracket[b].you ? '.mine' : ''), row(a, c.bracket[a], w), row(b, c.bracket[b], w)); })) : el('p.muted', t('cup.notYet'))); };
+    draw(); return box; };
+  S.cup = function (args) {
+    G.Prog.cupSync(); const d = P(); const ci = G.Prog.cupInfo(); const c = d.cup; const info = G.Prog.myCupTier(); const rank = G.Prog.rankOf(d.mmr);
+    const tierName = (x) => x ? t('cup.' + x) : t('cup.none'); const kids = [];
+    if (args && args.last) kids.push(el('div.cupban.' + (args.last.win ? 'win' : 'lose'), t('cup.st.' + (args.last.st || 'none'))));
+    kids.push(el('div.cuphead', App.cupIcon('gold'), el('div.col', el('h2', G.L(ci.name)), el('small.muted', ci.running ? t('cup.running', { n: ci.round }) : t('cup.regOpen')))));
+    const mine = c && c.id === ci.idx;
+    if (!mine) {
+      kids.push(el('div.section', el('p', t('cup.yourTier', { r: rank.label, p: info.pos, t: tierName(info.tier) })), el('div.tierbar', ['pro', 'mid', 'bot'].map((x) => el('span' + (info.tier === x ? '.on' : ''), t('cup.' + x) + ' · ' + t('cup.range.' + x)))),
+        ci.reg ? (info.tier ? el('button.btn.primary', { onclick: () => { const r2 = G.Prog.cupEnroll(); G.ui.toast(t('cup.e.' + r2)); App.go('cup'); } }, t('cup.enroll')) : el('p.muted', t('cup.unq'))) : el('p.muted', t('cup.closed'))));
+    } else if (c.done) {
+      kids.push(el('div.section.cupdone', App.cupIcon(c.place === 1 ? 'gold' : c.place === 2 ? 'silver' : 'bronze'), el('h3', t('cup.place', { n: c.place })), c.reward ? el('p', t('cup.rw', { e: G.fmtN(c.reward.ess), p: c.reward.prim })) : el('p.muted', t('cup.noRw'))));
+    } else {
+      const o = G.Prog.cupOpp(); const can = G.Prog.cupCanPlay(); const decks = G.Prog.validDecks(); let deck = decks.find((x) => x.id === (App._cupDeck || d.activeDeck)) || decks[0];
+      const chips = el('div.row.wrap'); const dc = () => G.fill(chips, ...decks.map((x) => el('button.chip' + (x === deck ? '.on' : ''), { onclick: () => { deck = x; App._cupDeck = x.id; dc(); } }, x.name))); dc();
+      kids.push(el('div.section.cupmatch', el('small.muted', t('cup.r' + (c.round + 1)) + ' · ' + tierName(c.tier) + ' · ' + G.L(G.Prog.TIERS[c.rank].name)),
+        el('div.cupvs', el('div.cs', el('div.thumb', { style: { backgroundImage: `url(${G.artUrl(d.avatar)})` } }), el('b', d.name)), el('div.score', c.score[0] + ' – ' + c.score[1]), el('div.cs', el('div.thumb', { style: { backgroundImage: `url(${G.artUrl(o.avatar)})` } }), el('b', o.name), el('small.muted', o.mmr + ' ' + t('mmr')))),
+        el('small.muted', t('cup.bo3')),
+        can ? el('div.col', el('h3', t('cup.deck')), chips, el('button.btn.primary', { onclick: () => App.cupPlay(deck) }, t('cup.play', { n: c.score[0] + c.score[1] + 1 }))) : el('p.muted', t('cup.wait'))));
+    }
+    if (c && (mine || c.done)) kids.push(App.bracketView(c));
+    kids.push(el('div.section', el('h3', t('cup.rewards')), [1, 2, 3, 5].map((pl) => { const rw = G.Prog.CUP_REWARDS[pl]; return el('div.li', el('b', { style: { minWidth: '8.5em' } }, t('cup.pl' + pl)), el('span', { style: { marginLeft: 'auto', textAlign: 'right' } }, G.fmtN(rw.ess) + ' ' + t('shards') + ' + ' + rw.prim + ' ✦' + (rw.trophy ? ' + ' + t('cup.trophy') : ''))); }), el('small.muted', t('cup.rules'))));
+    return el('div.scr', top(t('mode.cup')), el('div.scroll', kids));
   };
   // ---------- opções ----------
   S.settings = function () {

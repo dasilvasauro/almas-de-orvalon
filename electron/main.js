@@ -5,7 +5,7 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 function createWindow() {
   const win = new BrowserWindow({
     width: 1440, height: 900, minWidth: 960, minHeight: 640, backgroundColor: '#100a15', title: 'Almas de Orvalon',
-    icon: path.join(__dirname, '..', 'resources', 'icon.png'), autoHideMenuBar: true,
+    icon: path.join(__dirname, '..', 'resources', 'icons', '512x512.png'), autoHideMenuBar: true,
     webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false }
   });
   Menu.setApplicationMenu(null);

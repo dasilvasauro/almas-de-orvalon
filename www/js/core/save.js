@@ -6,7 +6,7 @@
   const L = (pt, en) => ({ pt, en });
   P.defaults = () => ({
     v: 1, created: Date.now(), name: '', lang: null, avatar: 'h3_11', level: 1, xp: 0, shards: 300, boosters: 0, pity: 0, packs: {}, frags: {},
-    collection: {}, decks: [], mastery: {}, calendar: { day: 0, last: null, cycle: 1 }, activeDeck: null, mmr: 900, peak: 900, skill: 0.42, rep: 60, streak: 0, mmrHist: [900],
+    collection: {}, decks: [], mastery: {}, calendar: { day: 0, last: null, cycle: 1 }, essences: 0, runesOwned: {}, runePages: [], runeIntro: false, cup: null, cupHistory: [], trophies: [], activeDeck: null, mmr: 900, peak: 900, skill: 0.42, rep: 60, streak: 0, mmrHist: [900],
     stats: { matches: 0, wins: 0, losses: 0, draws: 0, rankedWins: 0, rankedMatches: 0, quickWins: 0, advWins: 0, trainMatches: 0, spectated: 0, kos: 0, kosAff: {}, dmg: 0, maxHit: 0, prizes: 0, perfect: 0, comebacks: 0, winReasons: {}, ascends: 0, conds: {}, heals: 0, effects: 0, relics: 0, actions: 0, gods: {}, played: {}, boosters: 0, legendsPulled: 0, decksBuilt: 0, bestStreak: 0, fastWin: 999, legendKos: 0, winsAff: {}, abilities: 0, retreats: 0, markers: 0, turns: 0, concedes: 0, attacks: 0 },
     ach: {}, history: [], daily: null, settings: { music: 0.55, sfx: 0.85, speed: 1, particles: 'high', privacy: true, confirmEnd: true }, tutorialDone: false, starter: null, inMatch: null, onboarded: false
   });
@@ -183,19 +183,81 @@
   };
   // Calendário do Ciclo das Luas (28 dias): uma oferenda por dia real, recompensas maiores nos marcos
   P.CAL = Array.from({ length: 28 }, (_, i) => { const d = i + 1;
-    if (d === 7) return { ess: 120, packs: [['basic', 2]], big: true };
-    if (d === 14) return { ess: 200, packs: [['reg_valc', 1]], big: true };
-    if (d === 21) return { ess: 250, packs: [['aureo', 1]], big: true };
-    if (d === 28) return { ess: 600, packs: [['bau', 1], ['aureo', 1]], big: true };
+    if (d === 7) return { ess: 120, frags: 2, big: true };
+    if (d === 14) return { ess: 200, frags: 3, prim: 1, big: true };
+    if (d === 21) return { ess: 250, frags: 4, rare: true, big: true };
+    if (d === 28) return { ess: 600, frags: 6, rare: true, prim: 1, big: true };
     return { ess: 40 + Math.floor(d / 7) * 15 + (d % 7) * 5 }; });
+  // pacotes de fragmentos (preferindo cartas que faltam ou ainda não completas)
+  P.giveFrags = (n, rare) => { const out = []; const rng = G.rng((Date.now() ^ (Math.random() * 1e9)) >>> 0); const pool = P.collectible().filter((id) => G.CARDS[id].kind !== 'charge' && P.own(id) < G.copyLimit(G.CARDS[id]));
+    for (let k = 0; k < n && pool.length; k++) { const want = rare && k === 0 ? pool.filter((id) => 'REL'.includes(G.CARDS[id].rarity)) : pool; const src = want.length ? want : pool; const id = src[rng.int(src.length)]; const a = P.FRAG_AMT[G.CARDS[id].rarity]; const q = a[0] + rng.int(a[1] - a[0] + 1); P.d.frags[id] = (P.d.frags[id] || 0) + q; out.push({ id, n: q }); }
+    return out; };
   P.calCanClaim = () => { const c = P.d.calendar || {}; return c.last !== G.todayKey(); };
-  P.claimCalendar = () => { const c = P.d.calendar = P.d.calendar || { day: 0, last: null, cycle: 1 }; if (!P.calCanClaim()) return null; const rw = P.CAL[c.day]; P.d.shards += rw.ess || 0; (rw.packs || []).forEach(([id, n]) => P.addPack(id, n)); c.last = G.todayKey(); c.day++; if (c.day >= 28) { c.day = 0; c.cycle++; } P.save(); return rw; };
+  P.claimCalendar = () => { const c = P.d.calendar = P.d.calendar || { day: 0, last: null, cycle: 1 }; if (!P.calCanClaim()) return null; const rw = Object.assign({}, P.CAL[c.day]); P.d.shards += rw.ess || 0; if (rw.prim) P.d.essences = (P.d.essences || 0) + rw.prim; rw.got = rw.frags ? P.giveFrags(rw.frags, rw.rare) : []; c.last = G.todayKey(); c.day++; if (c.day >= 28) { c.day = 0; c.cycle++; } P.save(); return rw; };
   // Eventos datados (estrutura para o futuro Modo Campeonato: um embate por dia)
   P.events = () => { const now = new Date(); const sat = new Date(now); sat.setDate(now.getDate() + ((6 - now.getDay() + 7) % 7 || 7)); const fmt = (dt) => dt.toLocaleDateString(G.lang === 'en' ? 'en-US' : 'pt-BR', { day: '2-digit', month: 'short' });
     const e2 = new Date(sat); e2.setDate(sat.getDate() + 14);
     return [{ id: 'cup_blood', name: { pt: 'Torneio da Lua Sangrenta', en: 'Blood Moon Tournament' }, desc: { pt: 'Chave de 64 Invocadores por Elo · melhor de 3 · em breve', en: '64-Summoner bracket per Rank · best of 3 · coming soon' }, when: fmt(sat), start: sat.getTime(), days: 6, status: 'soon' },
       { id: 'cup_eclipse', name: { pt: 'Copa do Eclipse', en: 'Eclipse Cup' }, desc: { pt: 'Disputa entre as camadas Mid Tier · em breve', en: 'Mid Tier showdown · coming soon' }, when: fmt(e2), start: e2.getTime(), days: 6, status: 'soon' }]; };
   P.checkDaily = function () { return P.calCanClaim(); };
+  // ===================== QUINTESSÊNCIAS =====================
+  P.pages = () => { const d = P.d; if (!d.runePages || d.runePages.length < 3) d.runePages = [0, 1, 2].map((i) => (d.runePages && d.runePages[i]) || { id: 'pg' + i, name: ['I', 'II', 'III'][i], deckId: null, runes: [] }); return d.runePages; };
+  P.pageCost = (pg) => pg.runes.reduce((s, id) => s + (G.RUNES[id] ? G.RUNES[id].cost : 0), 0);
+  P.runeOwned = (id) => !!(P.d.runesOwned || {})[id];
+  P.unlockRune = (id) => { const r = G.RUNES[id]; if (!r) return 'bad'; if (P.runeOwned(id)) return 'owned'; if ((P.d.essences || 0) < r.cost) return 'poor'; P.d.essences -= r.cost; P.d.runesOwned[id] = 1; P.save(); return 'ok'; };
+  P.toggleRune = (pi, id) => { const pg = P.pages()[pi]; const r = G.RUNES[id]; const i = pg.runes.indexOf(id); if (i >= 0) { pg.runes.splice(i, 1); P.save(); return 'off'; } if (!P.runeOwned(id)) return 'locked'; if (r.tier === 3 && pg.runes.some((x) => G.RUNES[x] && G.RUNES[x].tier === 3)) return 'quint'; if (P.pageCost(pg) + r.cost > G.RUNE_BUDGET) return 'budget'; pg.runes.push(id); P.save(); return 'on'; };
+  P.runesForDeck = (deckId) => { const pg = P.pages().find((x) => x.deckId && x.deckId === deckId); return pg ? pg.runes.filter((id) => G.RUNES[id] && P.runeOwned(id)) : []; };
+  // ===================== PERÍCIA =====================
+  P.MASTERY = [40, 150, 400, 1000];
+  P.masteryStats = (id) => (P.d.mastery || {})[G.baseId(id)] || { plays: 0, wins: 0, kos: 0, falls: 0 };
+  P.masteryPts = (id) => { const m = P.masteryStats(id); return Math.max(0, m.plays * 2 + m.wins * 5 + m.kos * 4 - m.falls); };
+  P.masteryLv = (id) => { const p = P.masteryPts(id); let l = 0; P.MASTERY.forEach((v, i) => { if (p >= v) l = i + 1; }); return l; };
+  P.topMastery = (n) => Object.keys(P.d.mastery || {}).filter((id) => G.CARDS[id]).map((id) => ({ id, pts: P.masteryPts(id), lv: P.masteryLv(id) })).sort((a, b) => b.pts - a.pts).slice(0, n || 5);
+  P.deckMastery = (cards) => { let best = null; G.uniq((cards || []).filter((id) => G.CARDS[id] && G.CARDS[id].kind === 'creature').map((id) => G.baseId(id))).forEach((b) => { const pts = P.masteryPts(b); if (!best || pts > best.pts) best = { id: b, pts, lv: P.masteryLv(b) }; }); return best; };
+  // ===================== CAMPEONATO =====================
+  const rf = (rng) => rng.int(1000000) / 1000000;
+  P.dayNow = () => G.dayIndex() + (+G.store.get('orvDayShift', 0) || 0);
+  P.CUP_NAMES = [L('Torneio da Lua Sangrenta', 'Blood Moon Tournament'), L('Copa do Eclipse', 'Eclipse Cup'), L('Torneio Ancestral', 'Ancestral Tournament'), L('Copa Espectral', 'Spectral Cup')];
+  P.CUP_REWARDS = { 1: { ess: 2000, prim: 5, trophy: 'gold' }, 2: { ess: 1000, prim: 3, trophy: 'silver' }, 3: { ess: 500, prim: 2 }, 5: { ess: 250, prim: 1 } };
+  // ranking de cada Elo: 240 Invocadores fictícios + você (Pro 1–64, Mid 65–128, Bottom 129–192)
+  P.eloBoard = (ti) => { const T = P.TIERS[ti], nx = P.TIERS[ti + 1]; const lo = ti === 0 ? 800 : T.min, hi = nx ? nx.min - 1 : T.min + 600; const rng = G.rng((ti + 1) * 7919 + P.dayNow() * 31);
+    const arr = []; for (let i = 0; i < 240; i++) { const f = P.fakes[(i * 7 + ti * 241) % P.fakes.length]; arr.push({ name: f.name, avatar: f.avatar, aff: f.aff, aff2: f.aff2, level: f.level, mmr: Math.round(lo + rf(rng) * (hi - lo)) }); }
+    if (P.rankOf(P.d.mmr).i === ti) arr.push({ name: P.d.name, avatar: P.d.avatar, mmr: P.d.mmr, level: P.d.level, you: true });
+    arr.sort((a, b) => b.mmr - a.mmr); arr.forEach((x, i) => { x.pos = i + 1; x.tier = i < 64 ? 'pro' : i < 128 ? 'mid' : i < 192 ? 'bot' : null; }); return arr; };
+  P.myCupTier = () => { const b = P.eloBoard(P.rankOf(P.d.mmr).i); const me = b.find((x) => x.you); return { tier: me.tier, pos: me.pos }; };
+  // um torneio por semana: rodadas de segunda a sábado (um embate por dia); inscrições no domingo e na segunda
+  P.cupInfo = () => { const di = P.dayNow() - 4; const c = Math.floor(di / 7), dc = ((di % 7) + 7) % 7; const idx = dc <= 5 ? c : c + 1; return { idx, name: P.CUP_NAMES[((idx % 4) + 4) % 4], running: dc <= 5, round: dc <= 5 ? dc + 1 : 0, reg: dc === 6 || dc === 0, start: idx * 7 + 4 }; };
+  P.cupEnroll = () => { const ci = P.cupInfo(); const d = P.d; if (d.cup && d.cup.id === ci.idx) return 'already'; if (!ci.reg) return 'closed';
+    const ti = P.rankOf(d.mmr).i; const board = P.eloBoard(ti); const me = board.find((x) => x.you); if (!me.tier) return 'unq';
+    const off = { pro: 0, mid: 64, bot: 128 }[me.tier]; const slice = board.slice(off, off + 64).map((x) => Object.assign({}, x)); const rng = G.rng(ci.idx * 131 + ti * 17);
+    for (let i = slice.length - 1; i > 0; i--) { const j = rng.int(i + 1); [slice[i], slice[j]] = [slice[j], slice[i]]; }
+    d.cup = { id: ci.idx, name: ci.name, tier: me.tier, rank: ti, start: ci.start, bracket: slice, rounds: [slice.map((_, i) => i)], round: 0, score: [0, 0], alive: true, done: false, results: [], place: null, lastDeck: null };
+    P.save(); return 'ok'; };
+  const cupWin = (c, a, b, r) => { const A = c.bracket[a], B = c.bracket[b]; const pa = 1 / (1 + Math.pow(10, (B.mmr - A.mmr) / 400)); return rf(G.rng(c.id * 977 + r * 131 + a * 7 + b)) < pa ? a : b; };
+  const meIdx = (c) => c.bracket.findIndex((x) => x.you);
+  P.cupOpp = () => { const c = P.d.cup; if (!c || !c.alive || c.done) return null; const L2 = c.rounds[c.round]; const i = L2.indexOf(meIdx(c)); if (i < 0) return null; return c.bracket[L2[i ^ 1]]; };
+  function cupResolve(c, playerWon, wo) {
+    const r = c.round + 1; const L2 = c.rounds[c.round]; const me = meIdx(c); const next = [];
+    for (let i = 0; i < L2.length; i += 2) { const a = L2[i], b = L2[i + 1]; if (a === me || b === me) next.push(playerWon ? me : (a === me ? b : a)); else next.push(cupWin(c, a, b, r)); }
+    const oi = L2[L2.indexOf(me) ^ 1]; c.results.push({ r, opp: c.bracket[oi].name, score: c.score.slice(), wo: !!wo, win: playerWon });
+    c.rounds.push(next); c.round++; c.score = [0, 0];
+    if (!playerWon) { c.alive = false; while (c.rounds[c.round].length > 1) { const L3 = c.rounds[c.round], n2 = []; for (let i = 0; i < L3.length; i += 2) n2.push(cupWin(c, L3[i], L3[i + 1], c.round + 1)); c.rounds.push(n2); c.round++; } cupFinish(c, r === 6 ? 2 : r === 5 ? 3 : r === 4 ? 5 : Math.pow(2, 6 - r) + 1); }
+    else if (r === 6) cupFinish(c, 1);
+  }
+  function cupFinish(c, place) {
+    const d = P.d; c.done = true; c.place = place; const rw = P.CUP_REWARDS[place]; c.reward = rw || null;
+    if (rw) { d.shards += rw.ess; d.essences = (d.essences || 0) + rw.prim; if (rw.trophy) d.trophies.unshift({ id: 'c' + c.id, cup: c.name, place, kind: rw.trophy, tier: c.tier, rank: c.rank, cycle: c.id, deck: c.lastDeck || [], date: Date.now() }); }
+    d.cupHistory.unshift({ id: c.id, name: c.name, tier: c.tier, rank: c.rank, place }); d.cupHistory = d.cupHistory.slice(0, 30);
+  }
+  // dia do embate atual (1..6); rodadas que passaram sem jogar viram W.O.
+  P.cupToday = () => { const c = P.d.cup; return c ? P.dayNow() - c.start + 1 : 0; };
+  P.cupSync = () => { const c = P.d.cup; if (!c || c.done) return; const today = P.cupToday(); let ch = false; while (c.alive && !c.done && c.round < 6 && c.round + 1 < today) { cupResolve(c, false, true); ch = true; } if (ch) P.save(); };
+  P.cupCanPlay = () => { const c = P.d.cup; if (!c || !c.alive || c.done) return false; const t = P.cupToday(); return t >= 1 && t <= 6 && c.round + 1 === t; };
+  P.cupGame = (win, deck) => { const c = P.d.cup; if (!P.cupCanPlay()) return null; c.lastDeck = deck || c.lastDeck; c.score[win ? 0 : 1]++; let out = 'next'; if (c.score[0] >= 2) { cupResolve(c, true); out = c.done ? 'champion' : 'advance'; } else if (c.score[1] >= 2) { cupResolve(c, false); out = 'out'; } P.save(); return out; };
+  P.events = () => { const ci = P.cupInfo(); const fmt = (di) => new Date((di) * 864e5 + new Date().getTimezoneOffset() * 60000).toLocaleDateString(G.lang === 'en' ? 'en-US' : 'pt-BR', { day: '2-digit', month: 'short' });
+    const nx = P.CUP_NAMES[(((ci.idx + 1) % 4) + 4) % 4];
+    return [{ id: 'cup' + ci.idx, cup: true, name: ci.name, desc: ci.running ? L('Em andamento · embate ' + ci.round + ' de 6 hoje', 'In progress · bout ' + ci.round + ' of 6 today') : L('Inscrições abertas · começa amanhã', 'Registration open · starts tomorrow'), when: fmt(ci.start) },
+      { id: 'cup' + (ci.idx + 1), cup: true, name: nx, desc: L('Chave de 64 por faixa do Elo · melhor de 3', '64-player bracket per Rank tier · best of 3'), when: fmt(ci.start + 7) }]; };
 
   // ---------- reputação e estilo ----------
   P.repLabel = (r) => r < 30 ? L('Duvidosa', 'Dubious') : r < 55 ? L('Neutra', 'Neutral') : r < 75 ? L('Honrada', 'Honored') : r < 90 ? L('Respeitada', 'Respected') : L('Lendária', 'Legendary');
@@ -285,9 +347,12 @@
     s.heals += st.heals || 0; s.effects += (st.effects || []).length; s.relics += (st.relics || []).length; s.actions += st.actions || 0;
     (st.gods || []).forEach((id) => { s.gods[id] = (s.gods[id] || 0) + 1; });
     (st.creatures || []).concat(st.effects || [], st.relics || []).forEach((id) => { s.played[id] = (s.played[id] || 0) + 1; });
+    const mBefore = {}; G.uniq((st.creatures || []).map((id) => G.baseId(id))).forEach((b) => { mBefore[b] = P.masteryLv(b); });
     G.uniq(st.creatures || []).forEach((id) => { const b = G.baseId(id); const m = d.mastery[b] = d.mastery[b] || { plays: 0, kos: 0, falls: 0, wins: 0 }; m.plays++; if (win === true) m.wins++; });
     Object.keys(st.killsBy || {}).forEach((id) => { const b = G.baseId(id); const m = d.mastery[b] = d.mastery[b] || { plays: 0, kos: 0, falls: 0, wins: 0 }; m.kos += st.killsBy[id]; });
     Object.keys(st.fallen || {}).forEach((id) => { const b = G.baseId(id); const m = d.mastery[b] = d.mastery[b] || { plays: 0, kos: 0, falls: 0, wins: 0 }; m.falls += st.fallen[id]; });
+    res.mastery = Object.keys(mBefore).map((b) => ({ id: b, from: mBefore[b], to: P.masteryLv(b) })).filter((x) => x.to > x.from);
+    res.mastery.forEach((x) => { if (x.from < 2 && x.to >= 2) d.shards += 50; });
     s.legendKos += st.legendKos || 0; s.abilities += st.abilities || 0; s.retreats += st.retreats || 0; s.markers += st.markers || 0; s.attacks += st.attacks || 0;
     if (info.conceded) { s.concedes++; d.rep = G.clamp(d.rep - 6, 0, 100); } else d.rep = G.clamp(d.rep + 1, 0, 100);
     if (info.mode !== 'train') {
@@ -304,6 +369,8 @@
       d.skill = G.clamp(d.skill + (win === true ? 0.035 : win === false ? -0.03 : 0), 0.12, 0.97);
     }
     const mult = { ranked: 1.3, quick: 1, adv: 0.8, train: 0.4 }[info.mode] || 1;
+    // Essências Primordiais: raras de propósito
+    if (win === true && ['ranked', 'quick', 'cup'].includes(info.mode)) { let ch = info.mode === 'quick' ? 0.03 : 0.10; if (st.legendKos) ch += 0.05; if (Math.random() < ch) { d.essences = (d.essences || 0) + 1; res.essence = 1; } }
     res.xp = Math.round(((win === true ? 120 : 50) + 10 * (st.prizes || 0)) * mult);
     res.shards = Math.round((win === true ? ({ ranked: 40, quick: 25, adv: 20, train: 5 }[info.mode] || 10) : (info.mode === 'train' ? 2 : 10)) * (d.rep >= 75 ? 1.1 : 1));
     if (info.mode === 'ranked') {

@@ -146,3 +146,11 @@ body.cur-wait .board,body.cur-wait .board *{cursor:${C.wait}!important}.dragging
   const _card = G.ui.card; G.ui.card = function (id, o) { const n = _card(id, o); if (!(o && o.mini) && G.gfxLevel() >= 2) n.appendChild(G.el('div.gloss')); return n; };
   if (typeof document !== 'undefined') document.addEventListener('pointermove', (e) => { if (G.gfxLevel() < 2) return; const c = e.target && e.target.closest && e.target.closest('.card'); if (!c) return; const r = c.getBoundingClientRect(); c.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%'); c.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%'); }, { passive: true });
 })(typeof window !== 'undefined' ? window : globalThis);
+
+(function (root) {
+  const G = root.G;
+  const _card2 = G.ui.card; G.ui.card = function (id, o) { const n = _card2(id, o); try { const c = G.CARDS[id]; if (c && c.kind === 'creature' && G.Prog && G.Prog.d && !document.body.classList.contains('induel')) { const lv = G.Prog.masteryLv(id); if (lv >= 1) { n.classList.add('mf-' + lv); n.appendChild(G.el('span.mbadge.lv' + lv, ['', 'I', 'II', 'III', 'IV'][lv])); if (lv >= 3 && !(o && o.mini)) { const art = n.querySelector('.cart'); if (art) art.appendChild(G.el('span.msig', G.Prog.d.name)); } } } } catch (e) { } return n; };
+  const _zoom = G.ui.zoom; G.ui.zoom = function (id, extra) { const c = G.CARDS[id]; if (c && c.kind === 'creature' && G.Prog && G.Prog.d && G.Prog.masteryStats) { const m = G.Prog.masteryStats(id), lv = G.Prog.masteryLv(id), pts = G.Prog.masteryPts(id); const M = G.Prog.MASTERY; const lo = M[lv - 1] || 0, hi = M[lv];
+    const box = G.el('div.mzoom', G.el('div.row', G.el('b', G.t('mas.lv' + lv)), G.el('span.grow'), G.el('small.muted', pts + (hi ? ' / ' + hi : '') + ' ' + G.t('mas.pts'))), G.el('div.bar', G.el('i', { style: { width: (hi ? Math.max(0, (pts - lo) / (hi - lo)) * 100 : 100) + '%' } })), G.el('small.muted', G.t('mas.stats', { p: m.plays, w: m.wins, k: m.kos, f: m.falls })));
+    extra = extra ? G.el('div.col', extra, box) : box; } return _zoom(id, extra); };
+})(typeof window !== 'undefined' ? window : globalThis);

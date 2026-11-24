@@ -1,7 +1,7 @@
 /* Simulação justa: decks sorteados entre as 5 afinidades puras e as 20 duplas (como os oponentes do jogo). Uso: node scripts/sim-all.js [jogos] */
 const path = require('path');
 if (process.env.TUNE) globalThis.ORVALON_TUNE = JSON.parse(process.env.TUNE);
-['core/util.js', 'data/lore.js', 'data/cards.js', 'core/engine.js', 'core/ai.js'].forEach((f) => require(path.join(__dirname, '..', 'www', 'js', f)));
+['core/util.js', 'data/lore.js', 'data/cards.js', 'data/runes.js', 'core/engine.js', 'core/ai.js'].forEach((f) => require(path.join(__dirname, '..', 'www', 'js', f)));
 const G = globalThis.G; const N = +process.argv[2] || 600; const A = G.AFF_LIST;
 const cfgs = []; A.forEach((a) => { cfgs.push([a, null]); A.forEach((b) => { if (a !== b) cfgs.push([a, b]); }); });
 const res = {}; let ohko = 0, kos = 0, turns = 0, errors = 0, firstW = 0, decided = 0; const reasons = {};

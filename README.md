@@ -3,6 +3,15 @@
 Jogo de cartas colecionáveis offline, com a jogabilidade central do Pokémon TCG (Ativo + Reserva, Cargas, Almas como prêmios, Fraquezas, Condições, Ascensão) e temática de fantasia sombria. Disponível em **português (Brasil)** e **inglês**. Roda no Android (Capacitor), no Linux/Windows/macOS (Electron) e em qualquer navegador.
 
 
+
+## Novidades da 1.5.0
+- **Quintessências (Roda dos Cinco):** 28 runas em 5 ramos e um anel central, 3 páginas de 12 pontos ligadas a decks, grimório explicativo e Essências Primordiais raras. A IA usa páginas do arquétipo dela quando você usa runas. O equilíbrio foi medido com `scripts/sim-runes.js`.
+- **Campeonato:** um torneio por semana, com chave de 64 por faixa do Elo (Pro, Mid e Bottom Tier), melhor de 3 com troca de deck, um embate por dia, W.O. e troféus no perfil. O Ranking ganhou abas por Elo com as faixas.
+- **Perícia:** quatro níveis por personagem (Iniciado, Veterano, Mestre e Lenda Viva), com selo e moldura nas cartas, assinatura dourada, títulos, painel no perfil e destaque no versus.
+- **Calendário:** as oferendas não dão mais selos, apenas Essência, fragmentos e Essências Primordiais.
+- **Correção:** a mão não "abre e fecha" mais. As cartas agora são reaproveitadas, em vez de recriadas a cada atualização.
+- **Linux:** o .deb tem ícones em todos os tamanhos e descrição completa.
+
 ## Novidades da 1.4.0
 - **Desempenho no Android:** zoom de texto travado em 100% (corrige a escala quebrada), aceleração por hardware, modo gráfico "Equilibrado" por padrão no APK e artes pré-carregadas e mantidas em memória durante o duelo.
 - **Áudio:** trilhas pré-renderizadas em loop (sem síntese em tempo real) e pausa automática ao bloquear a tela.

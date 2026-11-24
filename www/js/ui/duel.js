@@ -29,7 +29,7 @@
       this.speed = cfg.spectate ? 1.6 : (G.Prog.d.settings.speed || 1);
       this.humans = cfg.humans; this.hotseat = cfg.humans[0] && cfg.humans[1];
       const ctrls = [0, 1].map((i) => (cfg.humans[i] ? new Human(this) : new G.AI(cfg.players[i].skill == null ? 0.6 : cfg.players[i].skill)));
-      this.g = new G.Game({ players: cfg.players.map((p) => ({ name: p.name, avatar: p.avatar, deck: p.deck })), ctrls, view: this, mode: cfg.mode });
+      this.g = new G.Game({ players: cfg.players.map((p) => ({ name: p.name, avatar: p.avatar, deck: p.deck, runes: p.runes || [] })), ctrls, view: this, mode: cfg.mode });
       this.build();
     }
     // ---------- tempo ----------
@@ -236,8 +236,12 @@
       const face = this.cfg.spectate || this.humans[p];
       const can = this.canAct(); const playable = new Set(can ? g.legalActions(p).filter((a) => a.u && pl.hand.includes(a.u)).map((a) => a.u) : []);
       z.className = 'hand' + (can ? '' : ' locked');
-      G.fill(z, ...pl.hand.map((u) => { const n = face ? G.ui.card(g.inst[u].id, { mini: true, noW: true }) : G.ui.back(); n.dataset.u = u; if (playable.has(u)) n.classList.add('playable'); return n; }));
+      const old = new Map(); Array.from(z.children).forEach((c) => { if (c.dataset.u) old.set(c.dataset.u + (c.classList.contains('cback') ? 'b' : 'f'), c); });
+      const fresh = []; const kids = pl.hand.map((u) => { const key = u + (face ? 'f' : 'b'); let n = old.get(key); if (n) old.delete(key); else { n = face ? G.ui.card(g.inst[u].id, { mini: true, noW: true }) : G.ui.back(); n.dataset.u = u; n.classList.add('fresh'); fresh.push(n); } n.classList.toggle('playable', playable.has(u)); n.classList.remove('lift'); return n; });
+      old.forEach((n) => n.remove());
+      kids.forEach((n, i) => { if (z.children[i] !== n) z.insertBefore(n, z.children[i] || null); });
       this.fanHand();
+      if (fresh.length) { void z.offsetWidth; requestAnimationFrame(() => fresh.forEach((n) => n.classList.remove('fresh'))); }
     }
     // ---------- interação ----------
     bindHand() {
@@ -605,6 +609,9 @@
       const win = r.winner === 0 ? true : r.winner === 1 ? false : null;
       const info = { mode: cfg.mode, win, oppMmr: cfg.players[1].mmr, oppName: cfg.players[1].name, oppAff: cfg.players[1].aff, turns: r.turns, st: g.P[0].st, reason: r.reason, conceded: r.reason === 'concede' && r.winner === 1, lostPrizes: g.P[1].st.prizes, deckAff: cfg.deckAff };
       const rewards = G.Prog.recordMatch(info);
+      if (rewards.essence) setTimeout(() => G.ui.toast('✦ ' + t('ess.drop')), 1200);
+      (rewards.mastery || []).forEach((x, i) => setTimeout(() => G.ui.toast(t('mas.up', { c: G.cardName(x.id), l: t('mas.lv' + x.to) })), 2000 + i * 1500));
+      if (cfg.mode === 'cup') { const st = G.Prog.cupGame(win === true, cfg.players[0].deck); G.App.go('cup', { last: { win: win === true, st } }); return; }
       G.App.go('results', { mode: cfg.mode, win, reason: r.reason, turns: r.turns, rewards, souls: [g.P[0].st.prizes, g.P[1].st.prizes] });
     }
   }

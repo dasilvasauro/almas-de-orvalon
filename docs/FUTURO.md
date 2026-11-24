@@ -1,6 +1,6 @@
-# Almas de Orvalon — estrutura das próximas features
+# Almas de Orvalon — Quintessências, Campeonato e Perícia
 
-Este documento define as três próximas grandes features. Nada aqui está ativo no jogo ainda; os pontos marcados como **já existe** foram preparados na 1.4.
+**Status: implementado na versão 1.5.0.** As seções abaixo seguem o desenho original, com notas sobre o que mudou na implementação.
 
 ---
 
@@ -12,13 +12,12 @@ Inspirada nas runas e quintessências do League of Legends. O jogador encontra *
 ### Obtenção (rara de propósito)
 | Fonte | Chance |
 |---|---|
-| Vitória ranqueada | 6% (1 essência) |
+| Vitória ranqueada | 10% (1 essência) |
 | Vitória em Duelo | 3% |
-| Derrotar uma Lenda inimiga | +4% naquela partida |
+| Derrotar uma Lenda inimiga | +5% naquela partida |
 | Marco do Calendário (luas 14 e 28) | 1 essência garantida |
 | Campeonato (top 8) | 2 a 5 essências |
 
-Com isso, a estimativa é de 6 a 9 essências por mês jogando normalmente. Uma árvore completa custa cerca de 60, o que leva meses.
 
 ### A Roda dos Cinco
 - Cinco ramos, um por Deus (Kragmor/Ígnea, Aurelia/Sagrada, Morvath/Oculta, Nyxara/Energética, Sylvarok/Primal), e um anel central neutro.
@@ -38,6 +37,8 @@ Com isso, a estimativa é de 6 a 9 essências por mês jogando normalmente. Uma 
 
 Regra de ouro: nenhuma runa deve mudar mais de cerca de 2% a taxa de vitória de um deck nas simulações.
 
+**Na implementação (1.5.0):** a Roda tem 28 runas (4 por ramo + Quintessência, e o Anel Central com 2 menores + Coroa de Cinzas). A lista completa está em `www/js/data/runes.js`. A medição é feita com `node scripts/sim-runes.js [jogos] [runas]`, que joga o mesmo deck dos dois lados, alternando quem começa, e compara a mesma partida com e sem runas. Como bônus de dano constantes mostraram impacto alto (um +10/−10 muda quantos golpes uma criatura aguenta), as runas foram recalibradas para efeitos condicionais ou de uso único. Com isso, uma página completa da IA fica entre −3% e +3%. *Eco Sombrio* virou "compre 1 carta" (reordenar o topo exigiria uma escolha interativa), e *Sobrecarga* virou "compre 1 carta no 2º turno".
+
 ### Dados
 ```js
 profile.essences = 0;
@@ -55,8 +56,9 @@ Cada Elo (Pedra a Lendário) tem três faixas, visíveis no Ranking:
 
 | Faixa | Quem entra |
 |---|---|
-| **Mid Tier** | Top 64 daquele Elo no fechamento das inscrições |
-| **Bottom Tier** | Do 65º ao 128º |
+| **Pro Tier** | Top 64 daquele Elo no fechamento das inscrições |
+| **Mid Tier** | Do 65º ao 128º |
+| **Bottom Tier** | Do 129º ao 192º |
 | *Não classificado* | Abaixo disso (não participa) |
 
 O Ranking ganha abas por Elo e mostra uma linha divisória entre as camadas.
@@ -65,6 +67,7 @@ O Ranking ganha abas por Elo e mostra uma linha divisória entre as camadas.
 - Chave eliminatória de **64 competidores** (6 rodadas).
 - Cada confronto é uma **melhor de 3**, e o jogador pode trocar de deck entre as partidas do confronto.
 - **Um embate por dia** (rodada 1 no dia 1, final no dia 6), seguindo o **Calendário** (**já existe**: `G.Prog.events()` lista eventos datados, e o Calendário tem a seção "Eventos do ciclo").
+- Um torneio por semana: inscrições no domingo e na segunda, rodadas de segunda a sábado.
 - Quem não joga a rodada do dia até a meia-noite perde por W.O. Os adversários são CPUs com o nível do Elo (G.Prog.oppSkill) e nomes do ranking fictício.
 
 ### Recompensas
@@ -112,3 +115,8 @@ A coleta já começou: **já existe**. Desde a 1.4, cada partida registra, por p
 - No versus, o personagem com maior Perícia no deck aparece ao lado do avatar.
 
 A Perícia é puramente cosmética e de prestígio: não dá vantagem de jogo.
+
+## 4. Builds de Linux DEB
+Devem possuir ícone e uma descrição maior.
+
+**Na implementação (1.5.0):** ícones de 16 a 1024 px em `resources/icons`, descrição longa, categoria Games e entrada de menu com comentário e palavras-chave.
