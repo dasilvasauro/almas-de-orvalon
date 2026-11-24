@@ -50,20 +50,22 @@
       "maintainer": "Orvalon <orvalon@example.com>",
       "executableName": "almas-de-orvalon",
       "synopsis": "Jogo de cartas offline de fantasia sombria",
-      "description": "Almas de Orvalon é um jogo de cartas colecionáveis de fantasia sombria, totalmente offline. Monte decks com 315 cartas de criaturas, heróis, relíquias, efeitos e deuses, enfrente uma IA que acompanha o seu nível e dispute o Coliseu das Almas no modo ranqueado, em campeonatos por Elo ou em duelos rápidos. Inclui treino guiado por um mentor, modo espectador, abertura animada de selos, Forja de cartas, Calendário do Ciclo das Luas, árvore de runas (Quintessências), Perícia por personagem, trilhas sonoras por arena e interface em português e inglês.",
+      "description": "Jogo de cartas de fantasia sombria",
       "desktop": {
-        "entry": {
-          "Name": "Almas de Orvalon",
-          "Comment": "Jogo de cartas de fantasia sombria",
-          "Keywords": "cartas;tcg;fantasia;card;game;",
-          "StartupWMClass": "almas-de-orvalon"
-        }
+        "Name": "Almas de Orvalon",
+        "Comment": "Jogo de cartas de fantasia sombria",
+        "Keywords": "cartas;tcg;fantasia;card;game;",
+        "StartupWMClass": "almas-de-orvalon"
       }
     },
     "afterPack": "scripts/after-pack.js",
     "deb": {
       "packageCategory": "games",
-      "priority": "optional"
+      "priority": "optional",
+      "fpm": [
+        "--description",
+        "Jogo de cartas offline de fantasia sombria\nAlmas de Orvalon é um jogo de cartas colecionáveis de fantasia sombria, totalmente offline. Monte decks com 315 cartas de criaturas, heróis, relíquias, efeitos e deuses, enfrente uma IA que acompanha o seu nível e dispute o Coliseu das Almas no modo ranqueado, em campeonatos por Elo ou em duelos rápidos. Inclui treino guiado por um mentor, modo espectador, abertura animada de selos, Forja de cartas, Calendário do Ciclo das Luas, árvore de runas (Quintessências), Perícia por personagem, trilhas sonoras por arena e interface em português e inglês."
+      ]
     }
   },
   "author": {
