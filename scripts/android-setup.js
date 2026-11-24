@@ -30,5 +30,8 @@ public class MainActivity extends BridgeActivity {
 }
 `);
 if (fs.existsSync(mf)) { let s2 = fs.readFileSync(mf, 'utf8'); if (!s2.includes('android:hardwareAccelerated')) s2 = s2.replace('<application', '<application android:hardwareAccelerated="true"'); fs.writeFileSync(mf, s2); }
+// versão do APK segue o package.json (1.4.0 -> versionCode 10400)
+const gr = 'android/app/build.gradle';
+if (fs.existsSync(gr)) { const v = require('../package.json').version; const [a, b, c] = v.split('.').map(Number); let g = fs.readFileSync(gr, 'utf8'); g = g.replace(/versionCode\s+\d+/, 'versionCode ' + (a * 10000 + b * 100 + c)).replace(/versionName\s+"[^"]*"/, 'versionName "' + v + '"'); fs.writeFileSync(gr, g); }
 run('npx cap sync android');
 console.log('\nPronto. Abra no Android Studio com: npm run android:open  — ou gere o APK com: npm run android:apk');

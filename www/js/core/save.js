@@ -13,6 +13,8 @@
   function merge(a, b) { for (const k in b) { if (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && a[k] && typeof a[k] === 'object' && !Array.isArray(a[k])) merge(a[k], b[k]); else a[k] = b[k]; } return a; }
   P.load = () => { const d = G.store.get(KEY, null); P.d = d ? merge(P.defaults(), d) : P.defaults(); if (P.d.boosters > 0) { P.d.packs.basic = (P.d.packs.basic || 0) + P.d.boosters; P.d.boosters = 0; } return P.d; };
   P.save = () => G.store.set(KEY, P.d);
+  P.exportCode = () => 'ORV1:' + btoa(unescape(encodeURIComponent(JSON.stringify(P.d))));
+  P.importCode = (code) => { try { const s = String(code).trim(); if (s.indexOf('ORV1:') !== 0) return false; const d = JSON.parse(decodeURIComponent(escape(atob(s.slice(5))))); if (!d || !d.collection || !d.decks) return false; G.store.set(KEY, d); return true; } catch (e) { return false; } };
   P.reset = () => { G.store.del(KEY); P.load(); };
   P.own = (id) => (G.CARDS[id] && G.CARDS[id].kind === 'charge') ? 99 : (P.d.collection[id] || 0);
   P.addCard = (id, n) => { const c = G.CARDS[id]; const lim = G.copyLimit(c); P.d.collection[id] = Math.min(lim, (P.d.collection[id] || 0) + (n || 1)); };

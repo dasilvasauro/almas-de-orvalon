@@ -10,6 +10,9 @@ Jogo de cartas colecionáveis offline, com a jogabilidade central do Pokémon TC
 - **Conteúdo:** 18 facções nas cartas, nomes revisados, Crônicas da Ruptura, Calendário do Ciclo das Luas e eventos datados.
 - **Visual:** molduras ornamentadas, título animado, gradiente no lugar de partículas, versus vertical no celular, boosters com vinheta e abertura realista, carregamento lento com zoom e 4 níveis gráficos (Leve, Equilibrado, Alto, Ultra).
 - **Duelo:** animações por estilo de personagem (flechas, tiros, orbes nas cores da arte, golpes com onda de choque, garras e cortes por afinidade), seleção de alvo no tabuleiro e pulverização ao destruir.
+- **Atualizar o APK sem desinstalar:** a partir desta versão, o APK de teste usa uma chave fixa (`resources/android/debug.keystore`, só para testes) e a versão segue o `package.json`. Na primeira vez, desinstale o APK antigo; depois as atualizações instalam por cima.
+- **Cópia de segurança:** Opções → Exportar/Importar progresso (código `ORV1:`).
+- **Trilhas salvas no aparelho:** cada música é renderizada uma única vez (em segundo plano, nos menus) e fica guardada; depois carrega na hora.
 - **Próximas features:** veja [docs/FUTURO.md](docs/FUTURO.md) (Quintessências, Campeonatos e Perícia).
 
 ## O que tem no jogo

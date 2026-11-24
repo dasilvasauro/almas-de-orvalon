@@ -10,7 +10,7 @@
     if (old.length) { const ov = el('div.xfade'); ov.className = 'xfade ' + s.className; old.forEach((n) => ov.appendChild(n)); document.body.appendChild(ov); requestAnimationFrame(() => requestAnimationFrame(() => ov.classList.add('go'))); setTimeout(() => ov.remove(), 560); }
     s.className = '';
     document.body.classList.toggle('induel', name === 'duel'); document.body.classList.remove('cur-wait', 'cur-target');
-    if (name !== 'duel') { G.fx.ambient(null); G.audio.music('menu'); if (!G.$('.bgglow')) document.body.prepend(el('div.bgglow')); }
+    if (name !== 'duel') { G.fx.ambient(null); G.audio.music('menu'); if (G.audio.warm) G.audio.warm(['menu'].concat(G.Prog.arenasUnlocked().map((a) => 'arena_' + a.id), ['victory', 'defeat'])); if (!G.$('.bgglow')) document.body.prepend(el('div.bgglow')); }
     const fn = S[name]; const node = fn(arg);
     if (node) { node.classList.add('fadein'); s.appendChild(node); }
     if (NAV.some((n) => n[0] === name) || ['achievements', 'ranking', 'settings', 'tutorial', 'deckEdit', 'calendar', 'chronicle'].includes(name)) {
@@ -549,6 +549,9 @@
       el('small.muted', t('gfx.help')),
       opt('confirmEnd', [[true, t('yes')], [false, t('no')]], 'set.confirmEnd'),
       opt('privacy', [[true, t('yes')], [false, t('no')]], 'set.privacy'),
+      el('div.field', el('label', t('set.backup')), el('small.muted', t('set.backupDesc')), el('div.row.wrap', { style: { marginTop: '.4rem' } },
+        el('button.btn', { onclick: async () => { const c = G.Prog.exportCode(); let ok = false; try { await navigator.clipboard.writeText(c); ok = true; } catch (e) { } const ta = el('textarea', { readonly: true, style: { width: '100%', height: '120px', fontSize: '.7rem' } }); ta.value = c; G.ui.modal(el('div.col', el('p', t(ok ? 'set.copied' : 'set.copyManual')), ta), { title: t('set.export'), narrow: true }); setTimeout(() => ta.select(), 100); } }, t('set.export')),
+        el('button.btn', { onclick: () => { const ta = el('textarea', { placeholder: 'ORV1:…', style: { width: '100%', height: '120px', fontSize: '.7rem' } }); let m; m = G.ui.modal(el('div.col', el('p', t('set.importDesc')), ta, el('button.btn.primary', { onclick: async () => { if (!(await G.ui.confirm(t('set.importQ')))) return; if (G.Prog.importCode(ta.value)) { G.ui.toast(t('set.imported')); setTimeout(() => location.reload(), 600); } else G.ui.toast(t('set.importBad')); } }, t('set.import'))), { title: t('set.import'), narrow: true }); } }, t('set.import')))),
       el('div.row.wrap', el('button.btn', { onclick: () => App.go('tutorial', 0) }, t('mode.learn')), el('button.btn.ghost', { onclick: async () => { if (await G.ui.confirm(t('set.resetQ'))) { G.Prog.reset(); location.reload(); } } }, t('set.reset'))),
       el('p.muted', t('set.credits'))));
     return el('div.scr', top(t('settings')), body);

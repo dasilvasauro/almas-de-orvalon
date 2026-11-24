@@ -36,6 +36,8 @@ jobs:
       - name: Ícones e splash
         continue-on-error: true
         run: npx capacitor-assets generate --android --iconBackgroundColor '#100a15' --splashBackgroundColor '#100a15' && npx cap sync android
+      - name: Chave de teste fixa (permite atualizar o APK sem desinstalar)
+        run: mkdir -p ~/.android && cp resources/android/debug.keystore ~/.android/debug.keystore
       - name: APK de teste (debug)
         run: cd android && chmod +x gradlew && ./gradlew assembleDebug
       - run: cp android/app/build/outputs/apk/debug/app-debug.apk almas-de-orvalon-debug.apk

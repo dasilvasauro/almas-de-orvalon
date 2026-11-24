@@ -141,38 +141,51 @@
   }
   // Renderiza a trilha UMA vez (OfflineAudioContext) e toca como loop: nada é sintetizado durante o jogo.
   A._loops = {}; A._rendering = {};
+  // trilhas prontas ficam salvas no aparelho (IndexedDB, PCM 16 bits): renderiza uma vez na vida do app
+  const AUDIO_VER = 'v14a';
+  const IDB = { p: null,
+    open() { if (this.p) return this.p; this.p = new Promise((res) => { try { const r = indexedDB.open('orvalon-audio', 1); r.onupgradeneeded = () => r.result.createObjectStore('loops'); r.onsuccess = () => res(r.result); r.onerror = () => res(null); } catch (e) { res(null); } }); return this.p; },
+    async get(k) { const db = await this.open(); if (!db) return null; return new Promise((res) => { try { const q = db.transaction('loops').objectStore('loops').get(k); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); } catch (e) { res(null); } }); },
+    async put(k, v) { const db = await this.open(); if (!db) return; try { db.transaction('loops', 'readwrite').objectStore('loops').put(v, k); } catch (e) { } } };
+  const toI16 = (buf) => ({ sr: buf.sampleRate, ch: [0, 1].map((c) => { const d = buf.getChannelData(c); const o = new Int16Array(d.length); for (let i = 0; i < d.length; i++) { const v = Math.max(-1, Math.min(1, d[i])); o[i] = v * 32767; } return o; }) });
+  const fromI16 = (o) => { const n = o.ch[0].length; const b = A.ctx.createBuffer(2, n, o.sr); for (let c = 0; c < 2; c++) { const f = new Float32Array(n); const s = o.ch[c]; for (let i = 0; i < n; i++) f[i] = s[i] / 32767; b.copyToChannel(f, c); } return b; };
+  const keep = (mood, buf) => { A._loops[mood] = buf; const big = Object.keys(A._loops).filter((k) => k !== 'victory' && k !== 'defeat'); if (big.length > 4) { const drop = big.find((k) => k !== mood && k !== A.mood && k !== 'menu'); if (drop) delete A._loops[drop]; } return buf; };
   A.renderMood = function (mood) {
     if (A._loops[mood]) return Promise.resolve(A._loops[mood]);
     if (A._rendering[mood]) return A._rendering[mood];
+    if (!A.ctx) return Promise.resolve(null);
+    const pr = IDB.get(mood + ':' + AUDIO_VER).then((o) => { if (o && o.ch) { delete A._rendering[mood]; return keep(mood, fromI16(o)); } return A._renderNow(mood); }).catch(() => A._renderNow(mood));
+    A._rendering[mood] = pr; return pr;
+  };
+  A._renderNow = function (mood) {
     const OAC = root.OfflineAudioContext || root.webkitOfflineAudioContext; if (!OAC || !A.ctx) return Promise.resolve(null);
     const ar = mood.indexOf('arena_') === 0 ? (AR[mood.slice(6)] || AR.coliseum) : null; const pr = ar ? null : (PROG[mood] || PROG.duel);
     const loop = !(mood === 'victory' || mood === 'defeat');
     const cfg = ar || pr; const N = cfg.chords.length; const L = cfg.dur * N; const tail = loop ? 6 : cfg.dur * 0.8 + 2;
-    const sr = 24000; const oc = new OAC(2, Math.ceil(sr * (L + tail)), sr);
+    const sr = 22050; const oc = new OAC(2, Math.ceil(sr * (L + tail)), sr);
     const sv = { ctx: A.ctx, rev: A.rev, sfx: A.sfx };
     A.ctx = oc;
     const out = oc.createGain(); out.connect(oc.destination);
-    const rev = oc.createConvolver(); rev.buffer = A.impulse(3.4, 2.4); const rg = oc.createGain(); rg.gain.value = 0.42; rev.connect(rg); rg.connect(out); A.rev = rev; A.sfx = out;
+    const rev = oc.createConvolver(); rev.buffer = A.impulse(2.2, 2.6); const rg = oc.createGain(); rg.gain.value = 0.42; rev.connect(rg); rg.connect(out); A.rev = rev; A.sfx = out;
     try {
       if (ar) { drone(out, ar.root, ar.filt, 0, L + tail); for (let k = 0; k < N; k++) arenaStep(k * ar.dur, ar, k, out); }
       else for (let k = 0; k < N; k++) { const t = k * pr.dur; padChord(t, pr.chords[k], pr.dur, out); if (k % 4 === 0 && mood === 'menu') voice(t + 1, mf(pr.chords[k][1] + 12), pr.dur * 0.9, 'a', 0.025, { att: 2, vibD: 0.01, rev: 1.2, dest: out }); }
     } finally { A.ctx = sv.ctx; A.rev = sv.rev; A.sfx = sv.sfx; }
-    const pr2 = oc.startRendering().then((buf) => {
+    return oc.startRendering().then((buf) => {
       let res = buf;
       if (loop) { const n = Math.floor(sr * L); const nb = A.ctx.createBuffer(2, n, sr); for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); const o = new Float32Array(n); o.set(d.subarray(0, n)); for (let k = n; k < d.length; k++) o[k - n] += d[k]; nb.copyToChannel(o, ch); } res = nb; }
-      A._loops[mood] = res; delete A._rendering[mood];
-      const keys = Object.keys(A._loops); if (keys.length > 3) { const drop = keys.find((k) => k !== mood && k !== A.mood && k !== 'menu'); if (drop) delete A._loops[drop]; }
-      return res;
+      delete A._rendering[mood]; IDB.put(mood + ':' + AUDIO_VER, toI16(res)); return keep(mood, res);
     }).catch(() => { delete A._rendering[mood]; return null; });
-    A._rendering[mood] = pr2; return pr2;
   };
+  // aquece em segundo plano, uma trilha por vez (chamado nos menus)
+  A.warm = function (list) { if (!A.ctx || A._warming) return; A._warming = true; const q = list.filter((m) => !A._loops[m]); const next = () => { const m = q.shift(); if (!m || !A.ctx) { A._warming = false; return; } A.renderMood(m).then(() => setTimeout(next, 800)); }; setTimeout(next, 2500); };
   A.music = function (mood) {
     if (!A.ctx) return; if (A.mood === mood) return; A.mood = mood;
-    const c = A.ctx; const old = A._musSrc; A._musSrc = null;
-    if (old) { try { old.g.gain.setTargetAtTime(0.0001, c.currentTime, 0.6); old.s.stop(c.currentTime + 3); } catch (e) { } }
-    if (!mood) return;
+    const c = A.ctx; const fade = () => { const old = A._musSrc; A._musSrc = null; if (old) { try { old.g.gain.setTargetAtTime(0.0001, c.currentTime, 0.6); old.s.stop(c.currentTime + 3); } catch (e) { } } };
+    if (!mood) { fade(); return; }
+    if (mood === 'victory' || mood === 'defeat') fade();
     A.renderMood(mood).then((buf) => {
-      if (!buf || A.mood !== mood || A._musSrc) return;
+      if (!buf || A.mood !== mood) return; fade();
       const s = c.createBufferSource(); s.buffer = buf; s.loop = !(mood === 'victory' || mood === 'defeat');
       const gg = c.createGain(); gg.gain.value = 0.0001; s.connect(gg); gg.connect(A.mus); gg.gain.setTargetAtTime(1, c.currentTime, 1.2); s.start();
       A._musSrc = { s, g: gg };
