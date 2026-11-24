@@ -217,7 +217,7 @@
     atk: [A('Arpão Pestilento', 'Pestilent Harpoon', 'ON', 30, [{ t: 'cond', c: 'poison' }]), A('Quarentena', 'Quarantine', 'OON', 50, [{ t: 'vsCond', v: 40 }])],
     fl: ['A cura que ele oferece é rápida. Sempre.', 'The cure he offers is quick. Always.'] });
   cr('h3_08', { aff: 'occ', race: 'hero', hp: 80, ret: 0, reg: 'valc', rar: 'U', n: ['Zahra Véu-Negro', 'Zahra Blackveil'], s: ['A Ladra das Catacumbas', 'Thief of the Catacombs'],
-    atk: [A('Punhaladas', 'Stabs', 'O', 10, [{ t: 'coins', n: 2, v: 20 }]), A('Furtar', 'Pilfer', 'ON', 20, [{ t: 'stripOpp', coin: true }])],
+    atk: [A('Punhaladas', 'Stabs', 'O', 10, [{ t: 'coins', n: 2, v: 20 }]), A('Furtar', 'Pilfer', 'ON', 10, [{ t: 'steal' }])],
     fl: ['Rouba dos mortos. Eles nunca reclamam.', 'She steals from the dead. They never complain.'] });
 
   // ---- ENERGÉTICA ----
@@ -410,6 +410,9 @@
     fl: ['Prenderam-no com correntes de catedral. Ele levou a catedral junto.', 'They bound him with cathedral chains. He took the cathedral with him.'] });
 
 
+  // ---- nomes revisados e facções (de lore.js) ----
+  Object.keys(G.RENAME || {}).forEach((id) => { const c = CARDS[id]; if (!c) return; const r = G.RENAME[id]; c.name = L(r[0][0], r[0][1]); if (r[1]) c.sub = L(r[1][0], r[1][1]); });
+  Object.keys(G.FACTION_OF || {}).forEach((id) => { if (CARDS[id]) CARDS[id].faction = G.FACTION_OF[id]; });
   // ======================= VERSÕES ALTERNATIVAS (1 por criatura) =======================
   // Cada variante deriva do orçamento de dano da original e aplica um tema: mesmo personagem, outro estilo de jogo.
   const VT = {
@@ -607,6 +610,7 @@
       : (l === 'en' ? `Deal ${f.v} damage to 1 of the opponent’s Reserve creatures.` : `Cause ${f.v} de dano a 1 criatura da Reserva do oponente.`),
     coinPlus: (f, l) => l === 'en' ? `Flip a coin. If Sun, this attack does ${f.v} more damage.` : `Lance a moeda. Se der Sol, este ataque causa ${f.v} a mais.`,
     coins: (f, l, a) => (a && a.dmg) ? (l === 'en' ? `Flip ${f.n} coins. This attack does ${f.v} more damage for each Sun.` : `Lance ${f.n} moedas. Este ataque causa ${f.v} a mais para cada Sol.`) : (l === 'en' ? `Flip ${f.n} coins. This attack does ${f.v} damage for each Sun.` : `Lance ${f.n} moedas. Este ataque causa ${f.v} de dano para cada Sol.`),
+    steal: (f, l) => (f.coin ? coinPre(l) : '') + (l === 'en' ? 'move 1 Charge from the opponent’s Active to this creature.' : 'mova 1 Carga do Ativo do oponente para esta criatura.'),
     weaken: (f, l) => l === 'en' ? `During the opponent’s next turn, their Active’s attacks do ${f.v} less damage.` : `Durante o próximo turno do oponente, os ataques do Ativo dele causam ${f.v} a menos.`,
     expose: (f, l) => l === 'en' ? `Until the end of your next turn, the opponent’s Active takes ${f.v} more damage from attacks.` : `Até o fim do seu próximo turno, o Ativo do oponente sofre ${f.v} a mais de dano de ataques.`,
     coinFail: (f, l) => l === 'en' ? 'Flip a coin. If Moon, this attack does nothing.' : 'Lance a moeda. Se der Lua, este ataque não faz nada.',
@@ -839,7 +843,7 @@
           if (f.t === 'cond') d += f.coin ? 6 : 12; if (f.t === 'benchHit') d += f.all ? f.v * 1.5 : f.v * 0.8; if (f.t === 'healSelf' || f.t === 'healTeam') d += f.v * 0.5;
           if (f.t === 'recoil') d -= f.v * 0.5; if (f.t === 'exhaust') d -= 25; if (f.t === 'discardSelf') d -= f.n * 12; if (f.t === 'tag') d += f.v * 0.6;
           if (f.t === 'perBench') d += f.v * 1.8; if (f.t === 'perCharge') d += f.v * 3; if (f.t === 'perDmg') d += f.v * 3; if (f.t === 'seal') d += 6;
-          if (f.t === 'switchSelf' || f.t === 'forceSwitch') d += 8; if (f.t === 'weaken' || f.t === 'expose') d += f.v * 0.6; if (f.t === 'guard') d += f.v * 0.4; if (f.t === 'handDisrupt') d += 8; if (f.t === 'stripOpp') d += 10;
+          if (f.t === 'switchSelf' || f.t === 'forceSwitch') d += 8; if (f.t === 'weaken' || f.t === 'expose') d += f.v * 0.6; if (f.t === 'guard') d += f.v * 0.4; if (f.t === 'handDisrupt') d += 8; if (f.t === 'stripOpp') d += 10; if (f.t === 'steal') d += 16;
         });
         if (a.snipe) d += 10;
         const eff = d / Math.max(1, a.cost.length);

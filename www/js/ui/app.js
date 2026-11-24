@@ -10,10 +10,10 @@
     if (old.length) { const ov = el('div.xfade'); ov.className = 'xfade ' + s.className; old.forEach((n) => ov.appendChild(n)); document.body.appendChild(ov); requestAnimationFrame(() => requestAnimationFrame(() => ov.classList.add('go'))); setTimeout(() => ov.remove(), 560); }
     s.className = '';
     document.body.classList.toggle('induel', name === 'duel'); document.body.classList.remove('cur-wait', 'cur-target');
-    if (name !== 'duel') { G.fx.ambient('menu'); G.audio.music('menu'); }
+    if (name !== 'duel') { G.fx.ambient(null); G.audio.music('menu'); if (!G.$('.bgglow')) document.body.prepend(el('div.bgglow')); }
     const fn = S[name]; const node = fn(arg);
     if (node) { node.classList.add('fadein'); s.appendChild(node); }
-    if (NAV.some((n) => n[0] === name) || ['achievements', 'ranking', 'settings', 'tutorial', 'deckEdit'].includes(name)) {
+    if (NAV.some((n) => n[0] === name) || ['achievements', 'ranking', 'settings', 'tutorial', 'deckEdit', 'calendar', 'chronicle'].includes(name)) {
       s.classList.add('has-nav');
       const nav = el('nav.nav', NAV.map(([k, ic, lb]) => el('button' + ((name === k || (name === 'deckEdit' && k === 'decks')) ? '.on' : ''), { onclick: () => App.go(k) }, el('span', { html: G.ICON[ic] }), t(lb))));
       s.appendChild(nav);
@@ -22,21 +22,24 @@
   const S = App.S = {};
   App.tip = () => { const L = G.TIPS[G.lang] || G.TIPS.pt; return L[Math.floor(Math.random() * L.length)]; };
   const ORN = '<svg viewBox="0 0 240 20" width="230" height="18" aria-hidden="true"><path d="M0 10 H96 M144 10 H240" stroke="#c9a24e" stroke-width="1.4"/><path d="M120 1 L129 10 L120 19 L111 10 Z" fill="#f2d68d"/><circle cx="101" cy="10" r="2.6" fill="#c9a24e"/><circle cx="139" cy="10" r="2.6" fill="#c9a24e"/></svg>';
-  App.logo = () => el('div.logo', el('div.orn', { html: ORN }), el('h1', t('title')), el('div.orn.b', { html: ORN }));
+  App.logo = () => { const big = t('title.big'); return el('div.logo', el('div.orn', { html: ORN }), el('div.lsmall', t('title.small')), el('h1.lbig', { 'data-t': big }, big.split('').map((ch, i) => el('span', { style: { animationDelay: (0.15 + i * 0.07) + 's, 0s', '--i': i } }, ch))), el('div.orn.b', { html: ORN })); };
   // carregamento curto (logo pulsando + dica)
-  App.loader = (ms) => new Promise((res) => {
+  App.loader = (ms, work) => new Promise((res) => {
     const l = el('div.loader', App.logo(), el('p.tip', App.tip())); document.body.appendChild(l);
-    setTimeout(() => { l.classList.add('out'); setTimeout(() => { l.remove(); res(); }, 520); }, ms || 1200);
+    Promise.all([G.sleep(ms || 1200), work || null]).then(() => { l.classList.add('out'); setTimeout(() => { l.remove(); res(); }, 520); });
   });
   // carregamento de abertura (uma imagem de loading por vez)
   App.bootLoad = (next) => {
     const img = G.uiUrl('loading' + (1 + Math.floor(Math.random() * 4)));
     const bar = el('i'); const st = el('small.muted'); const steps = t('boot.steps').split('|');
-    const b = el('div.boot', { style: { backgroundImage: `url(${img})` } }, App.logo(), el('div.pbar', bar), st, el('p.tip', App.tip()));
-    document.body.appendChild(b);
-    const total = 2600 + Math.random() * 900; const t0 = performance.now(); let done = false;
+    const b = el('div.boot', el('div.bart', { style: { backgroundImage: `url(${img})` } }), App.logo(), el('div.pbar', bar), st, el('p.tip', App.tip()));
+    document.body.appendChild(b); try { G.audio.renderMood && G.audio.ctx && G.audio.renderMood('menu'); } catch (e) { }
+    const total = 6200 + Math.random() * 1600; const t0 = performance.now(); let done = false;
+    // curva com trechos rápidos e pausas (como um carregamento de verdade)
+    const K = [[0, 0], [0.08, 0.12], [0.2, 0.18], [0.3, 0.37], [0.42, 0.41], [0.55, 0.58], [0.68, 0.63], [0.8, 0.82], [0.9, 0.9], [1, 1]];
+    const curve = (p) => { for (let k = 1; k < K.length; k++) if (p <= K[k][0]) { const a = K[k - 1], c = K[k]; const u = (p - a[0]) / (c[0] - a[0]); return a[1] + (c[1] - a[1]) * (u * u * (3 - 2 * u)); } return 1; };
     const tick = () => {
-      const p = Math.min(1, (performance.now() - t0) / total); const e = 1 - Math.pow(1 - p, 2.2);
+      const p = Math.min(1, (performance.now() - t0) / total); const e = curve(p);
       bar.style.width = (e * 100) + '%'; st.textContent = steps[Math.min(steps.length - 1, Math.floor(p * steps.length))];
       if (p < 1) requestAnimationFrame(tick); else if (!done) { done = true; next(); b.classList.add('out'); setTimeout(() => b.remove(), 700); }
     };
@@ -51,7 +54,7 @@
   S.onboard = function (step) {
     step = step || 0; const wrap = el('div.scr', el('div.scroll', el('div.onb')));
     const box = wrap.querySelector('.onb');
-    const title = el('div.hub-title', el('h1', t('title')), el('p', t('hub.tag')));
+    const title = el('div.hub-title', App.logo());
     if (step === 0) {
       box.append(title, el('h3', 'Escolha o idioma · Choose your language'), el('div.row', el('button.btn.gilded', { onclick: () => { P().lang = 'pt'; G.lang = 'pt'; G.Prog.save(); App.go('onboard', 1); } }, 'Português (Brasil)'), el('button.btn.gilded', { onclick: () => { P().lang = 'en'; G.lang = 'en'; G.Prog.save(); App.go('onboard', 1); } }, 'English')));
     } else if (step === 1) {
@@ -87,8 +90,8 @@
     const cta = el('button.cta', { onclick: () => App.setup('ranked') }, el('div.bg', { style: { backgroundImage: `url(${G.artUrl('h2_15')})` } }), el('div.shade'),
       el('div.in', el('h2', t('mode.ranked')), el('div.row', el('span.rankb', { style: { color: r.t.color } }, r.label), el('small.muted', d.mmr + ' ' + t('mmr'))), el('p', t('mode.rankedDesc'))));
     const sc = el('div.scroll',
-      el('div.hub-title', el('h1', t('title')), el('p', t('hub.tag'))),
-      el('div.daily', el('span.online', el('i'), t('online', { n: G.fmtN(G.Prog.onlineCount()) })), G.Prog.totalPacks() ? el('button.chip', { onclick: () => App.go('shop') }, t('hub.boostersReady', { n: G.Prog.totalPacks() })) : null),
+      el('div.hub-title', App.logo()),
+      el('div.daily', el('span.online', el('i'), t('online', { n: G.fmtN(G.Prog.onlineCount()) })), G.Prog.calCanClaim() ? el('button.chip.on', { onclick: () => App.go('calendar') }, '☾ ' + t('cal.waiting')) : null, G.Prog.totalPacks() ? el('button.chip', { onclick: () => App.go('shop') }, t('hub.boostersReady', { n: G.Prog.totalPacks() })) : null),
       cta,
       el('div.modes',
         mode('quick', 'h2_12', 'mode.quickDesc', () => App.setup('quick')),
@@ -97,6 +100,8 @@
         mode('spectate', 'h2_04', 'mode.spectateDesc', () => App.setup('spectate')),
         mode('learn', 'e2_11', 'mode.learnDesc', () => App.go('tutorial', 0)),
         mode('ranking', 'h2_01', 'mode.rankingDesc', () => App.go('ranking')),
+        mode('cal', 'r1_05', 'mode.calDesc', () => App.go('calendar')),
+        mode('chron', 'h2_01', 'mode.chronDesc', () => App.go('chronicle')),
         mode('ach', 'e1_25', 'mode.achDesc', () => App.go('achievements'))));
     return el('div.scr', bar, sc);
   };
@@ -145,10 +150,10 @@
     setTimeout(() => { box.querySelector('h2').textContent = t('mm.found'); G.audio.play('horn'); setTimeout(() => { box.remove(); res(); }, 700); }, 1300 + Math.random() * 1600);
   });
   App.versus = (me, opp, mode) => new Promise((res) => {
-    const side = (p, right) => el('div.side2', el('div.big', { style: { backgroundImage: `url(${G.artUrl(p.avatar)})` } }), el('h2', p.name), el('div.row', el('small.muted', t('level') + ' ' + (p.level || 1)), mode === 'ranked' && p.mmr ? rankBadge(p.mmr) : null));
+    const side = (p, right) => el('div.side2' + (right ? '.opp' : '.me'), el('div.big', { style: { backgroundImage: `url(${G.artUrl(p.avatar)})` } }), el('h2', p.name), el('div.row', el('small.muted', t('level') + ' ' + (p.level || 1)), mode === 'ranked' && p.mmr ? rankBadge(p.mmr) : null));
     const v = el('div.vs', side(me), el('h1', 'VS'), side(opp, true));
     scr().appendChild(v); G.audio.play('slash'); G.audio.play('drum');
-    setTimeout(() => { v.remove(); res(); }, 1900);
+    setTimeout(() => { v.style.transition = 'opacity .35s'; v.style.opacity = '0'; setTimeout(() => { v.remove(); res(); }, 360); }, 2100);
   });
 
   // ---------- resultado ----------
@@ -166,7 +171,6 @@
     }
     box.append(el('div.row.wrap', { style: { justifyContent: 'center' } }, el('button.btn.primary', { onclick: () => App.setup(r.mode === 'spectate' ? 'spectate' : r.mode) }, t('res.again')), el('button.btn', { onclick: () => App.go('hub') }, t('res.menu'))));
     G.audio.music(win === false ? 'defeat' : 'victory');
-    if (win === true) setTimeout(() => G.fx.soul(innerWidth / 2, innerHeight * 0.25, ['#fff1b0', '#f2d68d', '#ff9a4d']), 300);
     return el('div.scr', el('div.scroll', box));
   };
 
@@ -239,7 +243,7 @@
 
   S.deckEdit = function (id) {
     const dk = P().decks.find((x) => x.id === id); if (!dk) return S.decks();
-    const cards = dk.cards.slice(); let filter = { kind: 'all', aff: 'all', q: '', owned: true };
+    const cards = dk.cards.slice(); let filter = { kind: 'all', aff: 'all', q: '', owned: true, rar: 'all' };
     const dst = P().settings.deckColl = P().settings.deckColl || { sort: 'num', dir: 1, view: 'm' };
     const cnt = (cid) => cards.filter((x) => x === cid).length;
     const name = el('input', { value: dk.name, maxlength: 24, style: { background: 'transparent', border: 0, color: 'var(--bone)', fontFamily: 'var(--disp)', fontSize: '1.3rem', width: '100%' }, 'aria-label': t('deck.name') });
@@ -252,13 +256,11 @@
     const fbar = el('div.col', { style: { padding: '.5rem 0' } });
     const drawFilters = () => {
       const search = el('input', { value: filter.q, placeholder: t('search'), style: { flex: 1, minWidth: '120px' }, oninput: (e) => { filter.q = e.target.value; drawGrid(); } });
-      G.fill(fbar, App.sortBar(dst, () => { drawFilters(); drawGrid(); }, true), el('div.row.wrap', KINDS.map((k) => el('button.chip' + (filter.kind === k ? '.on' : ''), { onclick: () => { filter.kind = k; drawFilters(); drawGrid(); } }, k === 'all' ? t('all') : G.L(G.KIND[k])))),
-        el('div.row.wrap', ['all'].concat(G.AFF_LIST, ['neu']).map((a) => el('button.chip' + (filter.aff === a ? '.on' : ''), { onclick: () => { filter.aff = a; drawFilters(); drawGrid(); } }, a === 'all' ? t('allAff') : G.orb(a)))),
-        el('div.row', el('div.field.grow', search), el('button.chip' + (filter.owned ? '.on' : ''), { onclick: () => { filter.owned = !filter.owned; drawFilters(); drawGrid(); } }, t('ownedOnly'))));
+      G.fill(fbar, App.filterBar(filter, dst, () => { drawFilters(); drawGrid(); }, { neu: true, owned: true, noList: true, search: el('div.field.srch', search) }));
     };
     const drawGrid = () => {
       const q = filter.q.toLowerCase();
-      const ids = G.CARD_ORDER.filter((cid) => { const c = G.CARDS[cid]; if (filter.kind !== 'all' && c.kind !== filter.kind) return false; if (filter.aff !== 'all' && c.aff !== filter.aff && !(c.kind === 'effect' && c.fx.some((f) => f.aff === filter.aff))) return false; if (filter.owned && !G.Prog.own(cid)) return false; if (q && !(G.L(c.name).toLowerCase().includes(q) || (c.kind === 'creature' ? G.attackText(c.attacks[0], G.lang) : G.cardText(c, G.lang)).toLowerCase().includes(q))) return false; return true; });
+      const ids = G.CARD_ORDER.filter((cid) => { const c = G.CARDS[cid]; if (filter.kind !== 'all' && c.kind !== filter.kind) return false; if (filter.aff !== 'all' && c.aff !== filter.aff && !(c.kind === 'effect' && c.fx.some((f) => f.aff === filter.aff))) return false; if (filter.owned && !G.Prog.own(cid)) return false; if (filter.rar !== 'all' && c.rarity !== filter.rar) return false; if (q && !(G.L(c.name).toLowerCase().includes(q) || (c.kind === 'creature' ? G.attackText(c.attacks[0], G.lang) : G.cardText(c, G.lang)).toLowerCase().includes(q))) return false; return true; });
       const cw = { s: 88, m: 110, l: 140 }[dst.view] || 110; collGrid.style.setProperty('--gw', (cw + 2) + 'px');
       G.fill(collGrid, ...App.sortIds(ids, dst.sort, dst.dir).map((cid) => {
         const own = G.Prog.own(cid); const n = cnt(cid);
@@ -311,19 +313,38 @@
     const out = ids.slice().sort((a, b) => { const x = v(a), y = v(b); return (typeof x === 'string' ? x.localeCompare(y) : x - y) || (G.CARD_ORDER.indexOf(a) - G.CARD_ORDER.indexOf(b)); });
     return dir < 0 ? out.reverse() : out;
   };
+  // menu suspenso compacto
+  App.dd = (label, opts, cur, onPick, right) => {
+    const wrap = el('div.dd'); const co = opts.find((o) => o[0] === cur) || opts[0]; let menu = null;
+    const out = (e) => { if (!wrap.contains(e.target)) close(); };
+    const close = () => { if (menu) { menu.remove(); menu = null; document.removeEventListener('pointerdown', out, true); } };
+    const btn = el('button.btn.small', { onclick: () => { if (menu) { close(); return; } G.click(); menu = el('div.ddmenu' + (right ? '.r' : ''), opts.map((o) => el('button' + (o[0] === cur ? '.on' : ''), { onclick: () => { close(); onPick(o[0]); } }, o[2] || null, o[1]))); wrap.appendChild(menu); setTimeout(() => document.addEventListener('pointerdown', out, true)); } }, el('span.muted', label), co[2] || null, el('span.v', co[1]), el('span', '▾'));
+    wrap.appendChild(btn); return wrap;
+  };
+  const KOPTS = () => ['all', 'creature', 'effect', 'relic', 'action', 'god', 'marker', 'charge'].map((k) => [k, k === 'all' ? t('all') : G.L(G.KIND[k])]);
+  const AOPTS = (neu) => [['all', t('allAff')]].concat(G.AFF_LIST.map((a) => [a, G.L(G.AFF[a]), G.orb(a)]), neu ? [['neu', t('neutral')]] : []);
+  const ROPTS = () => [['all', t('all')]].concat('CUREL'.split('').map((r) => [r, G.L(G.RARITY[r]), el('i.rar.' + r)]));
+  App.filterBar = (f, st, redraw, o) => el('div.fbar2',
+    App.dd(t('f.kind'), KOPTS(), f.kind, (v) => { f.kind = v; redraw(); }),
+    App.dd(t('f.aff'), AOPTS(o.neu), f.aff, (v) => { f.aff = v; redraw(); }),
+    App.dd(t('f.rar'), ROPTS(), f.rar || 'all', (v) => { f.rar = v; redraw(); }),
+    o.show ? App.dd(t('f.show'), [['all', t('coll.all')], ['owned', t('coll.owned')], ['missing', t('coll.missing')]], f.show, (v) => { f.show = v; redraw(); }) : null,
+    o.owned ? el('button.chip' + (f.owned ? '.on' : ''), { onclick: () => { f.owned = !f.owned; redraw(); } }, t('ownedOnly')) : null,
+    App.dd(t('sort.by'), SORTS.map((k) => [k, t('sort.' + k)]), st.sort, (v) => { st.sort = v; st.dir = ['power', 'rarity', 'owned', 'hp'].includes(v) ? -1 : 1; G.Prog.save(); redraw(); }, true),
+    el('button.btn.icon.ghost', { style: { minWidth: '36px', minHeight: '36px' }, 'aria-label': t('sort.dir'), onclick: () => { st.dir = -st.dir; G.Prog.save(); redraw(); } }, st.dir > 0 ? '↑' : '↓'),
+    App.dd(t('f.view'), (o.noList ? ['s', 'm', 'l'] : ['s', 'm', 'l', 'list']).map((v) => [v, t('view.' + v)]), st.view, (v) => { st.view = v; G.Prog.save(); redraw(); }, true),
+    o.search || null);
   App.sortBar = (st, redraw, noList) => el('div.row.wrap.sortbar', el('small.muted', t('sort.by')),
     SORTS.map((k) => el('button.chip' + (st.sort === k ? '.on' : ''), { onclick: () => { if (st.sort === k) st.dir = -st.dir; else { st.sort = k; st.dir = ['power', 'rarity', 'owned', 'hp'].includes(k) ? -1 : 1; } G.Prog.save(); redraw(); } }, t('sort.' + k) + (st.sort === k ? (st.dir > 0 ? ' ↑' : ' ↓') : ''))),
     el('span.grow'), (noList ? ['s', 'm', 'l'] : ['s', 'm', 'l', 'list']).map((v) => el('button.chip' + (st.view === v ? '.on' : ''), { onclick: () => { st.view = v; G.Prog.save(); redraw(); } }, t('view.' + v))));
   // ---------- coleção ----------
   S.collection = function () {
-    let f = { kind: 'all', aff: 'all', show: 'all' }; const st = P().settings.coll = P().settings.coll || { sort: 'num', dir: 1, view: 'm' };
+    let f = { kind: 'all', aff: 'all', show: 'all', rar: 'all' }; const st = P().settings.coll = P().settings.coll || { sort: 'num', dir: 1, view: 'm' };
     const grid = el('div'); const fb = el('div.col.section'); const total = G.Prog.collectible().length;
     const draw = () => {
       G.fill(fb, el('div.row', el('b', t('coll.progress', { n: G.Prog.uniqueOwned(), t: total })), el('div.bar.grow', el('i', { style: { width: (100 * G.Prog.uniqueOwned() / total) + '%' } }))),
-        el('div.row.wrap', ['all', 'creature', 'effect', 'relic', 'action', 'god', 'marker', 'charge'].map((k) => el('button.chip' + (f.kind === k ? '.on' : ''), { onclick: () => { f.kind = k; draw(); } }, k === 'all' ? t('all') : G.L(G.KIND[k])))),
-        el('div.row.wrap', ['all'].concat(G.AFF_LIST).map((a) => el('button.chip' + (f.aff === a ? '.on' : ''), { onclick: () => { f.aff = a; draw(); } }, a === 'all' ? t('allAff') : G.orb(a))), ['all', 'owned', 'missing'].map((s) => el('button.chip' + (f.show === s ? '.on' : ''), { onclick: () => { f.show = s; draw(); } }, t('coll.' + s)))),
-        App.sortBar(st, draw));
-      let ids = G.CARD_ORDER.filter((id) => { const c = G.CARDS[id]; if (f.kind !== 'all' && c.kind !== f.kind) return false; if (f.aff !== 'all' && c.aff !== f.aff) return false; const o = G.Prog.own(id); if (f.show === 'owned' && !o) return false; if (f.show === 'missing' && o) return false; return true; });
+        App.filterBar(f, st, draw, { show: true }));
+      let ids = G.CARD_ORDER.filter((id) => { const c = G.CARDS[id]; if (f.kind !== 'all' && c.kind !== f.kind) return false; if (f.aff !== 'all' && c.aff !== f.aff) return false; if (f.rar !== 'all' && c.rarity !== f.rar) return false; const o = G.Prog.own(id); if (f.show === 'owned' && !o) return false; if (f.show === 'missing' && o) return false; return true; });
       ids = App.sortIds(ids, st.sort, st.dir);
       if (st.view === 'list') {
         grid.className = 'list section clist';
@@ -345,12 +366,13 @@
     let body;
     if (tab === 'forge') body = App.forge();
     else body = el('div.packgrid', G.Prog.PACKS.filter((p) => tab === 'all' || (tab === 'premium' ? ['premium', 'legend'].includes(p.tier) : p.tier === tab)).map((p) => App.packTile(p)));
-    return el('div.scr', top(t('nav.shop')), tabs, el('div.scroll', el('div.section', el('p.muted', tab === 'forge' ? t('forge.intro') : t('shop.intro')), tab !== 'forge' ? el('small.gold', t('shop.pityL', { n: G.Prog.PITY, k: Math.max(1, G.Prog.PITY - (P().pity || 0)) })) : null, body)));
+    return el('div.scr', top(t('nav.shop')), tabs, el('div.scroll', el('div.section', el('p.muted', tab === 'forge' ? t('forge.intro') : t('shop.intro')), body)));
   };
-  App.packEl = (p) => el('div.pack.t-' + p.tier, el('div.part', { style: { backgroundImage: `url(${G.artUrl(p.art)})` } }), el('div.strip'), el('div.ttl', G.L(p.name)), el('div.sub', t('tier.' + p.tier)));
+  App.packVars = (p) => { const pl = G.pal(p.art); return { '--p1': G.shade(pl[0], -0.15), '--p2': G.shade(pl[1], -0.6) }; };
+  App.packEl = (p) => el('div.pack.t-' + p.tier, { style: App.packVars(p) }, el('div.part', { style: { backgroundImage: `url(${G.artUrl(p.art)})` } }), el('div.strip'), el('div.tear'), el('div.ttl', G.L(p.name)), el('div.sub', t('tier.' + p.tier)));
   App.packTile = (p) => {
     const d = P(); const locked = d.level < p.lvl; const own = d.packs[p.id] || 0;
-    return el('button.ptile.t-' + p.tier + (locked ? '.locked' : ''), { onclick: () => App.packDetail(p) },
+    return el('button.ptile.t-' + p.tier + (locked ? '.locked' : ''), { onclick: () => App.packDetail(p), style: App.packVars(p) },
       el('div.part', { style: { backgroundImage: `url(${G.artUrl(p.art)})` } }), el('div.pshine'),
       el('div.pin', el('small.ptier', t('tier.' + p.tier)), el('h3', G.L(p.name)), el('div.row', el('span.price', G.res('shard', G.fmtN(p.price))), own ? el('span.owned', '×' + own) : null)),
       locked ? el('div.plock', t('shop.lvl', { l: p.lvl })) : null);
@@ -374,12 +396,22 @@
   App.fragEl = (it, w) => el('div.fragcard', { style: { width: w + 'px', height: (w * 1.397) + 'px' } }, G.ui.card(it.id, { w }), el('div.fragov', el('b', '×' + it.n), el('small', t('frag.label')), el('div.bar', el('i', { style: { width: Math.min(100, 100 * it.total / it.cost) + '%' } })), el('small', it.total + '/' + it.cost)));
   App.openPack = async function (id) {
     if (App._opening) return; const p = G.Prog.packById(id); const res = G.Prog.openPack(id); if (!res) return; App._opening = true;
-    const pack = App.packEl(p); const stage = el('div.pstage', pack); document.body.appendChild(stage);
-    await G.sleep(500); G.audio.play('whoosh'); pack.classList.add('shake'); await G.sleep(1000);
-    G.audio.play('tear'); pack.classList.add('torn'); const [x, y] = G.fx.at(pack); G.fx.sparks(x, y - 80, ['#ffe7a8', '#c25cff', '#fff']); await G.sleep(450);
-    document.body.appendChild(el('div.flash')); setTimeout(() => G.$('.flash') && G.$('.flash').remove(), 900);
-    G.fx.soul(x, y, ['#ffe7a8', '#c98bff', '#6fe3d6']); pack.classList.add('gone'); G.audio.play('choir', [57, 61, 64]);
-    await G.sleep(500); stage.classList.add('out'); setTimeout(() => stage.remove(), 450);
+    const pack = App.packEl(p); const stage = el('div.pstage', pack); document.body.appendChild(stage); const pl = G.pal(p.art);
+    pack.animate([{ transform: 'translateY(40vh) rotateX(40deg) scale(.6)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 650, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    await G.sleep(750); G.audio.play('whoosh'); pack.classList.add('shake'); await G.sleep(900); pack.classList.remove('shake');
+    // rasgo percorre a borda superior
+    const r0 = pack.getBoundingClientRect(); pack.classList.add('tearing'); G.audio.play('tear');
+    await new Promise((res) => { const t0 = performance.now(); const step = () => { const k = Math.min(1, (performance.now() - t0) / 700); pack.style.setProperty('--tp', (k * 100) + '%'); if (Math.random() < 0.6) G.fx.sparks(r0.left + r0.width * k, r0.top + r0.height * 0.125, [pl[0], '#fff', '#ffe7a8']); if (k < 1) requestAnimationFrame(step); else res(); }; requestAnimationFrame(step); });
+    pack.classList.add('torn'); G.audio.play('card'); await G.sleep(320);
+    // as cartas saem de dentro do pacote
+    const sw = Math.min(r0.width * 0.78, 190); const stack = el('div.pstack'); stage.appendChild(stack);
+    for (let k = 0; k < Math.min(res.length, 6); k++) { const b = G.ui.back(sw); b.style.transform = `translate(-50%,-50%) translate(${(k - 2.5) * 1.5}px,${-k * 1.5}px) rotate(${(k - 2.5) * 1.2}deg)`; stack.appendChild(b); }
+    stack.animate([{ transform: `translate(-50%,-50%) translateY(${r0.height * 0.15}px)`, clipPath: 'inset(80% -20% -20% -20%)' }, { transform: `translate(-50%,-50%) translateY(${-r0.height * 0.32}px)`, clipPath: 'inset(-40% -20% -20% -20%)' }], { duration: 760, easing: 'cubic-bezier(.3,.7,.2,1)', fill: 'forwards' });
+    pack.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(55vh) rotate(-6deg)', opacity: 0 }], { duration: 900, delay: 420, easing: 'cubic-bezier(.6,0,.8,.6)', fill: 'forwards' });
+    G.audio.play('draw'); await G.sleep(900);
+    const [x, y] = G.fx.at(stack); document.body.appendChild(el('div.flash')); setTimeout(() => G.$('.flash') && G.$('.flash').remove(), 900);
+    G.fx.soul(x, y - r0.height * 0.3, [pl[0], pl[1], '#ffe7a8']); G.audio.play('choir', [57, 61, 64]);
+    await G.sleep(260); stage.classList.add('out'); setTimeout(() => stage.remove(), 450);
     const w = Math.min(innerWidth / (res.length > 6 ? 4.4 : 3.4), 170);
     const rk = (it) => (it.type === 'frag' ? -1 : 'CUREL'.indexOf(G.CARDS[it.id].rarity));
     const order = res.slice().sort((a, b) => rk(a) - rk(b));
@@ -391,7 +423,7 @@
     order.forEach((it, i) => {
       const c = G.CARDS[it.id];
       const front = it.type === 'frag' ? App.fragEl(it, w) : G.ui.card(it.id, { w });
-      const f = el('div.flip', { style: { width: w + 'px', height: (w * 1.397) + 'px', animationDelay: (i * 0.1) + 's' } }, el('div.glow', { style: { background: it.type === 'frag' ? '#3f8ff0' : glowC[c.rarity] } }), G.ui.back(w), front, it.isNew ? el('span.newb', t('new')) : null, it.dup ? el('span.dupb', '+' + it.dup + ' ' + t('shards')) : null);
+      const f = el('div.flip', { style: { width: w + 'px', height: (w * 1.397) + 'px', animationDelay: (i * 0.12) + 's' } }, el('div.glow', { style: { background: it.type === 'frag' ? '#3f8ff0' : glowC[c.rarity] } }), G.ui.back(w), front, it.isNew ? el('span.newb', t('new')) : null, it.dup ? el('span.dupb', '+' + it.dup + ' ' + t('shards')) : null);
       f.addEventListener('click', () => {
         if (f.classList.contains('on')) { G.ui.zoom(it.id); return; }
         f.classList.add('on'); flipped++; G.audio.play('card');
@@ -427,6 +459,47 @@
     keys.forEach((k, i) => { const [x, y] = pt(i, R + 16); s += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle">${t('axisP.' + k)}</text>`; });
     return el('div', { html: s + '</svg>' });
   }
+  App.emblem = (tier, div) => el('div.emblem', { html: `<svg viewBox="0 0 96 110" width="96" height="110"><defs><linearGradient id="emg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".25" stop-color="${tier.color}"/><stop offset="1" stop-color="#1a0f10"/></linearGradient></defs><path d="M48 3 L90 18 L86 62 Q80 92 48 107 Q16 92 10 62 L6 18 Z" fill="url(#emg)" stroke="#f2d68d" stroke-width="2"/><path d="M48 14 L80 25 L77 60 Q72 84 48 96 Q24 84 19 60 L16 25 Z" fill="none" stroke="#07040a" stroke-opacity=".5" stroke-width="2"/><path d="M48 30 l9 14 -9 14 -9 -14z" fill="#fff" fill-opacity=".85"/><text x="48" y="86" text-anchor="middle" font-family="Grenze Gotisch,serif" font-size="18" fill="#fff" stroke="#000" stroke-width=".6">${div || '★'}</text></svg>` });
+  App.eloPanel = () => {
+    const d = P(); const r = G.Prog.rankOf(d.mmr); const T = G.Prog.TIERS; const i = r.i; const nx = T[i + 1];
+    let nextTxt, prog;
+    if (nx) { const lo = i === 0 ? 800 : r.t.min; const band = (nx.min - lo) / 3; const k = Math.max(0, Math.min(2, Math.floor((d.mmr - lo) / band))); const at = Math.round(lo + (k + 1) * band); prog = Math.max(0, Math.min(1, (d.mmr - lo - k * band) / band)); const lbl = k < 2 ? r.t.name[G.lang] + ' ' + ['II', 'I'][k] : nx.name[G.lang] + ' III'; nextTxt = t('elo.next', { n: Math.max(1, at - d.mmr), r: lbl }); }
+    else { prog = 1; nextTxt = t('elo.top'); }
+    const h = d.mmrHist.slice(-30); const mn = Math.min(...h) - 20, mx = Math.max(...h) + 20; const W = 300, H = 90;
+    const pts = h.map((v, k) => [(k / Math.max(1, h.length - 1)) * W, H - ((v - mn) / Math.max(1, mx - mn)) * (H - 10) - 5]);
+    const spark = el('div', { html: `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="spg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${r.t.color}" stop-opacity=".45"/><stop offset="1" stop-color="${r.t.color}" stop-opacity="0"/></linearGradient></defs>${pts.length > 1 ? `<path d="M${pts.map((p) => p.join(' ')).join(' L')} L${W} ${H} L0 ${H}Z" fill="url(#spg)"/><polyline points="${pts.map((p) => p.join(',')).join(' ')}" fill="none" stroke="${r.t.color}" stroke-width="2.2" vector-effect="non-scaling-stroke"/>` : ''}</svg>` });
+    const rk = d.history.filter((x) => x.mode === 'ranked'); const rw = rk.filter((x) => x.win === true).length;
+    const pos = (G.Prog.leaderboard().find((x) => x.you) || {}).pos;
+    const now = new Date(); const end = new Date(now.getFullYear(), now.getMonth() + 1, 1); const days = Math.ceil((end - now) / 864e5);
+    const st = (v, l) => el('div.stat', el('b', String(v == null ? 0 : v)), el('span', l));
+    return el('div.section.elo', { style: { '--tc': r.t.color } },
+      el('div.elohead', App.emblem(r.t, r.div), el('div.col.grow', el('small.muted', t('elo.title')), el('h3', r.label), el('div', el('b', d.mmr + ' ' + t('mmr')), el('small.muted', ' · ' + t('prof.peak') + ' ' + d.peak + ' (' + G.Prog.rankOf(d.peak).label + ')')),
+        el('div.bar', { style: { marginTop: '.4rem' } }, el('i', { style: { width: (prog * 100) + '%', background: r.t.color } })), el('small.muted', nextTxt))),
+      el('div.ladder', T.map((x, k) => el('div' + (k === i ? '.on' : k < i ? '.past' : ''), { style: { '--tc': x.color }, title: x.name[G.lang] + ' ' + x.min }))),
+      el('div.ladlab', T.map((x) => el('span', x.name[G.lang]))),
+      el('h3', { style: { marginTop: '.8rem' } }, t('elo.hist')), spark,
+      el('div.elogrid', st(pos ? '#' + pos : '—', t('elo.pos')), st(rk.length ? Math.round(100 * rw / rk.length) + '%' : '—', t('elo.recentWr')), st(rw + '/' + rk.length, t('elo.recent')), st(d.streak, t('elo.streak')), st(d.stats.rankedWins, t('st.rwins')), st(days + 'd', t('elo.season'))),
+      el('small.muted', { style: { display: 'block', marginTop: '.5rem' } }, t('elo.seasonDesc')));
+  };
+  // ---------- calendário lunar ----------
+  App.moon = (k) => { const ph = (k % 8) / 8; const r = 20; const lit = ph <= 0.5 ? ph * 2 : (1 - ph) * 2; const wax = ph <= 0.5; const rx = Math.abs(1 - 2 * lit) * r; const sw = wax ? 1 : 0; const term = lit > 0.5 ? (wax ? 1 : 0) : (wax ? 0 : 1);
+    return el('div.moon', { html: `<svg viewBox="0 0 48 48"><defs><radialGradient id="mg${k}" cx=".4" cy=".35"><stop offset="0" stop-color="#fff8e1"/><stop offset="1" stop-color="#c9a24e"/></radialGradient></defs><circle cx="24" cy="24" r="${r}" fill="#160d22" stroke="#c9a24e" stroke-opacity=".55"/>${lit > 0.02 ? `<path d="M24 ${24 - r} A${r} ${r} 0 0 ${sw} 24 ${24 + r} A${rx} ${r} 0 0 ${term} 24 ${24 - r}Z" fill="url(#mg${k})"/>` : ''}</svg>` }); };
+  App.calRw = (rw) => [rw.ess ? G.fmtN(rw.ess) + ' ' + t('shards') : null].concat((rw.packs || []).map(([id, n]) => (n > 1 ? n + '× ' : '') + G.L(G.Prog.packById(id).name))).filter(Boolean).join(' + ');
+  S.calendar = function () {
+    const c = P().calendar; const can = G.Prog.calCanClaim();
+    const claim = () => { const rw = G.Prog.claimCalendar(); if (!rw) return; G.audio.play('choir', [57, 64, 69]); G.fx.soul(innerWidth / 2, innerHeight * 0.4, ['#fff8e1', '#e7c873', '#c98bff']); G.ui.modal(el('div.col', { style: { alignItems: 'center', textAlign: 'center' } }, App.moon(4), el('h2', t('cal.claimed')), el('p', App.calRw(rw)), el('button.btn.primary', { onclick: () => { G.$$('.veil').forEach((v) => v.remove()); App.go('calendar'); } }, t('continue'))), { narrow: true }); };
+    const grid = el('div.calgrid', G.Prog.CAL.map((rw, k) => { const done = k < c.day; const today = k === c.day && can; return el('button.calday' + (done ? '.done' : '') + (today ? '.today' : '') + (rw.big ? '.big' : ''), { onclick: today ? claim : () => G.ui.toast(done ? t('cal.done') : k === c.day ? t('cal.tomorrow') : t('cal.locked')) }, el('b', String(k + 1)), App.moon(k), el('span.rw', rw.big ? App.calRw(rw) : G.fmtN(rw.ess))); }));
+    const ev = el('div.evlist', el('h3', t('cal.events')), G.Prog.events().map((e) => el('div.ev', el('i'), el('div.grow', el('b', G.L(e.name)), el('div', el('small.muted', G.L(e.desc)))), el('small.muted', e.when))));
+    return el('div.scr', top(t('mode.cal')), el('div.scroll', el('div.calhead', el('h2', t('cal.title', { n: c.cycle })), el('p', t('cal.desc'))), grid, can ? el('div.row', { style: { justifyContent: 'center', marginTop: '1rem' } }, el('button.btn.primary', { onclick: claim }, t('cal.claim'))) : el('p.muted', { style: { textAlign: 'center' } }, t('cal.come')), ev));
+  };
+  // ---------- crônicas ----------
+  S.chronicle = function () {
+    const facs = Object.keys(G.FACTIONS).map((k) => { const f = G.FACTIONS[k]; return el('div.fac.s-' + f.side, el('b', G.L(f.name)), el('small', G.L(G.SIDES[f.side]) + ' — ' + G.L(f.desc))); });
+    return el('div.scr', top(t('mode.chron')), el('div.scroll', el('div.chron',
+      G.CHRONICLE.map((ch) => el('div.chap', el('h3', G.L(ch.t)), ch.p.map((p) => el('p', G.L(p))))),
+      el('div.chap', el('h3', t('chron.factions')), el('div.facgrid', facs)),
+      el('div.chap', el('h3', t('chron.regions')), Object.keys(G.REGIONS).map((k) => el('p', el('b', G.L(G.REGIONS[k].name) + ' — '), G.L(G.REGIONS[k].desc)))))));
+  };
   S.profile = function () {
     const d = P(); const s = d.stats; const ps = G.Prog.playstyle(); const r = G.Prog.rankOf(d.mmr); const rep = G.Prog.repLabel(d.rep);
     const nameIn = el('input', { value: d.name, maxlength: 18, 'aria-label': t('onb.name'), onchange: (e) => { const v = e.target.value.trim(); if (v.length >= 2) { d.name = v; G.Prog.save(); G.ui.toast(t('saved')); } } });
@@ -436,9 +509,10 @@
     const body = el('div.scroll',
       el('div.section.row.wrap', el('button.avatar', { style: { width: '84px', height: '84px' , backgroundImage: `url(${G.artUrl(d.avatar)})` }, onclick: pickAvatar, 'aria-label': t('prof.avatar') }),
         el('div.col.grow', el('div.field', nameIn), el('div.row.wrap', el('span.rankb', { style: { color: r.t.color } }, r.label), el('small.muted', d.mmr + ' ' + t('mmr') + ' · ' + t('prof.peak') + ' ' + d.peak), el('small.muted', t('level') + ' ' + d.level)))),
+      App.eloPanel(),
       el('div.section', el('h3', t('prof.style')), el('div.row.wrap', radar(ps.ax), el('div.col', { style: { maxWidth: '40ch' } }, el('span.tag', t('pstyle.' + ps.key)), el('p.muted', t('pstyleDesc.' + ps.key)), el('div', el('b', t('prof.rep') + ': '), G.L(rep), ' (' + d.rep + '/100)'), el('small.muted', t('prof.repDesc'))))),
       el('div.section', el('h3', t('prof.stats')), el('div.stats', stat(s.matches, t('st.matches')), stat(s.wins, t('st.wins')), stat(s.matches ? Math.round(100 * s.wins / s.matches) + '%' : '—', t('st.wr')), stat(s.rankedWins, t('st.rwins')), stat(G.fmtN(s.kos), t('st.kos')), stat(G.fmtN(s.dmg), t('st.dmg')), stat(s.maxHit, t('st.maxHit')), stat(s.bestStreak, t('st.streak')), stat(s.perfect, t('st.perfect')), stat(Object.keys(d.ach).length + '/' + G.Prog.ACH.length, t('st.ach')))),
-      el('div.section.row.wrap', el('button.btn', { onclick: () => App.go('achievements') }, t('mode.ach')), el('button.btn', { onclick: () => App.go('ranking') }, t('mode.ranking')), el('button.btn', { onclick: () => App.go('settings') }, t('settings')), el('button.btn', { onclick: () => G.ui.modal(el('div.prose', el('p.lore', G.L(G.LORE)), Object.keys(G.REGIONS).map((k) => el('p', el('b', G.L(G.REGIONS[k].name) + ': '), G.L(G.REGIONS[k].desc)))), { title: t('prof.lore') }) }, t('prof.lore'))),
+      el('div.section.row.wrap', el('button.btn', { onclick: () => App.go('achievements') }, t('mode.ach')), el('button.btn', { onclick: () => App.go('ranking') }, t('mode.ranking')), el('button.btn', { onclick: () => App.go('settings') }, t('settings')), el('button.btn', { onclick: () => App.go('chronicle') }, t('mode.chron')), el('button.btn', { onclick: () => App.go('calendar') }, t('mode.cal'))),
       el('div.section', el('h3', t('prof.hist')), hist));
     return el('div.scr', top(t('nav.prof')), body);
   };
@@ -466,12 +540,13 @@
   S.settings = function () {
     const d = P(); const st = d.settings;
     const slider = (k, lbl) => el('div.field', el('label', t(lbl)), el('input', { type: 'range', min: 0, max: 1, step: 0.05, value: st[k], oninput: (e) => { st[k] = +e.target.value; G.audio.setVol(st.music, st.sfx); G.Prog.save(); }, onchange: () => G.audio.play('card') }));
-    const opt = (k, vals, lbl) => el('div.field', el('label', t(lbl)), el('div.row.wrap', vals.map((v) => el('button.chip' + (st[k] === v[0] ? '.on' : ''), { onclick: () => { st[k] = v[0]; G.Prog.save(); App.go('settings'); } }, v[1]))));
+    const opt = (k, vals, lbl) => el('div.field', el('label', t(lbl)), el('div.row.wrap', vals.map((v) => el('button.chip' + (st[k] === v[0] ? '.on' : ''), { onclick: () => { st[k] = v[0]; G.Prog.save(); if (k === 'gfx') G.applyGfx(); App.go('settings'); } }, v[1]))));
     const body = el('div.scroll', el('div.section.col',
       el('div.field', el('label', t('set.lang')), el('div.row', [['pt', 'Português (Brasil)'], ['en', 'English']].map(([k, l]) => el('button.chip' + (G.lang === k ? '.on' : ''), { onclick: () => { d.lang = k; G.lang = k; G.Prog.save(); App.go('settings'); } }, l)))),
       slider('music', 'set.music'), slider('sfx', 'set.sfx'),
       opt('speed', [[0.75, '0.75×'], [1, '1×'], [1.5, '1.5×'], [2, '2×']], 'set.speed'),
-      opt('particles', [['high', t('set.high')], ['low', t('set.low')]], 'set.particles'),
+      opt('gfx', [['low', t('gfx.low')], ['med', t('gfx.med')], ['high', t('gfx.high')], ['ultra', t('gfx.ultra')]], 'set.gfx'),
+      el('small.muted', t('gfx.help')),
       opt('confirmEnd', [[true, t('yes')], [false, t('no')]], 'set.confirmEnd'),
       opt('privacy', [[true, t('yes')], [false, t('no')]], 'set.privacy'),
       el('div.row.wrap', el('button.btn', { onclick: () => App.go('tutorial', 0) }, t('mode.learn')), el('button.btn.ghost', { onclick: async () => { if (await G.ui.confirm(t('set.resetQ'))) { G.Prog.reset(); location.reload(); } } }, t('set.reset'))),

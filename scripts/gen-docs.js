@@ -1,6 +1,6 @@
 /* Gera docs/REGRAS.md, docs/RULES.md e docs/CARTAS.md a partir dos dados do jogo */
 const fs = require('fs'); const path = require('path'); const R = (f) => require(path.join(__dirname, '..', 'www', 'js', f));
-R('core/util.js'); R('data/cards.js'); R('data/i18n.js'); R('data/tutorial.js'); R('core/engine.js');
+R('core/util.js'); R('data/lore.js'); R('data/cards.js'); R('data/i18n.js'); R('data/tutorial.js'); R('core/engine.js');
 const G = globalThis.G; const md = (h) => h.replace(/<b>(.*?)<\/b>/g, '**$1**').replace(/<[^>]+>/g, '');
 function rules(lang) {
   G.lang = lang; let o = `# ${lang === 'pt' ? 'Almas de Orvalon — Livro de Regras' : 'Souls of Orvalon — Rulebook'}\n\n> ${G.LORE[lang]}\n\n`;

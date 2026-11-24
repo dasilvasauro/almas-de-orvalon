@@ -1043,6 +1043,13 @@
             if (f.coin && !(await this.flip('strip'))) break;
             await this.stripOne(p, oa); break;
           }
+          case 'steal': {
+            if (!oa || !(this.inst[oa].att || []).length || !this.isInPlay(att)) break;
+            if (f.coin && !(await this.flip('strip'))) break;
+            const [ch] = await this.ask(p, { purpose: 'stealWhich', options: this.inst[oa].att.slice(), from: 'list', src: oa });
+            if (ch) { const a2 = this.inst[oa].att; a2.splice(a2.indexOf(ch), 1); this.inst[att].att.push(ch); this.addLog('steal', { p, id: this.inst[ch].id, from: this.inst[oa].id, to: this.inst[att].id }); await this.emit('attach', { p, u: ch, target: att, from: oa, steal: true }); }
+            break;
+          }
           case 'draw': await this.draw(p, f.n); break;
           case 'seal': if (oa) this.inst[oa].effs.push({ k: 'noRetreat', exp: this.turn + 1 }); break;
           case 'guard': this.inst[att].effs.push({ k: 'guard', v: f.v, exp: this.turn + 1 }); break;
@@ -1106,6 +1113,8 @@
           }
           let n = 1 + (c.legend ? 1 : 0) + (r && r.extraPrize ? 1 : 0) - (c.legend && r && r.legendPrizeReduce ? 1 : 0);
           claims[other] += Math.max(0, n);
+          if (byAtk) { const so = this.P[other].st; so.killsBy = so.killsBy || {}; const aid = this.inst[ctx.attacker].id; so.killsBy[aid] = (so.killsBy[aid] || 0) + 1; }
+          { const sw = this.P[owner].st; sw.fallen = sw.fallen || {}; sw.fallen[I.id] = (sw.fallen[I.id] || 0) + 1; }
           const st = this.P[other].st; st.kos++; st.kosAff[c.aff] = (st.kosAff[c.aff] || 0) + 1; if (c.legend) st.legendKos++;
           // ao sair: cargas, relíquia, base
           const att = (I.att || []).slice();

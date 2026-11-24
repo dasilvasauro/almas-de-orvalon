@@ -25,7 +25,7 @@
       d.inMatch = null; G.Prog.save(); setTimeout(() => G.ui.toast(G.t('abandon')), 700);
     }
     G.App.go('hub');
-    if (G.Prog.checkDaily()) setTimeout(() => G.ui.toast(G.t('daily')), 1000);
+    G.applyGfx(); if (G.Prog.calCanClaim()) setTimeout(() => G.ui.toast(G.t('cal.waiting')), 1400);
   }
   // PWA (GitHub Pages): guarda o jogo para jogar offline. Não roda no app Android, no Linux nem no arquivo único.
   if ('serviceWorker' in navigator && location.protocol === 'https:' && !window.Capacitor && !G.SINGLE) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { }));

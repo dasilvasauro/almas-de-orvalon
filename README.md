@@ -2,6 +2,16 @@
 
 Jogo de cartas colecionáveis offline, com a jogabilidade central do Pokémon TCG (Ativo + Reserva, Cargas, Almas como prêmios, Fraquezas, Condições, Ascensão) e temática de fantasia sombria. Disponível em **português (Brasil)** e **inglês**. Roda no Android (Capacitor), no Linux/Windows/macOS (Electron) e em qualquer navegador.
 
+
+## Novidades da 1.4.0
+- **Desempenho no Android:** zoom de texto travado em 100% (corrige a escala quebrada), aceleração por hardware, modo gráfico "Equilibrado" por padrão no APK e artes pré-carregadas e mantidas em memória durante o duelo.
+- **Áudio:** trilhas pré-renderizadas em loop (sem síntese em tempo real) e pausa automática ao bloquear a tela.
+- **Correções:** Desistir, Deletar deck e Apagar progresso (o diálogo de confirmação sempre respondia "não"); Furtar agora move a Carga de verdade; a mão não "abre e fecha" mais ao comprar.
+- **Conteúdo:** 18 facções nas cartas, nomes revisados, Crônicas da Ruptura, Calendário do Ciclo das Luas e eventos datados.
+- **Visual:** molduras ornamentadas, título animado, gradiente no lugar de partículas, versus vertical no celular, boosters com vinheta e abertura realista, carregamento lento com zoom e 4 níveis gráficos (Leve, Equilibrado, Alto, Ultra).
+- **Duelo:** animações por estilo de personagem (flechas, tiros, orbes nas cores da arte, golpes com onda de choque, garras e cortes por afinidade), seleção de alvo no tabuleiro e pulverização ao destruir.
+- **Próximas features:** veja [docs/FUTURO.md](docs/FUTURO.md) (Quintessências, Campeonatos e Perícia).
+
 ## O que tem no jogo
 
 - **315 cartas** com artes próprias, todas com nome, subtítulo e texto originais: 95 criaturas + 95 versões alternativas, 55 Efeitos, 50 Relíquias, 5 Deuses, 5 Ações, 5 Marcadores e 5 Cargas. Cada tipo de carta tem uma cor de moldura diferente.

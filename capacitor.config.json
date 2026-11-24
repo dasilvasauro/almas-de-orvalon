@@ -3,5 +3,15 @@
   "appName": "Almas de Orvalon",
   "webDir": "www",
   "backgroundColor": "#100a15",
-  "android": { "backgroundColor": "#100a15", "allowMixedContent": false }
+  "android": {
+    "backgroundColor": "#100a15",
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false,
+    "initialFocus": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
 }

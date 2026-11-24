@@ -26,6 +26,7 @@
   G.clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   G.sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   G.sum = (arr, f) => arr.reduce((s, x) => s + (f ? f(x) : x), 0);
+  G.shade = (hex, f) => { const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255; const m = (v) => Math.round(f < 0 ? v * (1 + f) : v + (255 - v) * f); return '#' + ((1 << 24) + (m(r) << 16) + (m(g) << 8) + m(b)).toString(16).slice(1); };
   G.uniq = (arr) => Array.from(new Set(arr));
   G.todayKey = () => { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
   G.dayIndex = () => Math.floor((Date.now() - new Date().getTimezoneOffset() * 60000) / 86400000);

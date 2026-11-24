@@ -27,7 +27,7 @@ Monstro · Ígnea · Brasaforja · PV 270 · Recuo 3 · Ascende de Vorgul · **L
 
 _As correntes que o prendiam agora são sua arma._
 
-### Cinzal — _Cão do Portão Rubro_ `h1_14` (Comum)
+### Ignarr — _Cão do Portão Rubro_ `h1_14` (Comum)
 Monstro · Ígnea · Brasaforja · PV 90 · Recuo 1 · Fraqueza Energética
 
 - **Mordida Ardente** [Í] 10 — Lance a moeda. Se der Sol, o Ativo do oponente fica Queimado.
@@ -35,7 +35,7 @@ Monstro · Ígnea · Brasaforja · PV 90 · Recuo 1 · Fraqueza Energética
 
 _Onde ele fareja, o chão começa a fumegar._
 
-### Brom Rachaferro — _O Martelo do Cerco_ `h1_23` (Incomum)
+### Ulric Varn — _O Martelo do Cerco_ `h1_23` (Incomum)
 Herói · Ígnea · Valcoroa · PV 140 · Recuo 2 · Fraqueza Energética
 
 - **Esmagar** [ÍN] 30 — 
@@ -43,7 +43,7 @@ Herói · Ígnea · Valcoroa · PV 140 · Recuo 2 · Fraqueza Energética
 
 _Derrubou três muralhas de Valcoroa antes do café._
 
-### Rangar Cordafogo — _O Guitarrista Profano_ `h2_03` (Rara)
+### Rangar — _O Guitarrista Profano_ `h2_03` (Rara)
 Monstro · Ígnea · Brasaforja · PV 110 · Recuo 1 · Fraqueza Energética
 
 - **Riff Flamejante** [ÍN] 30 — Causa 20 a mais para cada outra criatura Coro Profano que você tiver em jogo.
@@ -59,7 +59,7 @@ Monstro · Ígnea · Brasaforja · PV 120 · Recuo 2 · Fraqueza Energética
 
 _Seus tambores são feitos de crânios que ainda riem._
 
-### Kael Asa-de-Brasa — _O Anjo Caído das Forjas_ `h2_12` (Rara)
+### Kaelis — _O Anjo Caído das Forjas_ `h2_12` (Rara)
 Herói · Ígnea · Brasaforja · PV 120 · Recuo 1 · Fraqueza Energética
 
 - **Lâmina Negra** [Í] 30 — Esta criatura sofre 10 de dano.
@@ -67,7 +67,7 @@ Herói · Ígnea · Brasaforja · PV 120 · Recuo 1 · Fraqueza Energética
 
 _Caiu do céu de Solênia e aprendeu a voar com fogo._
 
-### Bispo Cinéreo — _Pregador das Cinzas_ `h2_17` (Incomum)
+### Monsenhor Vharos — _Pregador das Cinzas_ `h2_17` (Incomum)
 Monstro · Ígnea · Brasaforja · PV 140 · Recuo 2 · Fraqueza Energética
 
 - **Sermão Ardente** [ÍN] 10 — O Ativo do oponente fica Queimado. Até o fim do seu próximo turno, o Ativo do oponente sofre 20 a mais de dano de ataques.
@@ -83,7 +83,7 @@ Monstro · Ígnea · Brasaforja · PV 280 · Recuo 3 · **Lenda** · Fraqueza En
 
 _Uma cabeça odeia; a outra lembra por quê._
 
-### Thessa Bigorna — _A Ferreira de Brasaforja_ `h3_20` (Incomum)
+### Thessa Vorn — _A Ferreira de Brasaforja_ `h3_20` (Incomum)
 Herói · Ígnea · Brasaforja · PV 120 · Recuo 2 · Fraqueza Energética
 
 - **Dom — Forja Viva:** Uma vez durante o seu turno, você pode ligar 1 Carga Ígnea do seu descarte a 1 de suas criaturas Ígneas. Coloque 10 de dano nessa criatura.
@@ -91,7 +91,7 @@ Herói · Ígnea · Brasaforja · PV 120 · Recuo 2 · Fraqueza Energética
 
 _Ela não forja armas. Forja vontades._
 
-### Grukk Cravejado — _O Ogro das Correntes_ `h3_16` (Comum)
+### Grukk — _O Ogro das Correntes_ `h3_16` (Comum)
 Monstro · Ígnea · Valcoroa · PV 180 · Recuo 3 · Fraqueza Energética
 
 - **Pancada** [ÍNN] 60 — 
@@ -99,7 +99,7 @@ Monstro · Ígnea · Valcoroa · PV 180 · Recuo 3 · Fraqueza Energética
 
 _Quanto mais apanha, mais ri._
 
-### Morra Grilhão — _Gladiadora de Valcoroa_ `h3_05` (Comum)
+### Morra Kesh — _Gladiadora de Valcoroa_ `h3_05` (Comum)
 Herói · Ígnea · Valcoroa · PV 140 · Recuo 2 · Fraqueza Energética
 
 - **Dom — Escudo de Arena:** Esta criatura sofre 10 a menos de dano de ataques.
@@ -107,7 +107,7 @@ Herói · Ígnea · Valcoroa · PV 140 · Recuo 2 · Fraqueza Energética
 
 _Cem lutas no Coliseu. Nenhuma desistência._
 
-### Nyssa Telhanegra — _A Caçadora e seu Draco_ `h3_06` (Rara)
+### Nyssa Corvane — _A Caçadora e seu Draco_ `h3_06` (Rara)
 Herói · Ígnea · Valcoroa · PV 90 · Recuo 1 · Fraqueza Energética
 
 - **Flecha Certeira** [Í] 20 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -123,7 +123,7 @@ Herói · Sagrada · Solênia · PV 120 · Recuo 2 · Fraqueza Ígnea
 
 _Jurou proteger a cidade até que o último vitral caia._
 
-### Aldric, o Vitral Vivo — _Paladino Ascendido_ `h1_02` (Rara)
+### Aldric Transfigurado — _Paladino Ascendido_ `h1_02` (Rara)
 Herói · Sagrada · Solênia · PV 190 · Recuo 2 · Ascende de Sir Aldric Varenne · Fraqueza Ígnea
 
 - **Dom — Égide de Vitral:** Previna todo o dano de ataques causado às suas criaturas da Reserva.
@@ -156,7 +156,7 @@ Herói · Sagrada · Solênia · PV 140 · Recuo 1 · Fraqueza Ígnea
 
 _Desce dos céus apenas quando um monstro ergue a cabeça._
 
-### Colosso de Vitral — _O Guardião da Nave_ `h2_07` (Incomum)
+### Ecclesion — _O Guardião da Nave_ `h2_07` (Incomum)
 Monstro · Sagrada · Solênia · PV 180 · Recuo 3 · Fraqueza Ígnea
 
 - **Dom — Vidro Consagrado:** Esta criatura sofre 10 a menos de dano de ataques.
@@ -165,7 +165,7 @@ Monstro · Sagrada · Solênia · PV 180 · Recuo 3 · Fraqueza Ígnea
 
 _Mil santos coloridos compõem seu corpo._
 
-### Querubim das Mil Mãos — _O Abraço Celeste_ `h2_13` (Rara)
+### Ophanim — _O Abraço Celeste_ `h2_13` (Rara)
 Monstro · Sagrada · Solênia · PV 110 · Recuo 1 · Fraqueza Ígnea
 
 - **Abraço Sufocante** [SN] 20 — Lance a moeda. Se der Sol, o Ativo do oponente fica Atordoado.
@@ -173,7 +173,7 @@ Monstro · Sagrada · Solênia · PV 110 · Recuo 1 · Fraqueza Ígnea
 
 _Seu amor é sincero. E esmagador._
 
-### Dorian Martelo-Áureo — _O Campeão do Coliseu_ `h2_15` (Épica)
+### Dorian Valcrest — _O Campeão do Coliseu_ `h2_15` (Épica)
 Herói · Sagrada · Valcoroa · PV 160 · Recuo 2 · Fraqueza Ígnea
 
 - **Dom — Glória Inabalável:** Esta criatura não pode ser afetada por Condições.
@@ -191,7 +191,7 @@ Monstro · Sagrada · Solênia · PV 260 · Recuo 2 · **Lenda** · Fraqueza Íg
 
 _Quando abre as asas, até as sombras ganham cor._
 
-### Irmãs da Fonte Clara — _As Curandeiras de Solênia_ `h3_17` (Comum)
+### As Três Fontes — _As Curandeiras de Solênia_ `h3_17` (Comum)
 Herói · Sagrada · Solênia · PV 110 · Recuo 1 · Fraqueza Ígnea
 
 - **Bênção da Fonte** [S]  — Cure 10 de dano de cada uma de suas criaturas.
@@ -248,7 +248,7 @@ Monstro · Oculta · Umbravel · PV 160 · Recuo 2 · Ascende de Vyl · Fraqueza
 
 _Suas teias brilham para atrair os curiosos._
 
-### Armadura Vazia — _O Guardião Sem Rosto_ `h3_24` (Comum)
+### O Sem-Nome — _O Guardião Sem Rosto_ `h3_24` (Comum)
 Monstro · Oculta · Umbravel · PV 150 · Recuo 2 · Fraqueza Sagrada
 
 - **Dom — Aço Oco:** Esta criatura sofre 10 a menos de dano de ataques.
@@ -256,8 +256,8 @@ Monstro · Oculta · Umbravel · PV 150 · Recuo 2 · Fraqueza Sagrada
 
 _Ninguém está dentro. Mesmo assim, ela luta._
 
-### Cavaleiro Sem Rosto — _O Cavaleiro do Cemitério_ `h2_05` (Rara)
-Monstro · Oculta · Umbravel · PV 190 · Recuo 2 · Ascende de Armadura Vazia · Fraqueza Sagrada
+### O Sem-Nome Montado — _O Cavaleiro do Cemitério_ `h2_05` (Rara)
+Monstro · Oculta · Umbravel · PV 190 · Recuo 2 · Ascende de O Sem-Nome · Fraqueza Sagrada
 
 - **Dom — Aço Oco:** Esta criatura sofre 10 a menos de dano de ataques.
 - **Carga Espectral** [ON] 40 — 
@@ -265,7 +265,7 @@ Monstro · Oculta · Umbravel · PV 190 · Recuo 2 · Ascende de Armadura Vazia 
 
 _Encontrou um cavalo tão morto quanto ele._
 
-### Vargas Mil-Lâminas — _Senhor do Campo das Espadas_ `h1_25` (Incomum)
+### Vargas — _Senhor do Campo das Espadas_ `h1_25` (Incomum)
 Herói · Oculta · Valcoroa · PV 120 · Recuo 2 · Fraqueza Sagrada
 
 - **Corte Sombrio** [ON] 50 — 
@@ -274,7 +274,7 @@ Herói · Oculta · Valcoroa · PV 120 · Recuo 2 · Fraqueza Sagrada
 _Cada espada fincada é um rival que ele enterrou._
 
 ### Vargas, a Lâmina Rubra — _O Juramento Quebrado_ `h2_10` (Épica)
-Herói · Oculta · Valcoroa · PV 190 · Recuo 2 · Ascende de Vargas Mil-Lâminas · Fraqueza Sagrada
+Herói · Oculta · Valcoroa · PV 190 · Recuo 2 · Ascende de Vargas · Fraqueza Sagrada
 
 - **Dom — Vingança Rubra:** Quando esta criatura for derrotada por um ataque, coloque 40 de dano na criatura atacante.
 - **Lâmina Sanguinária** [ONN] 60 — Cure 20 de dano desta criatura.
@@ -315,7 +315,7 @@ Monstro · Oculta · Umbravel · PV 270 · Recuo 3 · **Lenda** · Fraqueza Sagr
 
 _Seus fiéis o acorrentaram para que ele nunca os deixasse._
 
-### Legião do Túmulo — _Os Gritos Sepultados_ `h2_16` (Incomum)
+### Os Sepultos — _Os Gritos Sepultados_ `h2_16` (Incomum)
 Monstro · Oculta · Umbravel · PV 120 · Recuo 1 · Fraqueza Sagrada
 
 - **Dom — Último Grito:** Quando esta criatura for derrotada por um ataque, coloque 30 de dano na criatura atacante.
@@ -331,7 +331,7 @@ Monstro · Oculta · Umbravel · PV 110 · Recuo 0 · Fraqueza Sagrada
 
 _Grades não os detêm. Luz, às vezes._
 
-### Doutor Corvus Peste — _O Médico da Praga_ `h3_12` (Incomum)
+### Doutor Corvus — _O Médico da Praga_ `h3_12` (Incomum)
 Herói · Oculta · Umbravel · PV 110 · Recuo 1 · Fraqueza Sagrada
 
 - **Arpão Pestilento** [ON] 30 — O Ativo do oponente fica Envenenado.
@@ -339,11 +339,11 @@ Herói · Oculta · Umbravel · PV 110 · Recuo 1 · Fraqueza Sagrada
 
 _A cura que ele oferece é rápida. Sempre._
 
-### Zahra Véu-Negro — _A Ladra das Catacumbas_ `h3_08` (Incomum)
+### Zahra — _A Ladra das Catacumbas_ `h3_08` (Incomum)
 Herói · Oculta · Valcoroa · PV 110 · Recuo 0 · Fraqueza Sagrada
 
 - **Punhaladas** [O] 10 — Lance 2 moedas. Este ataque causa 20 a mais para cada Sol.
-- **Furtar** [ON] 20 — Lance a moeda. Se der Sol, descarte 1 Carga do Ativo do oponente.
+- **Furtar** [ON] 10 — Mova 1 Carga do Ativo do oponente para esta criatura.
 
 _Rouba dos mortos. Eles nunca reclamam._
 
@@ -355,7 +355,7 @@ Monstro · Energética · Vórtica · PV 160 · Recuo 3 · Fraqueza Primal
 
 _O raio que o atingiu congelou no meio do caminho._
 
-### Autômato K-7 — _Protótipo de Vórtica_ `h1_07` (Comum)
+### Ícaro — _Protótipo de Vórtica_ `h1_07` (Comum)
 Monstro · Energética · Vórtica · PV 110 · Recuo 2 · Fraqueza Primal
 
 - **Vapor** [E] 20 — 
@@ -363,8 +363,8 @@ Monstro · Energética · Vórtica · PV 110 · Recuo 2 · Fraqueza Primal
 
 _Primeiro sucesso da Academia. O sexto, na verdade._
 
-### Titã K-7 Bastião — _A Máquina de Guerra_ `h1_16` (Rara)
-Monstro · Energética · Vórtica · PV 200 · Recuo 3 · Ascende de Autômato K-7 · Fraqueza Primal
+### Bastião — _A Máquina de Guerra_ `h1_16` (Rara)
+Monstro · Energética · Vórtica · PV 200 · Recuo 3 · Ascende de Ícaro · Fraqueza Primal
 
 - **Dom — Blindagem:** Esta criatura sofre 10 a menos de dano de ataques.
 - **Esmagar** [EN] 50 — 
@@ -388,7 +388,7 @@ Monstro · Energética · Vórtica · PV 270 · Recuo 3 · Ascende de Ondra · *
 
 _Tentaram acorrentá-la ao céu. O céu perdeu._
 
-### Maré’Lys — _A Lanceira do Abismo Azul_ `h1_19` (Comum)
+### Thalassa — _A Lanceira do Abismo Azul_ `h1_19` (Comum)
 Herói · Energética · Vórtica · PV 110 · Recuo 1 · Fraqueza Primal
 
 - **Lança Marinha** [E] 20 — 
@@ -405,7 +405,7 @@ Monstro · Energética · Vórtica · PV 120 · Recuo 2 · Fraqueza Primal
 
 _Leu todos os livros da Academia. Duas vezes._
 
-### Gárgula Tempestuosa — _A Vigia das Torres_ `h1_24` (Comum)
+### Grimspira — _A Vigia das Torres_ `h1_24` (Comum)
 Monstro · Energética · Vórtica · PV 110 · Recuo 1 · Fraqueza Primal
 
 - **Raio Pétreo** [E] 10 — Lance a moeda. Se der Sol, o Ativo do oponente fica Atordoado.
@@ -414,7 +414,7 @@ Monstro · Energética · Vórtica · PV 110 · Recuo 1 · Fraqueza Primal
 _Desce das torres a cada trovão._
 
 ### Gorgo, a Voz do Trovão — _O Vocalista do Coro_ `h2_04` (Rara)
-Monstro · Energética · Vórtica · PV 160 · Recuo 1 · Ascende de Gárgula Tempestuosa · Fraqueza Primal
+Monstro · Energética · Vórtica · PV 160 · Recuo 1 · Ascende de Grimspira · Fraqueza Primal
 
 - **Grito Trovejante** [EN] 50 — Causa 20 a mais para cada outra criatura Coro Profano que você tiver em jogo.
 - **Réquiem da Tempestade** [EEN] 80 — Cause 20 de dano a 1 criatura da Reserva do oponente.
@@ -437,7 +437,7 @@ Monstro · Energética · Vórtica · PV 160 · Recuo 3 · Fraqueza Primal
 
 _Calibrado para acertar uma moeda a três léguas._
 
-### Hargrim Âncora — _O Guardião do Porto_ `h3_09` (Comum)
+### Hargrim — _O Guardião do Porto_ `h3_09` (Comum)
 Herói · Energética · Vórtica · PV 160 · Recuo 2 · Fraqueza Primal
 
 - **Dom — Correntes do Porto:** Se esta criatura for o seu Ativo e sofrer dano de um ataque, cause 10 de dano à criatura atacante.
@@ -445,7 +445,7 @@ Herói · Energética · Vórtica · PV 160 · Recuo 2 · Fraqueza Primal
 
 _Nenhum navio sai do porto sem a permissão dele._
 
-### Olho-Sentinela V-9 — _O Drone de Vigilância_ `h3_22` (Comum)
+### Argos — _O Drone de Vigilância_ `h3_22` (Comum)
 Monstro · Energética · Vórtica · PV 70 · Recuo 0 · Fraqueza Primal
 
 - **Dom — Varredura:** Quando você jogar esta criatura da mão para a Reserva, compre 1 carta.
@@ -453,7 +453,7 @@ Monstro · Energética · Vórtica · PV 70 · Recuo 0 · Fraqueza Primal
 
 _Vê tudo. Relata tudo. Não esquece nada._
 
-### Pip Tecelúmen — _O Bufão das Esferas_ `h1_20` (Incomum)
+### Pip — _O Bobo do Rei Morto_ `h1_20` (Incomum)
 Herói · Energética · Valcoroa · PV 90 · Recuo 1 · Fraqueza Primal
 
 - **Esferas Hipnóticas** [E] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -461,7 +461,7 @@ Herói · Energética · Valcoroa · PV 90 · Recuo 1 · Fraqueza Primal
 
 _Fazia o rei rir. Agora faz Invocadores chorarem._
 
-### Kurogane Sem-Lua — _A Sombra das Torres_ `h1_06` (Incomum)
+### Kurogane — _A Sombra das Torres_ `h1_06` (Incomum)
 Herói · Energética · Valcoroa · PV 80 · Recuo 0 · Fraqueza Primal
 
 - **Dom — Passo das Sombras:** Uma vez durante o seu turno, se esta criatura estiver na Reserva, você pode trocá-la pelo seu Ativo.
@@ -478,7 +478,7 @@ Monstro · Primal · Sylvanor · PV 150 · Recuo 2 · Fraqueza Oculta
 
 _Cobra pedágio em carne._
 
-### Velho Musgoso — _O Ancestral do Pântano_ `h1_09` (Lendária)
+### Morrovar — _O Ancestral do Pântano_ `h1_09` (Lendária)
 Monstro · Primal · Sylvanor · PV 300 · Recuo 3 · **Lenda** · Fraqueza Oculta
 
 - **Dom — Raízes Profundas:** No Entre Turnos, cure 20 de dano desta criatura.
@@ -495,7 +495,7 @@ Monstro · Primal · Sylvanor · PV 90 · Recuo 0 · Fraqueza Oculta
 
 _Caça com o vento a favor. Sempre._
 
-### Thalor Cascoforte — _O Lanceiro Centauro_ `h1_21` (Incomum)
+### Thalor — _O Lanceiro Centauro_ `h1_21` (Incomum)
 Herói · Primal · Sylvanor · PV 140 · Recuo 1 · Fraqueza Oculta
 
 - **Galope** [NN] 20 — 
@@ -519,7 +519,7 @@ Monstro · Primal · Sylvanor · PV 110 · Recuo 1 · Fraqueza Oculta
 
 _Um rosto ri, um chora, o terceiro observa você._
 
-### Kesra Duna-Rubra — _A Besteira dos Cânions_ `h3_13` (Comum)
+### Kesra — _A Besteira dos Cânions_ `h3_13` (Comum)
 Herói · Primal · Sylvanor · PV 110 · Recuo 1 · Fraqueza Oculta
 
 - **Disparo Distante** [NN] 10 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -527,7 +527,7 @@ Herói · Primal · Sylvanor · PV 110 · Recuo 1 · Fraqueza Oculta
 
 _Acerta o que vê. Vê tudo._
 
-### Lirien Folhaverde — _A Arqueira do Carvalho_ `h3_18` (Comum)
+### Lirien — _A Arqueira do Carvalho_ `h3_18` (Comum)
 Herói · Primal · Sylvanor · PV 90 · Recuo 1 · Fraqueza Oculta
 
 - **Flecha** [N] 20 — 
@@ -536,7 +536,7 @@ Herói · Primal · Sylvanor · PV 90 · Recuo 1 · Fraqueza Oculta
 _Nasceu num galho e nunca quis descer._
 
 ### Lirien, Flecha da Tempestade — _A Arqueira Ascendida_ `h3_25` (Rara)
-Herói · Primal · Sylvanor · PV 160 · Recuo 1 · Ascende de Lirien Folhaverde · Fraqueza Oculta
+Herói · Primal · Sylvanor · PV 160 · Recuo 1 · Ascende de Lirien · Fraqueza Oculta
 
 - **Flecha Relâmpago** [NN] 30 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
 - **Tempestade de Flechas** [NNNN] 80 — Cause 10 de dano a cada criatura da Reserva do oponente.
@@ -552,7 +552,7 @@ Herói · Primal · Sylvanor · PV 120 · Recuo 2 · Fraqueza Oculta
 
 _Ouve o que as árvores contam às netas._
 
-### Isolde Corda-Leve — _A Escaladora de Torres_ `h3_15` (Comum)
+### Isolde — _A Escaladora de Torres_ `h3_15` (Comum)
 Herói · Primal · Valcoroa · PV 80 · Recuo 0 · Fraqueza Oculta
 
 - **Dom — Reconhecimento:** Quando você jogar esta criatura da mão para a Reserva, você pode procurar no seu deck 1 criatura Desperta e colocá-la na mão. Embaralhe o deck.
@@ -560,7 +560,7 @@ Herói · Primal · Valcoroa · PV 80 · Recuo 0 · Fraqueza Oculta
 
 _Não existe torre alta demais. Só corda curta._
 
-### Vexa das Adagas — _A Arremessadora_ `h3_23` (Comum)
+### Vexa — _A Arremessadora_ `h3_23` (Comum)
 Herói · Primal · Valcoroa · PV 90 · Recuo 1 · Fraqueza Oculta
 
 - **Adagas Gêmeas** [N] 10 — Lance a moeda. Se der Sol, este ataque causa 20 a mais.
@@ -568,7 +568,7 @@ Herói · Primal · Valcoroa · PV 90 · Recuo 1 · Fraqueza Oculta
 
 _Errou uma vez. O alvo agradeceu._
 
-### Abominação do Pântano — _O Fruto da Seiva Podre_ `h1_18` (Comum)
+### Ghoragh — _O Fruto da Seiva Podre_ `h1_18` (Comum)
 Monstro · Primal · Sylvanor · PV 150 · Recuo 2 · Fraqueza Oculta
 
 - **Seiva Ácida** [NN] 10 — O Ativo do oponente fica Envenenado.
@@ -576,7 +576,7 @@ Monstro · Primal · Sylvanor · PV 150 · Recuo 2 · Fraqueza Oculta
 
 _A floresta também tem seus erros._
 
-### Mirela Raizeira — _A Herbalista de Sylvanor_ `h3_10` (Incomum)
+### Mirela — _A Herbalista de Sylvanor_ `h3_10` (Incomum)
 Herói · Primal · Sylvanor · PV 90 · Recuo 1 · Fraqueza Oculta
 
 - **Dom — Colheita:** Uma vez durante o seu turno, você pode procurar no seu deck 1 Carga básica e colocá-la na mão. Embaralhe o deck.
@@ -584,7 +584,7 @@ Herói · Primal · Sylvanor · PV 90 · Recuo 1 · Fraqueza Oculta
 
 _Sabe o nome de cada erva — e o que cada uma mata._
 
-### Rixa Brasaviva — _A Arruaceira das Correntes_ `h4_16` (Comum)
+### Kharys — _A Arruaceira das Correntes_ `h4_16` (Comum)
 Herói · Ígnea · Brasaforja · PV 90 · Recuo 1 · Fraqueza Energética
 
 - **Corrente Ardente** [Í] 20 — 
@@ -592,7 +592,7 @@ Herói · Ígnea · Brasaforja · PV 90 · Recuo 1 · Fraqueza Energética
 
 _Aprendeu a lutar nas tavernas de Brasaforja. Nunca perdeu uma briga — nem uma corrente._
 
-### Sir Calder Lançarrubra — _O Cavaleiro da Lança Ardente_ `h4_07` (Comum)
+### Sir Calder Ashvale — _O Cavaleiro da Lança Ardente_ `h4_07` (Comum)
 Herói · Ígnea · Brasaforja · PV 140 · Recuo 2 · Fraqueza Energética
 
 - **Estocada** [ÍN] 30 — 
@@ -600,7 +600,7 @@ Herói · Ígnea · Brasaforja · PV 140 · Recuo 2 · Fraqueza Energética
 
 _Sua lança foi temperada na boca de um vulcão._
 
-### Zahirah das Mil Lâminas — _A Feiticeira do Redemoinho_ `h4_14` (Incomum)
+### Zahirah — _A Feiticeira do Redemoinho_ `h4_14` (Incomum)
 Herói · Ígnea · Valcoroa · PV 110 · Recuo 1 · Fraqueza Energética
 
 - **Dom — Forja de Lâminas:** Uma vez durante o seu turno, você pode procurar no seu deck 1 Carga básica e colocá-la na mão. Embaralhe o deck.
@@ -608,7 +608,7 @@ Herói · Ígnea · Valcoroa · PV 110 · Recuo 1 · Fraqueza Energética
 
 _Cada lâmina que gira ao seu redor tem o nome de um inimigo._
 
-### Vesk Fumarola — _O Ladrão das Chaminés_ `h4_10` (Incomum)
+### Vesk — _O Ladrão das Chaminés_ `h4_10` (Incomum)
 Herói · Ígnea · Brasaforja · PV 120 · Recuo 1 · Fraqueza Energética
 
 - **Dardo em Brasa** [ÍN] 20 — O Ativo do oponente fica Queimado.
@@ -616,7 +616,7 @@ Herói · Ígnea · Brasaforja · PV 120 · Recuo 1 · Fraqueza Energética
 
 _Entra pelas chaminés. Sai pelas chamas._
 
-### Ferrocolosso — _O Guardião da Fornalha_ `h4_02` (Rara)
+### Gorvath — _O Guardião da Fornalha_ `h4_02` (Rara)
 Monstro · Ígnea · Brasaforja · PV 160 · Recuo 3 · Fraqueza Energética
 
 - **Punho de Bigorna** [ÍNN] 60 — 
@@ -632,7 +632,7 @@ Herói · Sagrada · Solênia · PV 90 · Recuo 1 · Fraqueza Ígnea
 
 _Vendou os olhos para não julgar pela aparência._
 
-### Sir Bastian Alabarda-Áurea — _O Guardião da Escadaria_ `h4_18` (Comum)
+### Sir Bastian Hallow — _O Guardião da Escadaria_ `h4_18` (Comum)
 Herói · Sagrada · Solênia · PV 140 · Recuo 2 · Fraqueza Ígnea
 
 - **Golpe de Haste** [SN] 30 — 
@@ -640,7 +640,7 @@ Herói · Sagrada · Solênia · PV 140 · Recuo 2 · Fraqueza Ígnea
 
 _Ninguém sobe à torre do bispo sem passar por ele._
 
-### Amara Luz-de-Lanterna — _A Guia dos Perdidos_ `h4_08` (Incomum)
+### Amara Velaris — _A Guia dos Perdidos_ `h4_08` (Incomum)
 Herói · Sagrada · Solênia · PV 110 · Recuo 1 · Fraqueza Ígnea
 
 - **Dom — Luz da Lanterna:** Uma vez durante o seu turno, você pode curar 20 de dano de 1 de suas criaturas.
@@ -648,7 +648,7 @@ Herói · Sagrada · Solênia · PV 110 · Recuo 1 · Fraqueza Ígnea
 
 _Sua lanterna nunca apaga. Dizem que a chama é uma alma agradecida._
 
-### Hector Muralha — _O Escudo Inquebrável_ `h4_11` (Incomum)
+### Hector Aldane — _O Escudo Inquebrável_ `h4_11` (Incomum)
 Herói · Sagrada · Solênia · PV 120 · Recuo 2 · Fraqueza Ígnea
 
 - **Muralha de Escudo** [SN] 20 — Durante o próximo turno do oponente, esta criatura sofre 20 a menos de dano de ataques.
@@ -664,7 +664,7 @@ Herói · Sagrada · Solênia · PV 160 · Recuo 3 · Fraqueza Ígnea
 
 _Cada golpe é uma oração. Cada oração, um golpe._
 
-### Lyss Lâmina-Lunar — _A Dançarina do Luar_ `h4_01` (Comum)
+### Lyss Morwen — _A Dançarina do Luar_ `h4_01` (Comum)
 Herói · Oculta · Umbravel · PV 90 · Recuo 1 · Fraqueza Sagrada
 
 - **Chicote Lunar** [O] 20 — 
@@ -688,7 +688,7 @@ Monstro · Oculta · Umbravel · PV 110 · Recuo 1 · Fraqueza Sagrada
 
 _Toca para os mortos. Às vezes, eles respondem._
 
-### Nyra Garra-Negra — _A Bruxa do Cemitério em Chamas_ `h4_06` (Incomum)
+### Nyra Vesh — _A Bruxa do Cemitério em Chamas_ `h4_06` (Incomum)
 Herói · Oculta · Umbravel · PV 120 · Recuo 1 · Fraqueza Sagrada
 
 - **Garras da Noite** [ON] 20 — O Ativo do oponente fica Envenenado.
@@ -704,7 +704,7 @@ Monstro · Oculta · Umbravel · PV 160 · Recuo 3 · Fraqueza Sagrada
 
 _Guarda a fogueira dos mortos. Ela nunca se apaga._
 
-### Kaia Raio-Fino — _A Lâmina Relampejante_ `h4_24` (Comum)
+### Kaia Ilvaren — _A Lâmina Relampejante_ `h4_24` (Comum)
 Herói · Energética · Vórtica · PV 90 · Recuo 1 · Fraqueza Primal
 
 - **Faísca** [E] 20 — 
@@ -712,7 +712,7 @@ Herói · Energética · Vórtica · PV 90 · Recuo 1 · Fraqueza Primal
 
 _Sua espada brilha um instante antes do trovão._
 
-### Sargento Brann Pólvora — _O Bacamarteiro de Vórtica_ `h4_23` (Comum)
+### Brann Corvhal — _O Bacamarteiro de Vórtica_ `h4_23` (Comum)
 Herói · Energética · Vórtica · PV 140 · Recuo 2 · Fraqueza Primal
 
 - **Coronhada** [EN] 40 — 
@@ -720,7 +720,7 @@ Herói · Energética · Vórtica · PV 140 · Recuo 2 · Fraqueza Primal
 
 _A Academia inventou a pólvora. Ele inventou o resto._
 
-### Ilsa Tecelã-de-Adagas — _A Arcanista Azul_ `h4_20` (Incomum)
+### Ilsa Marenne — _A Arcanista Azul_ `h4_20` (Incomum)
 Herói · Energética · Vórtica · PV 90 · Recuo 1 · Fraqueza Primal
 
 - **Dom — Leitura Arcana:** Uma vez durante o seu turno, você pode comprar 1 carta.
@@ -728,7 +728,7 @@ Herói · Energética · Vórtica · PV 90 · Recuo 1 · Fraqueza Primal
 
 _Lê o futuro no voo das adagas._
 
-### Mestre Tenzo Anel-Dourado — _O Punho da Tempestade_ `h4_09` (Incomum)
+### Mestre Tenzo — _O Punho da Tempestade_ `h4_09` (Incomum)
 Herói · Energética · Vórtica · PV 120 · Recuo 1 · Fraqueza Primal
 
 - **Chute Anelar** [EN] 30 — Lance a moeda. Se der Sol, o Ativo do oponente fica Atordoado.
@@ -736,7 +736,7 @@ Herói · Energética · Vórtica · PV 120 · Recuo 1 · Fraqueza Primal
 
 _Treinou nos picos até que os raios desviassem dele._
 
-### Ramagem Fulgurante — _O Espírito da Árvore-Raio_ `h4_17` (Rara)
+### Ygdrael — _O Espírito da Árvore-Raio_ `h4_17` (Rara)
 Monstro · Energética · Vórtica · PV 160 · Recuo 3 · Fraqueza Primal
 
 - **Galho Elétrico** [ENN] 60 — 
@@ -744,7 +744,7 @@ Monstro · Energética · Vórtica · PV 160 · Recuo 3 · Fraqueza Primal
 
 _Nasceu onde um raio caiu sete vezes._
 
-### Tavo Pele-Pintada — _O Saltador das Cumeadas_ `h4_19` (Comum)
+### Tavo — _O Saltador das Cumeadas_ `h4_19` (Comum)
 Herói · Primal · Sylvanor · PV 110 · Recuo 1 · Fraqueza Oculta
 
 - **Corte Duplo** [N] 20 — 
@@ -752,7 +752,7 @@ Herói · Primal · Sylvanor · PV 110 · Recuo 1 · Fraqueza Oculta
 
 _Cada tatuagem conta um pico que ele saltou._
 
-### Orrin, o Machado Silencioso — _O Carrasco das Muralhas_ `h4_15` (Comum)
+### Orrin — _O Carrasco das Muralhas_ `h4_15` (Comum)
 Herói · Primal · Valcoroa · PV 150 · Recuo 2 · Fraqueza Oculta
 
 - **Cabo do Machado** [NN] 10 — 
@@ -760,7 +760,7 @@ Herói · Primal · Valcoroa · PV 150 · Recuo 2 · Fraqueza Oculta
 
 _Nunca disse uma palavra. Nunca precisou._
 
-### Saeli Virote-Verde — _A Atiradora dos Telhados_ `h4_04` (Incomum)
+### Saeli — _A Atiradora dos Telhados_ `h4_04` (Incomum)
 Herói · Primal · Sylvanor · PV 120 · Recuo 1 · Fraqueza Oculta
 
 - **Dom — Salto de Telhado:** Uma vez durante o seu turno, se esta criatura estiver na Reserva, você pode trocá-la pelo seu Ativo.
@@ -768,7 +768,7 @@ Herói · Primal · Sylvanor · PV 120 · Recuo 1 · Fraqueza Oculta
 
 _Sua gárgula de estimação avisa quando alguém se aproxima._
 
-### Aynara Arco-de-Espinhos — _A Caçadora da Névoa_ `h4_12` (Incomum)
+### Aynara — _A Caçadora da Névoa_ `h4_12` (Incomum)
 Herói · Primal · Sylvanor · PV 140 · Recuo 1 · Fraqueza Oculta
 
 - **Flecha de Espinho** [NN] 10 — O Ativo do oponente fica Envenenado.
@@ -801,7 +801,7 @@ Monstro · Ígnea · Brasaforja · PV 270 · Recuo 3 · Ascende de Vorgul · **L
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Cinzal (Ancestral) — _Variante Ancestral_ `h1_14v` (Incomum)
+### Ignarr (Ancestral) — _Variante Ancestral_ `h1_14v` (Incomum)
 Monstro · Ígnea · Brasaforja · PV 110 · Recuo 1 · Fraqueza Energética
 
 - **Brasa Antiga** [Í] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -809,7 +809,7 @@ Monstro · Ígnea · Brasaforja · PV 110 · Recuo 1 · Fraqueza Energética
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Brom Rachaferro (Espectral) — _Variante Espectral_ `h1_23v` (Rara)
+### Ulric Varn (Espectral) — _Variante Espectral_ `h1_23v` (Rara)
 Herói · Ígnea · Valcoroa · PV 130 · Recuo 1 · Fraqueza Energética
 
 - **Chama Fantasma** [ÍN] 30 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -817,7 +817,7 @@ Herói · Ígnea · Valcoroa · PV 130 · Recuo 1 · Fraqueza Energética
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Rangar Cordafogo (Lua Sangrenta) — _Variante Lua Sangrenta_ `h2_03v` (Épica)
+### Rangar (Lua Sangrenta) — _Variante Lua Sangrenta_ `h2_03v` (Épica)
 Monstro · Ígnea · Brasaforja · PV 100 · Recuo 1 · Fraqueza Energética
 
 - **Mordida de Brasa** [ÍN] 40 — Esta criatura sofre 10 de dano.
@@ -834,7 +834,7 @@ Monstro · Ígnea · Brasaforja · PV 120 · Recuo 2 · Fraqueza Energética
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Kael Asa-de-Brasa (Ancestral) — _Variante Ancestral_ `h2_12v` (Épica)
+### Kaelis (Ancestral) — _Variante Ancestral_ `h2_12v` (Épica)
 Herói · Ígnea · Brasaforja · PV 140 · Recuo 1 · Fraqueza Energética
 
 - **Brasa Antiga** [Í] 20 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -842,7 +842,7 @@ Herói · Ígnea · Brasaforja · PV 140 · Recuo 1 · Fraqueza Energética
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Bispo Cinéreo (Espectral) — _Variante Espectral_ `h2_17v` (Rara)
+### Monsenhor Vharos (Espectral) — _Variante Espectral_ `h2_17v` (Rara)
 Monstro · Ígnea · Brasaforja · PV 130 · Recuo 1 · Fraqueza Energética
 
 - **Chama Fantasma** [ÍN] 10 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -858,7 +858,7 @@ Monstro · Ígnea · Brasaforja · PV 270 · Recuo 3 · **Lenda** · Fraqueza En
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Thessa Bigorna (Eclipse) — _Variante Eclipse_ `h3_20v` (Rara)
+### Thessa Vorn (Eclipse) — _Variante Eclipse_ `h3_20v` (Rara)
 Herói · Ígnea · Brasaforja · PV 120 · Recuo 2 · Fraqueza Energética
 
 - **Dom — Forja Viva:** Uma vez durante o seu turno, você pode ligar 1 Carga Ígnea do seu descarte a 1 de suas criaturas Ígneas. Coloque 10 de dano nessa criatura.
@@ -867,7 +867,7 @@ Herói · Ígnea · Brasaforja · PV 120 · Recuo 2 · Fraqueza Energética
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Grukk Cravejado (Ancestral) — _Variante Ancestral_ `h3_16v` (Incomum)
+### Grukk (Ancestral) — _Variante Ancestral_ `h3_16v` (Incomum)
 Monstro · Ígnea · Valcoroa · PV 200 · Recuo 3 · Fraqueza Energética
 
 - **Brasa Antiga** [ÍNN] 50 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -875,7 +875,7 @@ Monstro · Ígnea · Valcoroa · PV 200 · Recuo 3 · Fraqueza Energética
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Morra Grilhão (Espectral) — _Variante Espectral_ `h3_05v` (Incomum)
+### Morra Kesh (Espectral) — _Variante Espectral_ `h3_05v` (Incomum)
 Herói · Ígnea · Valcoroa · PV 130 · Recuo 1 · Fraqueza Energética
 
 - **Dom — Escudo de Arena:** Esta criatura sofre 10 a menos de dano de ataques.
@@ -884,7 +884,7 @@ Herói · Ígnea · Valcoroa · PV 130 · Recuo 1 · Fraqueza Energética
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Nyssa Telhanegra (Lua Sangrenta) — _Variante Lua Sangrenta_ `h3_06v` (Épica)
+### Nyssa Corvane (Lua Sangrenta) — _Variante Lua Sangrenta_ `h3_06v` (Épica)
 Herói · Ígnea · Valcoroa · PV 80 · Recuo 1 · Fraqueza Energética
 
 - **Mordida de Brasa** [Í] 30 — Esta criatura sofre 10 de dano.
@@ -900,7 +900,7 @@ Herói · Sagrada · Solênia · PV 120 · Recuo 2 · Fraqueza Ígnea
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Aldric, o Vitral Vivo (Ancestral) — _Variante Ancestral_ `h1_02v` (Épica)
+### Aldric Transfigurado (Ancestral) — _Variante Ancestral_ `h1_02v` (Épica)
 Herói · Sagrada · Solênia · PV 210 · Recuo 2 · Ascende de Sir Aldric Varenne · Fraqueza Ígnea
 
 - **Dom — Égide de Vitral:** Previna todo o dano de ataques causado às suas criaturas da Reserva.
@@ -935,7 +935,7 @@ Herói · Sagrada · Solênia · PV 140 · Recuo 1 · Fraqueza Ígnea
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Colosso de Vitral (Ancestral) — _Variante Ancestral_ `h2_07v` (Rara)
+### Ecclesion (Ancestral) — _Variante Ancestral_ `h2_07v` (Rara)
 Monstro · Sagrada · Solênia · PV 200 · Recuo 3 · Fraqueza Ígnea
 
 - **Dom — Vidro Consagrado:** Esta criatura sofre 10 a menos de dano de ataques.
@@ -944,7 +944,7 @@ Monstro · Sagrada · Solênia · PV 200 · Recuo 3 · Fraqueza Ígnea
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Querubim das Mil Mãos (Espectral) — _Variante Espectral_ `h2_13v` (Épica)
+### Ophanim (Espectral) — _Variante Espectral_ `h2_13v` (Épica)
 Monstro · Sagrada · Solênia · PV 100 · Recuo 0 · Fraqueza Ígnea
 
 - **Luz Errante** [SN] 20 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -952,7 +952,7 @@ Monstro · Sagrada · Solênia · PV 100 · Recuo 0 · Fraqueza Ígnea
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Dorian Martelo-Áureo (Lua Sangrenta) — _Variante Lua Sangrenta_ `h2_15v` (Épica)
+### Dorian Valcrest (Lua Sangrenta) — _Variante Lua Sangrenta_ `h2_15v` (Épica)
 Herói · Sagrada · Valcoroa · PV 150 · Recuo 2 · Fraqueza Ígnea
 
 - **Dom — Glória Inabalável:** Esta criatura não pode ser afetada por Condições.
@@ -970,7 +970,7 @@ Monstro · Sagrada · Solênia · PV 260 · Recuo 2 · **Lenda** · Fraqueza Íg
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Irmãs da Fonte Clara (Ancestral) — _Variante Ancestral_ `h3_17v` (Incomum)
+### As Três Fontes (Ancestral) — _Variante Ancestral_ `h3_17v` (Incomum)
 Herói · Sagrada · Solênia · PV 130 · Recuo 1 · Fraqueza Ígnea
 
 - **Bênção Antiga** [S] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1029,7 +1029,7 @@ Monstro · Oculta · Umbravel · PV 150 · Recuo 2 · Ascende de Vyl · Fraqueza
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Armadura Vazia (Eclipse) — _Variante Eclipse_ `h3_24v` (Incomum)
+### O Sem-Nome (Eclipse) — _Variante Eclipse_ `h3_24v` (Incomum)
 Monstro · Oculta · Umbravel · PV 150 · Recuo 2 · Fraqueza Sagrada
 
 - **Dom — Aço Oco:** Esta criatura sofre 10 a menos de dano de ataques.
@@ -1038,8 +1038,8 @@ Monstro · Oculta · Umbravel · PV 150 · Recuo 2 · Fraqueza Sagrada
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Cavaleiro Sem Rosto (Ancestral) — _Variante Ancestral_ `h2_05v` (Épica)
-Monstro · Oculta · Umbravel · PV 210 · Recuo 2 · Ascende de Armadura Vazia · Fraqueza Sagrada
+### O Sem-Nome Montado (Ancestral) — _Variante Ancestral_ `h2_05v` (Épica)
+Monstro · Oculta · Umbravel · PV 210 · Recuo 2 · Ascende de O Sem-Nome · Fraqueza Sagrada
 
 - **Dom — Aço Oco:** Esta criatura sofre 10 a menos de dano de ataques.
 - **Sussurro Antigo** [ON] 30 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1047,7 +1047,7 @@ Monstro · Oculta · Umbravel · PV 210 · Recuo 2 · Ascende de Armadura Vazia 
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Vargas Mil-Lâminas (Espectral) — _Variante Espectral_ `h1_25v` (Rara)
+### Vargas (Espectral) — _Variante Espectral_ `h1_25v` (Rara)
 Herói · Oculta · Valcoroa · PV 110 · Recuo 1 · Fraqueza Sagrada
 
 - **Garra Fantasma** [ON] 50 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -1056,7 +1056,7 @@ Herói · Oculta · Valcoroa · PV 110 · Recuo 1 · Fraqueza Sagrada
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
 ### Vargas, a Lâmina Rubra (Lua Sangrenta) — _Variante Lua Sangrenta_ `h2_10v` (Épica)
-Herói · Oculta · Valcoroa · PV 180 · Recuo 2 · Ascende de Vargas Mil-Lâminas · Fraqueza Sagrada
+Herói · Oculta · Valcoroa · PV 180 · Recuo 2 · Ascende de Vargas · Fraqueza Sagrada
 
 - **Dom — Vingança Rubra:** Quando esta criatura for derrotada por um ataque, coloque 40 de dano na criatura atacante.
 - **Presas da Noite** [ONN] 70 — Esta criatura sofre 10 de dano.
@@ -1098,7 +1098,7 @@ Monstro · Oculta · Umbravel · PV 260 · Recuo 3 · **Lenda** · Fraqueza Sagr
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Legião do Túmulo (Eclipse) — _Variante Eclipse_ `h2_16v` (Rara)
+### Os Sepultos (Eclipse) — _Variante Eclipse_ `h2_16v` (Rara)
 Monstro · Oculta · Umbravel · PV 120 · Recuo 1 · Fraqueza Sagrada
 
 - **Dom — Último Grito:** Quando esta criatura for derrotada por um ataque, coloque 30 de dano na criatura atacante.
@@ -1115,7 +1115,7 @@ Monstro · Oculta · Umbravel · PV 130 · Recuo 0 · Fraqueza Sagrada
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Doutor Corvus Peste (Espectral) — _Variante Espectral_ `h3_12v` (Rara)
+### Doutor Corvus (Espectral) — _Variante Espectral_ `h3_12v` (Rara)
 Herói · Oculta · Umbravel · PV 100 · Recuo 0 · Fraqueza Sagrada
 
 - **Garra Fantasma** [ON] 30 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -1123,11 +1123,11 @@ Herói · Oculta · Umbravel · PV 100 · Recuo 0 · Fraqueza Sagrada
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Zahra Véu-Negro (Lua Sangrenta) — _Variante Lua Sangrenta_ `h3_08v` (Rara)
+### Zahra (Lua Sangrenta) — _Variante Lua Sangrenta_ `h3_08v` (Rara)
 Herói · Oculta · Valcoroa · PV 100 · Recuo 0 · Fraqueza Sagrada
 
 - **Presas da Noite** [O] 40 — Esta criatura sofre 10 de dano.
-- **Festim Carmesim** [ON] 30 — Cure 20 de dano desta criatura.
+- **Festim Carmesim** [ON] 20 — Cure 20 de dano desta criatura.
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
@@ -1139,7 +1139,7 @@ Monstro · Energética · Vórtica · PV 160 · Recuo 3 · Fraqueza Primal
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Autômato K-7 (Ancestral) — _Variante Ancestral_ `h1_07v` (Incomum)
+### Ícaro (Ancestral) — _Variante Ancestral_ `h1_07v` (Incomum)
 Monstro · Energética · Vórtica · PV 130 · Recuo 2 · Fraqueza Primal
 
 - **Runa Antiga** [E] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1147,8 +1147,8 @@ Monstro · Energética · Vórtica · PV 130 · Recuo 2 · Fraqueza Primal
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Titã K-7 Bastião (Espectral) — _Variante Espectral_ `h1_16v` (Épica)
-Monstro · Energética · Vórtica · PV 190 · Recuo 2 · Ascende de Autômato K-7 · Fraqueza Primal
+### Bastião (Espectral) — _Variante Espectral_ `h1_16v` (Épica)
+Monstro · Energética · Vórtica · PV 190 · Recuo 2 · Ascende de Ícaro · Fraqueza Primal
 
 - **Dom — Blindagem:** Esta criatura sofre 10 a menos de dano de ataques.
 - **Raio Fantasma** [EN] 50 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -1172,7 +1172,7 @@ Monstro · Energética · Vórtica · PV 270 · Recuo 3 · Ascende de Ondra · *
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Maré’Lys (Ancestral) — _Variante Ancestral_ `h1_19v` (Incomum)
+### Thalassa (Ancestral) — _Variante Ancestral_ `h1_19v` (Incomum)
 Herói · Energética · Vórtica · PV 130 · Recuo 1 · Fraqueza Primal
 
 - **Runa Antiga** [E] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1189,7 +1189,7 @@ Monstro · Energética · Vórtica · PV 110 · Recuo 1 · Fraqueza Primal
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Gárgula Tempestuosa (Lua Sangrenta) — _Variante Lua Sangrenta_ `h1_24v` (Incomum)
+### Grimspira (Lua Sangrenta) — _Variante Lua Sangrenta_ `h1_24v` (Incomum)
 Monstro · Energética · Vórtica · PV 100 · Recuo 1 · Fraqueza Primal
 
 - **Choque Sangrento** [E] 20 — Esta criatura sofre 10 de dano.
@@ -1198,7 +1198,7 @@ Monstro · Energética · Vórtica · PV 100 · Recuo 1 · Fraqueza Primal
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
 ### Gorgo, a Voz do Trovão (Eclipse) — _Variante Eclipse_ `h2_04v` (Épica)
-Monstro · Energética · Vórtica · PV 160 · Recuo 1 · Ascende de Gárgula Tempestuosa · Fraqueza Primal
+Monstro · Energética · Vórtica · PV 160 · Recuo 1 · Ascende de Grimspira · Fraqueza Primal
 
 - **Faísca Negra** [EN] 40 — Lance a moeda. Se der Sol, o Ativo do oponente fica Atordoado.
 - **Raio Eclipsado** [EEN] 70 — Até o fim do seu próximo turno, o Ativo do oponente sofre 20 a mais de dano de ataques.
@@ -1221,7 +1221,7 @@ Monstro · Energética · Vórtica · PV 150 · Recuo 2 · Fraqueza Primal
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Hargrim Âncora (Lua Sangrenta) — _Variante Lua Sangrenta_ `h3_09v` (Incomum)
+### Hargrim (Lua Sangrenta) — _Variante Lua Sangrenta_ `h3_09v` (Incomum)
 Herói · Energética · Vórtica · PV 150 · Recuo 2 · Fraqueza Primal
 
 - **Dom — Correntes do Porto:** Se esta criatura for o seu Ativo e sofrer dano de um ataque, cause 10 de dano à criatura atacante.
@@ -1230,7 +1230,7 @@ Herói · Energética · Vórtica · PV 150 · Recuo 2 · Fraqueza Primal
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Olho-Sentinela V-9 (Eclipse) — _Variante Eclipse_ `h3_22v` (Incomum)
+### Argos (Eclipse) — _Variante Eclipse_ `h3_22v` (Incomum)
 Monstro · Energética · Vórtica · PV 70 · Recuo 0 · Fraqueza Primal
 
 - **Dom — Varredura:** Quando você jogar esta criatura da mão para a Reserva, compre 1 carta.
@@ -1239,7 +1239,7 @@ Monstro · Energética · Vórtica · PV 70 · Recuo 0 · Fraqueza Primal
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Pip Tecelúmen (Ancestral) — _Variante Ancestral_ `h1_20v` (Rara)
+### Pip (Ancestral) — _Variante Ancestral_ `h1_20v` (Rara)
 Herói · Energética · Valcoroa · PV 110 · Recuo 1 · Fraqueza Primal
 
 - **Runa Antiga** [E] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1247,7 +1247,7 @@ Herói · Energética · Valcoroa · PV 110 · Recuo 1 · Fraqueza Primal
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Kurogane Sem-Lua (Espectral) — _Variante Espectral_ `h1_06v` (Rara)
+### Kurogane (Espectral) — _Variante Espectral_ `h1_06v` (Rara)
 Herói · Energética · Valcoroa · PV 70 · Recuo 0 · Fraqueza Primal
 
 - **Dom — Passo das Sombras:** Uma vez durante o seu turno, se esta criatura estiver na Reserva, você pode trocá-la pelo seu Ativo.
@@ -1264,7 +1264,7 @@ Monstro · Primal · Sylvanor · PV 140 · Recuo 2 · Fraqueza Oculta
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Velho Musgoso (Eclipse) — _Variante Eclipse_ `h1_09v` (Lendária)
+### Morrovar (Eclipse) — _Variante Eclipse_ `h1_09v` (Lendária)
 Monstro · Primal · Sylvanor · PV 300 · Recuo 3 · **Lenda** · Fraqueza Oculta
 
 - **Dom — Raízes Profundas:** No Entre Turnos, cure 20 de dano desta criatura.
@@ -1281,7 +1281,7 @@ Monstro · Primal · Sylvanor · PV 110 · Recuo 0 · Fraqueza Oculta
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Thalor Cascoforte (Espectral) — _Variante Espectral_ `h1_21v` (Rara)
+### Thalor (Espectral) — _Variante Espectral_ `h1_21v` (Rara)
 Herói · Primal · Sylvanor · PV 130 · Recuo 0 · Fraqueza Oculta
 
 - **Flecha Espírito** [NN] 20 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -1306,7 +1306,7 @@ Monstro · Primal · Sylvanor · PV 110 · Recuo 1 · Fraqueza Oculta
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Kesra Duna-Rubra (Ancestral) — _Variante Ancestral_ `h3_13v` (Incomum)
+### Kesra (Ancestral) — _Variante Ancestral_ `h3_13v` (Incomum)
 Herói · Primal · Sylvanor · PV 130 · Recuo 1 · Fraqueza Oculta
 
 - **Canto da Raiz** [NN] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1314,7 +1314,7 @@ Herói · Primal · Sylvanor · PV 130 · Recuo 1 · Fraqueza Oculta
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Lirien Folhaverde (Espectral) — _Variante Espectral_ `h3_18v` (Incomum)
+### Lirien (Espectral) — _Variante Espectral_ `h3_18v` (Incomum)
 Herói · Primal · Sylvanor · PV 80 · Recuo 0 · Fraqueza Oculta
 
 - **Flecha Espírito** [N] 20 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -1323,7 +1323,7 @@ Herói · Primal · Sylvanor · PV 80 · Recuo 0 · Fraqueza Oculta
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
 ### Lirien, Flecha da Tempestade (Lua Sangrenta) — _Variante Lua Sangrenta_ `h3_25v` (Épica)
-Herói · Primal · Sylvanor · PV 150 · Recuo 1 · Ascende de Lirien Folhaverde · Fraqueza Oculta
+Herói · Primal · Sylvanor · PV 150 · Recuo 1 · Ascende de Lirien · Fraqueza Oculta
 
 - **Dente Selvagem** [NN] 40 — Esta criatura sofre 10 de dano.
 - **Caçada Sangrenta** [NNNN] 90 — Cure 20 de dano desta criatura.
@@ -1339,7 +1339,7 @@ Herói · Primal · Sylvanor · PV 120 · Recuo 2 · Fraqueza Oculta
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Isolde Corda-Leve (Ancestral) — _Variante Ancestral_ `h3_15v` (Incomum)
+### Isolde (Ancestral) — _Variante Ancestral_ `h3_15v` (Incomum)
 Herói · Primal · Valcoroa · PV 100 · Recuo 0 · Fraqueza Oculta
 
 - **Dom — Reconhecimento:** Quando você jogar esta criatura da mão para a Reserva, você pode procurar no seu deck 1 criatura Desperta e colocá-la na mão. Embaralhe o deck.
@@ -1348,7 +1348,7 @@ Herói · Primal · Valcoroa · PV 100 · Recuo 0 · Fraqueza Oculta
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Vexa das Adagas (Espectral) — _Variante Espectral_ `h3_23v` (Incomum)
+### Vexa (Espectral) — _Variante Espectral_ `h3_23v` (Incomum)
 Herói · Primal · Valcoroa · PV 80 · Recuo 0 · Fraqueza Oculta
 
 - **Flecha Espírito** [N] 20 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -1356,7 +1356,7 @@ Herói · Primal · Valcoroa · PV 80 · Recuo 0 · Fraqueza Oculta
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Abominação do Pântano (Lua Sangrenta) — _Variante Lua Sangrenta_ `h1_18v` (Incomum)
+### Ghoragh (Lua Sangrenta) — _Variante Lua Sangrenta_ `h1_18v` (Incomum)
 Monstro · Primal · Sylvanor · PV 140 · Recuo 2 · Fraqueza Oculta
 
 - **Dente Selvagem** [NN] 20 — Esta criatura sofre 10 de dano.
@@ -1364,7 +1364,7 @@ Monstro · Primal · Sylvanor · PV 140 · Recuo 2 · Fraqueza Oculta
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Mirela Raizeira (Eclipse) — _Variante Eclipse_ `h3_10v` (Rara)
+### Mirela (Eclipse) — _Variante Eclipse_ `h3_10v` (Rara)
 Herói · Primal · Sylvanor · PV 90 · Recuo 1 · Fraqueza Oculta
 
 - **Dom — Colheita:** Uma vez durante o seu turno, você pode procurar no seu deck 1 Carga básica e colocá-la na mão. Embaralhe o deck.
@@ -1373,7 +1373,7 @@ Herói · Primal · Sylvanor · PV 90 · Recuo 1 · Fraqueza Oculta
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Rixa Brasaviva (Ancestral) — _Variante Ancestral_ `h4_16v` (Incomum)
+### Kharys (Ancestral) — _Variante Ancestral_ `h4_16v` (Incomum)
 Herói · Ígnea · Brasaforja · PV 110 · Recuo 1 · Fraqueza Energética
 
 - **Brasa Antiga** [Í] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1381,7 +1381,7 @@ Herói · Ígnea · Brasaforja · PV 110 · Recuo 1 · Fraqueza Energética
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Sir Calder Lançarrubra (Espectral) — _Variante Espectral_ `h4_07v` (Incomum)
+### Sir Calder Ashvale (Espectral) — _Variante Espectral_ `h4_07v` (Incomum)
 Herói · Ígnea · Brasaforja · PV 130 · Recuo 1 · Fraqueza Energética
 
 - **Chama Fantasma** [ÍN] 30 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -1389,7 +1389,7 @@ Herói · Ígnea · Brasaforja · PV 130 · Recuo 1 · Fraqueza Energética
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Zahirah das Mil Lâminas (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_14v` (Rara)
+### Zahirah (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_14v` (Rara)
 Herói · Ígnea · Valcoroa · PV 100 · Recuo 1 · Fraqueza Energética
 
 - **Dom — Forja de Lâminas:** Uma vez durante o seu turno, você pode procurar no seu deck 1 Carga básica e colocá-la na mão. Embaralhe o deck.
@@ -1398,7 +1398,7 @@ Herói · Ígnea · Valcoroa · PV 100 · Recuo 1 · Fraqueza Energética
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Vesk Fumarola (Eclipse) — _Variante Eclipse_ `h4_10v` (Rara)
+### Vesk (Eclipse) — _Variante Eclipse_ `h4_10v` (Rara)
 Herói · Ígnea · Brasaforja · PV 120 · Recuo 1 · Fraqueza Energética
 
 - **Cinza Sufocante** [ÍN] 10 — O Ativo do oponente fica Queimado.
@@ -1406,7 +1406,7 @@ Herói · Ígnea · Brasaforja · PV 120 · Recuo 1 · Fraqueza Energética
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Ferrocolosso (Ancestral) — _Variante Ancestral_ `h4_02v` (Épica)
+### Gorvath (Ancestral) — _Variante Ancestral_ `h4_02v` (Épica)
 Monstro · Ígnea · Brasaforja · PV 180 · Recuo 3 · Fraqueza Energética
 
 - **Brasa Antiga** [ÍNN] 50 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1422,7 +1422,7 @@ Herói · Sagrada · Solênia · PV 80 · Recuo 0 · Fraqueza Ígnea
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Sir Bastian Alabarda-Áurea (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_18v` (Incomum)
+### Sir Bastian Hallow (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_18v` (Incomum)
 Herói · Sagrada · Solênia · PV 130 · Recuo 2 · Fraqueza Ígnea
 
 - **Martírio** [SN] 40 — Esta criatura sofre 10 de dano.
@@ -1430,7 +1430,7 @@ Herói · Sagrada · Solênia · PV 130 · Recuo 2 · Fraqueza Ígnea
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Amara Luz-de-Lanterna (Eclipse) — _Variante Eclipse_ `h4_08v` (Rara)
+### Amara Velaris (Eclipse) — _Variante Eclipse_ `h4_08v` (Rara)
 Herói · Sagrada · Solênia · PV 110 · Recuo 1 · Fraqueza Ígnea
 
 - **Dom — Luz da Lanterna:** Uma vez durante o seu turno, você pode curar 20 de dano de 1 de suas criaturas.
@@ -1439,7 +1439,7 @@ Herói · Sagrada · Solênia · PV 110 · Recuo 1 · Fraqueza Ígnea
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Hector Muralha (Ancestral) — _Variante Ancestral_ `h4_11v` (Rara)
+### Hector Aldane (Ancestral) — _Variante Ancestral_ `h4_11v` (Rara)
 Herói · Sagrada · Solênia · PV 140 · Recuo 2 · Fraqueza Ígnea
 
 - **Bênção Antiga** [SN] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1455,7 +1455,7 @@ Herói · Sagrada · Solênia · PV 150 · Recuo 2 · Fraqueza Ígnea
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Lyss Lâmina-Lunar (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_01v` (Incomum)
+### Lyss Morwen (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_01v` (Incomum)
 Herói · Oculta · Umbravel · PV 80 · Recuo 1 · Fraqueza Sagrada
 
 - **Presas da Noite** [O] 30 — Esta criatura sofre 10 de dano.
@@ -1480,7 +1480,7 @@ Monstro · Oculta · Umbravel · PV 130 · Recuo 1 · Fraqueza Sagrada
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Nyra Garra-Negra (Espectral) — _Variante Espectral_ `h4_06v` (Rara)
+### Nyra Vesh (Espectral) — _Variante Espectral_ `h4_06v` (Rara)
 Herói · Oculta · Umbravel · PV 110 · Recuo 0 · Fraqueza Sagrada
 
 - **Garra Fantasma** [ON] 20 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -1496,7 +1496,7 @@ Monstro · Oculta · Umbravel · PV 150 · Recuo 3 · Fraqueza Sagrada
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Kaia Raio-Fino (Eclipse) — _Variante Eclipse_ `h4_24v` (Incomum)
+### Kaia Ilvaren (Eclipse) — _Variante Eclipse_ `h4_24v` (Incomum)
 Herói · Energética · Vórtica · PV 90 · Recuo 1 · Fraqueza Primal
 
 - **Faísca Negra** [E] 10 — Lance a moeda. Se der Sol, o Ativo do oponente fica Atordoado.
@@ -1504,7 +1504,7 @@ Herói · Energética · Vórtica · PV 90 · Recuo 1 · Fraqueza Primal
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Sargento Brann Pólvora (Ancestral) — _Variante Ancestral_ `h4_23v` (Incomum)
+### Brann Corvhal (Ancestral) — _Variante Ancestral_ `h4_23v` (Incomum)
 Herói · Energética · Vórtica · PV 160 · Recuo 2 · Fraqueza Primal
 
 - **Runa Antiga** [EN] 30 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1512,7 +1512,7 @@ Herói · Energética · Vórtica · PV 160 · Recuo 2 · Fraqueza Primal
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Ilsa Tecelã-de-Adagas (Espectral) — _Variante Espectral_ `h4_20v` (Rara)
+### Ilsa Marenne (Espectral) — _Variante Espectral_ `h4_20v` (Rara)
 Herói · Energética · Vórtica · PV 80 · Recuo 0 · Fraqueza Primal
 
 - **Dom — Leitura Arcana:** Uma vez durante o seu turno, você pode comprar 1 carta.
@@ -1521,7 +1521,7 @@ Herói · Energética · Vórtica · PV 80 · Recuo 0 · Fraqueza Primal
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Mestre Tenzo Anel-Dourado (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_09v` (Rara)
+### Mestre Tenzo (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_09v` (Rara)
 Herói · Energética · Vórtica · PV 110 · Recuo 1 · Fraqueza Primal
 
 - **Choque Sangrento** [EN] 40 — Esta criatura sofre 10 de dano.
@@ -1529,7 +1529,7 @@ Herói · Energética · Vórtica · PV 110 · Recuo 1 · Fraqueza Primal
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Ramagem Fulgurante (Eclipse) — _Variante Eclipse_ `h4_17v` (Épica)
+### Ygdrael (Eclipse) — _Variante Eclipse_ `h4_17v` (Épica)
 Monstro · Energética · Vórtica · PV 160 · Recuo 3 · Fraqueza Primal
 
 - **Faísca Negra** [ENN] 50 — Lance a moeda. Se der Sol, o Ativo do oponente fica Atordoado.
@@ -1537,7 +1537,7 @@ Monstro · Energética · Vórtica · PV 160 · Recuo 3 · Fraqueza Primal
 
 _Quando o sol se apaga, outras regras valem no Coliseu._
 
-### Tavo Pele-Pintada (Ancestral) — _Variante Ancestral_ `h4_19v` (Incomum)
+### Tavo (Ancestral) — _Variante Ancestral_ `h4_19v` (Incomum)
 Herói · Primal · Sylvanor · PV 130 · Recuo 1 · Fraqueza Oculta
 
 - **Canto da Raiz** [N] 10 — Durante o próximo turno do oponente, os ataques do Ativo dele causam 20 a menos.
@@ -1545,7 +1545,7 @@ Herói · Primal · Sylvanor · PV 130 · Recuo 1 · Fraqueza Oculta
 
 _Uma lembrança de quem esta alma foi antes da Coroa se partir._
 
-### Orrin, o Machado Silencioso (Espectral) — _Variante Espectral_ `h4_15v` (Incomum)
+### Orrin (Espectral) — _Variante Espectral_ `h4_15v` (Incomum)
 Herói · Primal · Valcoroa · PV 140 · Recuo 1 · Fraqueza Oculta
 
 - **Flecha Espírito** [NN] 10 — Escolha 1 criatura do oponente (Ativo ou Reserva) e cause este dano a ela. Fraqueza e Resistência só valem para o Ativo.
@@ -1553,7 +1553,7 @@ Herói · Primal · Valcoroa · PV 140 · Recuo 1 · Fraqueza Oculta
 
 _Metade aqui, metade no além. Difícil de acertar, impossível de esquecer._
 
-### Saeli Virote-Verde (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_04v` (Rara)
+### Saeli (Lua Sangrenta) — _Variante Lua Sangrenta_ `h4_04v` (Rara)
 Herói · Primal · Sylvanor · PV 110 · Recuo 1 · Fraqueza Oculta
 
 - **Dom — Salto de Telhado:** Uma vez durante o seu turno, se esta criatura estiver na Reserva, você pode trocá-la pelo seu Ativo.
@@ -1562,7 +1562,7 @@ Herói · Primal · Sylvanor · PV 110 · Recuo 1 · Fraqueza Oculta
 
 _Sob a Lua Sangrenta, até os mansos aprendem a morder._
 
-### Aynara Arco-de-Espinhos (Eclipse) — _Variante Eclipse_ `h4_12v` (Rara)
+### Aynara (Eclipse) — _Variante Eclipse_ `h4_12v` (Rara)
 Herói · Primal · Sylvanor · PV 140 · Recuo 1 · Fraqueza Oculta
 
 - **Seiva Negra** [NN] 10 — O Ativo do oponente fica Envenenado.

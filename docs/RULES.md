@@ -158,7 +158,7 @@ _Example cards: Auryel, Azhur_
 6. You claim 1 Soul. The opponent chooses a new Active from their Reserve.
 7. Between Turns: the opponent’s new Active has no Conditions; nothing happens. End of turn.
 
-_Example cards: Astral Drop, Isolde Lightrope, Cinzal, Pact of Spirits_
+_Example cards: Astral Drop, Isolde, Ignarr, Pact of Spirits_
 
 Done! Now practice in **Advanced Training**: the Mentor suggests every move and explains why.
 

@@ -6,7 +6,7 @@
   const L = (pt, en) => ({ pt, en });
   P.defaults = () => ({
     v: 1, created: Date.now(), name: '', lang: null, avatar: 'h3_11', level: 1, xp: 0, shards: 300, boosters: 0, pity: 0, packs: {}, frags: {},
-    collection: {}, decks: [], activeDeck: null, mmr: 900, peak: 900, skill: 0.42, rep: 60, streak: 0, mmrHist: [900],
+    collection: {}, decks: [], mastery: {}, calendar: { day: 0, last: null, cycle: 1 }, activeDeck: null, mmr: 900, peak: 900, skill: 0.42, rep: 60, streak: 0, mmrHist: [900],
     stats: { matches: 0, wins: 0, losses: 0, draws: 0, rankedWins: 0, rankedMatches: 0, quickWins: 0, advWins: 0, trainMatches: 0, spectated: 0, kos: 0, kosAff: {}, dmg: 0, maxHit: 0, prizes: 0, perfect: 0, comebacks: 0, winReasons: {}, ascends: 0, conds: {}, heals: 0, effects: 0, relics: 0, actions: 0, gods: {}, played: {}, boosters: 0, legendsPulled: 0, decksBuilt: 0, bestStreak: 0, fastWin: 999, legendKos: 0, winsAff: {}, abilities: 0, retreats: 0, markers: 0, turns: 0, concedes: 0, attacks: 0 },
     ach: {}, history: [], daily: null, settings: { music: 0.55, sfx: 0.85, speed: 1, particles: 'high', privacy: true, confirmEnd: true }, tutorialDone: false, starter: null, inMatch: null, onboarded: false
   });
@@ -23,9 +23,9 @@
   P.DUST = { C: 2, U: 5, R: 12, E: 30, L: 60 };          // Essência por cópia acima do limite
   P.CRAFT = { C: 6, U: 12, R: 25, E: 50, L: 100 };       // fragmentos para forjar
   P.FRAG_AMT = { C: [4, 8], U: [3, 6], R: [2, 5], E: [2, 4], L: [1, 3] };
-  P.PITY = 40;
+  P.PITY = 150; // rede de segurança oculta (não é exibida)
   const RORD = ['C', 'U', 'R', 'E', 'L'];
-  const W = P.W = { C: { C: 1 }, U: { U: 1 }, RP: { R: 0.905, E: 0.08, L: 0.015 }, CU: { C: 0.7, U: 0.3 }, EP: { E: 0.85, L: 0.15 }, R: { R: 1 }, E: { E: 1 }, L: { L: 1 }, TAG: { C: 0.5, U: 0.35, R: 0.13, E: 0.02 }, VAR: { U: 0.6, R: 0.32, E: 0.07, L: 0.01 }, FR: { C: 0.45, U: 0.3, R: 0.18, E: 0.06, L: 0.01 }, FRR: { R: 0.7, E: 0.25, L: 0.05 } };
+  const W = P.W = { C: { C: 1 }, U: { U: 1 }, RP: { R: 0.922, E: 0.07, L: 0.008 }, CU: { C: 0.7, U: 0.3 }, EP: { E: 0.92, L: 0.08 }, R: { R: 1 }, E: { E: 1 }, L: { L: 1 }, TAG: { C: 0.5, U: 0.35, R: 0.13, E: 0.02 }, VAR: { U: 0.62, R: 0.32, E: 0.055, L: 0.005 }, FR: { C: 0.46, U: 0.3, R: 0.18, E: 0.055, L: 0.005 }, FRR: { R: 0.74, E: 0.23, L: 0.03 } };
   const coll = () => P.collectible().map((id) => G.CARDS[id]);
   const F = {
     any: () => true, creature: (c) => c.kind === 'creature', relic: (c) => c.kind === 'relic', effect: (c) => c.kind === 'effect',
@@ -49,7 +49,7 @@
   [['blood', 'h1_01v'], ['eclipse', 'h1_02v'], ['ancestral', 'h1_03v'], ['spectral', 'h1_04v']].forEach(([th, art]) => { const nm = { blood: L('Lua Sangrenta', 'Blood Moon'), eclipse: L('Eclipse', 'Eclipse'), ancestral: L('Ancestral', 'Ancestral'), spectral: L('Espectral', 'Spectral') }[th]; pk({ id: 'th_' + th, tier: 'theme', price: 650, lvl: 4, art, name: L('Reflexos: ' + nm.pt, 'Reflections: ' + nm.en), desc: L(`3 variantes ${nm.pt} e 2 criaturas originais.`, `3 ${nm.en} variants and 2 original creatures.`), slots: [SL(3, 'VAR', F.theme(th)), SL(2, 'CU', F.base)] }); });
   pk({ id: 'reflexos', tier: 'theme', price: 700, lvl: 4, art: 'h3_14v', name: L('Galeria de Reflexos', 'Gallery of Reflections'), desc: L('3 variantes de qualquer tema e 2 cartas variadas.', '3 variants of any theme and 2 assorted cards.'), slots: [SL(3, 'VAR', F.variant), SL(2, 'CU')] });
   pk({ id: 'bau', tier: 'premium', price: 1100, lvl: 3, art: 'e1_10', name: L('Baú do Coliseu', 'Coliseum Chest'), desc: L('12 cartas: 7 Comuns, 3 Incomuns e 2 Raras ou melhores.', '12 cards: 7 Commons, 3 Uncommons and 2 Rares or better.'), slots: [SL(7, 'C'), SL(3, 'U'), SL(2, 'RP')] });
-  pk({ id: 'aureo', tier: 'premium', price: 1400, lvl: 5, art: 'm_12', name: L('Selo Áureo', 'Golden Seal'), desc: L('2 Incomuns, 2 Raras e 1 Épica garantida (15% de chance de Lendária).', '2 Uncommons, 2 Rares and 1 guaranteed Epic (15% Legendary chance).'), slots: [SL(2, 'U'), SL(2, 'R'), SL(1, 'EP')] });
+  pk({ id: 'aureo', tier: 'premium', price: 1400, lvl: 5, art: 'm_12', name: L('Selo Áureo', 'Golden Seal'), desc: L('2 Incomuns, 2 Raras e 1 Épica garantida (8% de chance de Lendária).', '2 Uncommons, 2 Rares and 1 guaranteed Epic (8% Legendary chance).'), slots: [SL(2, 'U'), SL(2, 'R'), SL(1, 'EP')] });
   pk({ id: 'relicario', tier: 'legend', price: 4000, lvl: 10, art: 'h2_20', name: L('Relicário Lendário', 'Legendary Reliquary'), desc: L('3 cartas: 1 Rara, 1 Épica e 1 Lendária garantidas.', '3 cards: 1 Rare, 1 Epic and 1 Legendary, guaranteed.'), slots: [SL(1, 'R'), SL(1, 'E'), SL(1, 'L')] });
   pk({ id: 'fr_cri', tier: 'frag', price: 250, art: 'h1_04v', name: L('Fragmentos de Criaturas', 'Creature Fragments'), desc: L('4 pacotes de fragmentos de criaturas para a Forja.', '4 bundles of creature fragments for the Forge.'), frag: [SL(4, 'FR', F.creature)] });
   pk({ id: 'fr_acao', tier: 'frag', price: 250, art: 'm_18', name: L('Fragmentos de Ações', 'Action Fragments'), desc: L('4 pacotes de fragmentos de Ações, Efeitos, Deuses e Marcadores.', '4 bundles of fragments of Actions, Effects, Gods and Markers.'), frag: [SL(4, 'FR', F.actionish)] });
@@ -58,8 +58,8 @@
   pk({ id: 'fr_raro', tier: 'frag', price: 900, lvl: 6, art: 'h2_09', name: L('Estilhaços Raros', 'Rare Shards'), desc: L('3 pacotes de fragmentos de cartas Raras, Épicas ou Lendárias.', '3 bundles of fragments of Rare, Epic or Legendary cards.'), frag: [SL(3, 'FRR')] });
   const wOf = (s) => (typeof s.w === 'string' ? W[s.w] : s.w);
   function rollR(w, rng) { const ks = Object.keys(w); let x = rng() * G.sum(ks, (k) => w[k]); for (const k of ks) { x -= w[k]; if (x <= 0) return k; } return ks[ks.length - 1]; }
-  function pickCard(f, r, rng) {
-    const pool = coll().filter(f); const ri = RORD.indexOf(r);
+  function pickCard(f, r, rng, avoid) {
+    const pool = coll().filter(f).filter((c) => !(avoid && avoid.has(c.id))); const ri = RORD.indexOf(r);
     const order = RORD.slice().sort((a, b) => Math.abs(RORD.indexOf(a) - ri) - Math.abs(RORD.indexOf(b) - ri));
     for (const rr of order) { const p = pool.filter((c) => c.rarity === rr); if (p.length) return p[rng.int(p.length)].id; }
     return null;
@@ -67,7 +67,8 @@
   P.packById = (id) => P.PACKS.find((p) => p.id === id);
   P.genPack = function (pack, rng) {
     const items = []; let gotL = false; const pity = (P.d.pity || 0) >= P.PITY - 1;
-    pack.slots.forEach((s) => { const w = wOf(s); for (let k = 0; k < s.n; k++) { let r = rollR(w, rng); if (pity && !gotL && w.L) r = 'L'; const id = pickCard(s.f, r, rng); if (id) { items.push({ type: 'card', id }); if (G.CARDS[id].rarity === 'L') gotL = true; } } });
+    const avoid = new Set((P.d.lastHigh || []).concat([]));
+    pack.slots.forEach((s) => { const w = wOf(s); for (let k = 0; k < s.n; k++) { let r = rollR(w, rng); if (pity && !gotL && w.L) r = 'L'; const id = pickCard(s.f, r, rng, avoid) || pickCard(s.f, r, rng); if (id) { items.push({ type: 'card', id }); avoid.add(id); const rr = G.CARDS[id].rarity; if (rr === 'L') gotL = true; if (rr === 'L' || rr === 'E') { P.d.lastHigh = [id].concat(P.d.lastHigh || []).slice(0, 6); } } } });
     const fr = pack.frag.slice(); if (pack.bonusFrag && rng() < pack.bonusFrag) fr.push(SL(1, 'FR'));
     fr.forEach((s) => { const w = wOf(s); for (let k = 0; k < s.n; k++) { const id = pickCard(s.f, rollR(w, rng), rng); if (id) { const a = P.FRAG_AMT[G.CARDS[id].rarity]; items.push({ type: 'frag', id, n: a[0] + rng.int(a[1] - a[0] + 1) }); } } });
     if (pack.slots.some((s) => wOf(s).L)) P.d.pity = gotL ? 0 : (P.d.pity || 0) + 1;
@@ -178,7 +179,21 @@
     const skill = P.oppSkill(rng);
     return { name: pick.f.name, mmr: mode === 'ranked' ? pick.m : null, avatar: pick.f.avatar, aff: pick.f.aff, aff2: pick.f.aff2, skill, q: G.clamp(skill + 0.1, 0.2, 0.95), level: pick.f.level, seed: rng.int(1e9) };
   };
-  P.checkDaily = function () { const k = G.todayKey(); if (P.d.daily === k) return false; P.d.daily = k; P.addPack('basic', 1); P.d.shards += 60; P.save(); return true; };
+  // Calendário do Ciclo das Luas (28 dias): uma oferenda por dia real, recompensas maiores nos marcos
+  P.CAL = Array.from({ length: 28 }, (_, i) => { const d = i + 1;
+    if (d === 7) return { ess: 120, packs: [['basic', 2]], big: true };
+    if (d === 14) return { ess: 200, packs: [['reg_valc', 1]], big: true };
+    if (d === 21) return { ess: 250, packs: [['aureo', 1]], big: true };
+    if (d === 28) return { ess: 600, packs: [['bau', 1], ['aureo', 1]], big: true };
+    return { ess: 40 + Math.floor(d / 7) * 15 + (d % 7) * 5 }; });
+  P.calCanClaim = () => { const c = P.d.calendar || {}; return c.last !== G.todayKey(); };
+  P.claimCalendar = () => { const c = P.d.calendar = P.d.calendar || { day: 0, last: null, cycle: 1 }; if (!P.calCanClaim()) return null; const rw = P.CAL[c.day]; P.d.shards += rw.ess || 0; (rw.packs || []).forEach(([id, n]) => P.addPack(id, n)); c.last = G.todayKey(); c.day++; if (c.day >= 28) { c.day = 0; c.cycle++; } P.save(); return rw; };
+  // Eventos datados (estrutura para o futuro Modo Campeonato: um embate por dia)
+  P.events = () => { const now = new Date(); const sat = new Date(now); sat.setDate(now.getDate() + ((6 - now.getDay() + 7) % 7 || 7)); const fmt = (dt) => dt.toLocaleDateString(G.lang === 'en' ? 'en-US' : 'pt-BR', { day: '2-digit', month: 'short' });
+    const e2 = new Date(sat); e2.setDate(sat.getDate() + 14);
+    return [{ id: 'cup_blood', name: { pt: 'Torneio da Lua Sangrenta', en: 'Blood Moon Tournament' }, desc: { pt: 'Chave de 64 Invocadores por Elo · melhor de 3 · em breve', en: '64-Summoner bracket per Rank · best of 3 · coming soon' }, when: fmt(sat), start: sat.getTime(), days: 6, status: 'soon' },
+      { id: 'cup_eclipse', name: { pt: 'Copa do Eclipse', en: 'Eclipse Cup' }, desc: { pt: 'Disputa entre as camadas Mid Tier · em breve', en: 'Mid Tier showdown · coming soon' }, when: fmt(e2), start: e2.getTime(), days: 6, status: 'soon' }]; };
+  P.checkDaily = function () { return P.calCanClaim(); };
 
   // ---------- reputação e estilo ----------
   P.repLabel = (r) => r < 30 ? L('Duvidosa', 'Dubious') : r < 55 ? L('Neutra', 'Neutral') : r < 75 ? L('Honrada', 'Honored') : r < 90 ? L('Respeitada', 'Respected') : L('Lendária', 'Legendary');
@@ -268,6 +283,9 @@
     s.heals += st.heals || 0; s.effects += (st.effects || []).length; s.relics += (st.relics || []).length; s.actions += st.actions || 0;
     (st.gods || []).forEach((id) => { s.gods[id] = (s.gods[id] || 0) + 1; });
     (st.creatures || []).concat(st.effects || [], st.relics || []).forEach((id) => { s.played[id] = (s.played[id] || 0) + 1; });
+    G.uniq(st.creatures || []).forEach((id) => { const b = G.baseId(id); const m = d.mastery[b] = d.mastery[b] || { plays: 0, kos: 0, falls: 0, wins: 0 }; m.plays++; if (win === true) m.wins++; });
+    Object.keys(st.killsBy || {}).forEach((id) => { const b = G.baseId(id); const m = d.mastery[b] = d.mastery[b] || { plays: 0, kos: 0, falls: 0, wins: 0 }; m.kos += st.killsBy[id]; });
+    Object.keys(st.fallen || {}).forEach((id) => { const b = G.baseId(id); const m = d.mastery[b] = d.mastery[b] || { plays: 0, kos: 0, falls: 0, wins: 0 }; m.falls += st.fallen[id]; });
     s.legendKos += st.legendKos || 0; s.abilities += st.abilities || 0; s.retreats += st.retreats || 0; s.markers += st.markers || 0; s.attacks += st.attacks || 0;
     if (info.conceded) { s.concedes++; d.rep = G.clamp(d.rep - 6, 0, 100); } else d.rep = G.clamp(d.rep + 1, 0, 100);
     if (info.mode !== 'train') {

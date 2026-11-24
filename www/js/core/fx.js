@@ -5,10 +5,10 @@
   F.init = function () {
     F.cv = document.getElementById('fxc'); F.cx = F.cv.getContext('2d');
     F.bg = document.getElementById('bgfx'); F.bx = F.bg.getContext('2d');
-    const rs = () => { const d = Math.min(1.5, root.devicePixelRatio || 1); [F.cv, F.bg].forEach((c) => { c.width = innerWidth * d; c.height = innerHeight * d; c.style.width = innerWidth + 'px'; c.style.height = innerHeight + 'px'; }); F.d = d; };
+    const rs = F.resize = () => { const d = Math.min([1, 1.25, 1.5, 2][G.gfxLevel ? G.gfxLevel() : 1], root.devicePixelRatio || 1); [F.cv, F.bg].forEach((c) => { c.width = innerWidth * d; c.height = innerHeight * d; c.style.width = innerWidth + 'px'; c.style.height = innerHeight + 'px'; }); F.d = d; };
     addEventListener('resize', rs); rs(); requestAnimationFrame(F.loop);
   };
-  F.quality = () => ((G.Prog && G.Prog.d && G.Prog.d.settings.particles === 'low') ? 0.4 : 1) * (innerWidth < 600 ? 0.75 : 1);
+  F.quality = () => [0.3, 0.65, 1, 1.35][G.gfxLevel ? G.gfxLevel() : 1] * (innerWidth < 600 ? 0.8 : 1);
   F.sprite = (c) => {
     if (F.sprites[c]) return F.sprites[c];
     const s = document.createElement('canvas'); s.width = s.height = 64; const x = s.getContext('2d');

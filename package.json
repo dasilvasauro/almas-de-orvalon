@@ -1,6 +1,6 @@
 {
   "name": "almas-de-orvalon",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Almas de Orvalon — jogo de cartas offline (Android via Capacitor, desktop via Electron)",
   "main": "electron/main.js",
   "private": true,

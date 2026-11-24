@@ -48,6 +48,7 @@
         } break;
         case 'discardSelf': s -= 12 * f.n; break;
         case 'stripOpp': s += op.active && (g.I(op.active).att || []).length ? (f.coin ? 10 : 20) : 0; break;
+        case 'steal': s += op.active && (g.I(op.active).att || []).length ? (f.coin ? 14 : 26) : 0; break;
         case 'draw': s += 8 * f.n; break;
         case 'seal': s += 4; break;
         case 'guard': s += 8; break;
@@ -336,6 +337,7 @@
         case 'sacrifice': return by((u) => -H.value(g, u), 1);
         case 'sacCharges': return O.slice(0, max);
         case 'bounceOwn': return by((u) => (g.I(u).dmg || 0) + (g.c(u).ab && /^enter/.test(g.c(u).ab.k) ? 30 : 0), 1);
+        case 'stealWhich': return by((u) => H.progress(g, pl.active, g.c(u).aff) + 1, 1);
         case 'stripWhich': return by((u) => (g.c(u).aff === 'neu' ? 0 : 1), 1);
       }
       return O.slice(0, Math.max(min, Math.min(1, O.length)));

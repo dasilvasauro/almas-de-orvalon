@@ -1,5 +1,6 @@
 /* Almas de Orvalon — tabuleiro de duelo (view + controlador humano + mentor + espectador) */
 (function (root) {
+  const INDIV = typeof CSS !== 'undefined' && CSS.supports && CSS.supports('translate', '1px 1px');
   const G = root.G; const el = G.el; const t = (k, p) => G.t(k, p);
   const CC = { poison: '#7fd65a', burn: '#ff7a3d', trance: '#9fb4ff', stun: '#ffe066', madness: '#d07aff' };
   const D = G.Duel = {};
@@ -96,8 +97,9 @@
         if (from && Math.abs(from.left - r.left) < 1 && Math.abs(from.top - r.top) < 1 && Math.abs(from.width - r.width) < 1) return;
         if (!from) { const I = this.g.inst[u]; const pile = this.pileEl(I.owner, this.g.P[I.owner].hand.includes(u) ? 'deck' : 'deck'); from = this.rectOf(pile); }
         if (!from || !r.width) { e.animate([{ opacity: 0, transform: 'scale(.7)' }, { opacity: 1, transform: 'none' }], { duration: d, easing: 'ease-out' }); return; }
-        const dx = from.left - r.left, dy = from.top - r.top, s = Math.max(0.15, from.width / r.width);
-        e.animate([{ transform: `translate(${dx}px,${dy}px) scale(${s})`, transformOrigin: 'top left' }, { transform: 'none', transformOrigin: 'top left' }], { duration: d, easing: 'cubic-bezier(.3,.7,.2,1)' });
+        const s = Math.max(0.15, from.width / r.width);
+        if (INDIV) { const dx = from.left + from.width / 2 - (r.left + r.width / 2), dy = from.top + from.height / 2 - (r.top + r.height / 2); e.animate([{ translate: `${dx}px ${dy}px`, scale: String(s) }, { translate: '0px 0px', scale: '1' }], { duration: d, easing: 'cubic-bezier(.3,.7,.2,1)' }); }
+        else { const dx = from.left - r.left, dy = from.top - r.top; e.animate([{ transform: `translate(${dx}px,${dy}px) scale(${s})`, transformOrigin: 'top left' }, { transform: 'none', transformOrigin: 'top left' }], { duration: d, easing: 'cubic-bezier(.3,.7,.2,1)' }); }
       });
       before.forEach((b, u) => {
         if (now.has(u)) return;
@@ -110,6 +112,64 @@
         const an = gh.animate([{ transform: 'none', opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(${sc})`, opacity: 0.15 }], { duration: d * 1.25, easing: 'ease-in' });
         an.onfinish = () => gh.remove(); setTimeout(() => gh.remove(), d * 1.25 + 300);
       });
+    }
+    fxNode(cls, x, y, vars) { const n = el('div.fxl.' + cls, { style: Object.assign({ left: x + 'px', top: y + 'px' }, vars || {}) }); document.body.appendChild(n); setTimeout(() => n.remove(), 4000); return n; }
+    orbFly(ax, ay, bx, by, pal, d) {
+      const orb = this.fxNode('fxorb', ax, ay, { '--c1': pal[0], '--c2': pal[1], '--s': '26px' }); const lv = G.gfxLevel();
+      return new Promise((res) => { const t0 = performance.now(); const step = () => { const k = Math.min(1, (performance.now() - t0) / d); const e = k * k * (3 - 2 * k); const x = ax + (bx - ax) * e, y = ay + (by - ay) * e - Math.sin(k * Math.PI) * 34; orb.style.left = x + 'px'; orb.style.top = y + 'px'; if (lv > 0 && Math.random() < 0.7) G.fx.burst(x, y, { n: 2, color: pal, spd: 0.5, grav: 0, size: 2.2, life: 22 }); if (k < 1) requestAnimationFrame(step); else { orb.remove(); res(); } }; requestAnimationFrame(step); });
+    }
+    async ranged(a, b, st, pal) {
+      const [ax, ay] = this.center(a), [bx, by] = this.center(b); const dx = bx - ax, dy = by - ay; const ang = Math.atan2(dy, dx) * 180 / Math.PI;
+      if (st === 'arrow') {
+        const d = this.dur(320);
+        for (let k = 0; k < 3; k++) { const ar = this.fxNode('fxarrow', ax, ay, { '--c1': pal[0] }); const off = (k - 1) * 12; const arc = -Math.min(70, Math.abs(dx) * 0.2) - 24;
+          ar.animate([{ transform: `translate(0px,${off}px) rotate(${ang - 18}deg)`, opacity: 0 }, { transform: `translate(${dx * 0.5}px,${dy * 0.5 + arc + off}px) rotate(${ang}deg)`, opacity: 1 }, { transform: `translate(${dx}px,${dy + off * 0.3}px) rotate(${ang + 14}deg)`, opacity: 1 }], { duration: d, easing: 'linear' }).onfinish = () => ar.remove();
+          G.audio.play('whoosh'); await this.wait(80); }
+        await this.wait(d - 80); G.fx.sparks(bx, by, [pal[0], '#fff']); return;
+      }
+      if (st === 'gun') {
+        const d = this.dur(170); const fl = this.fxNode('fxflash', ax + dx * 0.14, ay + dy * 0.14); fl.animate([{ transform: 'scale(.3)', opacity: 1 }, { transform: 'scale(1.4)', opacity: 0 }], { duration: 240 }).onfinish = () => fl.remove();
+        const tr = this.fxNode('fxtracer', ax, ay, { width: Math.hypot(dx, dy) + 'px', transform: `rotate(${ang}deg)` });
+        tr.animate([{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)', offset: 0.45 }, { clipPath: 'inset(0 0 0 100%)', opacity: 0 }], { duration: d * 1.8, easing: 'ease-out' }).onfinish = () => tr.remove();
+        this.shake(3); await this.wait(d); G.fx.sparks(bx, by, ['#ffd27a', '#fff']); return;
+      }
+      // orbe mágico: carrega e viaja nas cores da arte do personagem
+      const orb = this.fxNode('fxorb', ax, ay, { '--c1': pal[0], '--c2': pal[1] });
+      orb.animate([{ transform: 'scale(0)' }, { transform: 'scale(1.2)' }, { transform: 'scale(1)' }], { duration: this.dur(280), easing: 'ease-out' });
+      G.fx.burst(ax, ay, { n: 14, color: [pal[0], pal[1], '#fff'], spd: 1.7, grav: -0.02, size: 2, life: 26 }); G.audio.play('charge');
+      await this.wait(280); orb.remove();
+      await this.orbFly(ax, ay, bx, by, pal, this.dur(430));
+      this.mcircleXY(bx, by, pal[0]); G.fx.burst(bx, by, { n: 26, color: [pal[0], pal[1], '#fff'], spd: 3, grav: 0.02, size: 2.4, life: 34 }); G.fx.ring(bx, by, [pal[0]]);
+    }
+    async melee(a, b, st) {
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); const dx = rb.left - ra.left, dy = rb.top - ra.top;
+      if (st === 'slam') {
+        a.animate([{ transform: 'none' }, { transform: `translate(${dx * 0.22}px,${dy * 0.22 - 46}px) scale(1.2)`, offset: 0.55 }, { transform: `translate(${dx * 0.42}px,${dy * 0.42}px) scale(1.04)`, offset: 0.8 }, { transform: 'none' }], { duration: this.dur(600), easing: 'ease-in-out' });
+        await this.wait(470); const [bx, by] = this.center(b);
+        const sh = this.fxNode('fxshock', bx, by, { '--c1': '#e8dcc2' }); sh.animate([{ transform: 'scale(.3)', opacity: 1 }, { transform: 'scale(4.2)', opacity: 0 }], { duration: this.dur(560), easing: 'ease-out' }).onfinish = () => sh.remove();
+        G.fx.burst(bx, by + 18, { n: 22, color: ['#8a7a66', '#c9b89a', '#4a3d30'], spd: 2.4, grav: 0.12, size: 2.6, life: 34 }); this.shake(9); return;
+      }
+      a.animate([{ transform: 'none' }, { transform: `translate(${dx * 0.42}px,${dy * 0.42}px) scale(1.08)` }, { transform: 'none' }], { duration: this.dur(st === 'claw' ? 320 : 380), easing: 'ease-in-out' }); await this.wait(170);
+    }
+    styledSlash(n, st, aff, pal) {
+      if (st === 'slam' || st === 'orb' || st === 'arrow' || st === 'gun') return;
+      const [x, y] = this.center(n); const id = 'sg' + Math.random().toString(36).slice(2, 7);
+      const SH = { ign: ['M14 112 Q60 20 136 34', 9, '#ff5a1f', '#ffe08a'], sac: ['M22 22 L128 128 M128 22 L22 128', 6, '#fff3c4', '#ffd27a'], occ: ['M30 20 Q70 80 60 130 M60 14 Q100 74 90 124 M90 10 Q130 70 120 120', 4, '#8a2be2', '#e0c0ff'], ene: ['M20 30 L66 64 L54 76 L104 104 L92 114 L136 128', 5, '#4ab8ff', '#ffffff'], pri: ['M12 100 L40 82 L52 94 L84 58 L96 70 L138 36', 7, '#46c65a', '#d9ff9a'] };
+      let [path, w, c1, c2] = SH[aff] || SH.ign;
+      if (st === 'claw') { path = 'M40 18 Q70 70 52 132 M70 14 Q100 66 82 128 M100 10 Q130 62 112 124'; w = 5; c1 = pal[0]; c2 = '#fff'; }
+      const svg = el('div.fxl.fxslash', { style: { left: x + 'px', top: y + 'px' }, html: `<svg viewBox="0 0 150 150" width="150" height="150"><defs><linearGradient id="${id}" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs><path d="${path}" stroke="${c1}" stroke-width="${w * 2.4}" fill="none" stroke-linecap="round" opacity=".35" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><path d="${path}" stroke="url(#${id})" stroke-width="${w}" fill="none" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>` });
+      document.body.appendChild(svg); const d = this.dur(aff === 'ene' ? 200 : 300);
+      G.$$('path', svg).forEach((p) => p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: d, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' }));
+      svg.animate([{ opacity: 1, transform: 'scale(.9) rotate(-6deg)' }, { opacity: 1, transform: 'scale(1.05) rotate(0deg)', offset: 0.5 }, { opacity: 0, transform: 'scale(1.12)' }], { duration: d + 320, easing: 'ease-out' }).onfinish = () => svg.remove();
+      if (aff === 'ign') G.fx.burst(x, y, { n: 16, color: ['#ff5a1f', '#ffd27a'], spd: 2.4, grav: -0.05, size: 2, life: 30 });
+      if (aff === 'ene') G.fx.sparks(x, y, ['#4ab8ff', '#fff']);
+      if (aff === 'sac') G.fx.ring(x, y, ['#fff3c4']);
+    }
+    beam(x, y, col) { const bm = this.fxNode('fxbeam', x, 0, { height: y + 'px', '--c1': col }); bm.animate([{ transform: 'scaleY(0)', opacity: 0 }, { transform: 'scaleY(1)', opacity: 0.9, offset: 0.3 }, { transform: 'scaleY(1)', opacity: 0 }], { duration: 950, easing: 'ease-out' }).onfinish = () => bm.remove(); }
+    pulverize(n, pal) {
+      const r = n.getBoundingClientRect(); const cols = 7, rows = 9; const C = [pal[0], pal[1], '#2a1a14', '#e8dcc2'];
+      for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) { const x = r.left + (i + 0.5) * r.width / cols, y = r.top + (j + 0.5) * r.height / rows; setTimeout(() => G.fx.burst(x, y, { n: 2, color: [C[(i + j) % 4]], spd: 0.9, grav: -0.035, size: 2.6, life: 60 + Math.random() * 30 }), (cols - i) * 24 + Math.random() * 60); }
+      n.animate([{ opacity: 1, filter: 'none' }, { opacity: 0, filter: 'blur(3px) brightness(1.7)' }], { duration: 760, fill: 'forwards' });
     }
     renderBar(p) {
       const g = this.g; const pl = g.P[p]; const bar = this.z['bar' + p];
@@ -124,7 +184,14 @@
         el('div.pile' + (pl.deck.length <= 5 ? '.low' : ''), { dataset: { pile: 'deck' + p }, title: t('d.deck') }, G.ui.back(24), String(pl.deck.length)),
         el('div.pile', { dataset: { pile: 'discard' + p }, title: t('d.discard') }, el('div.dthumb', { style: top ? { backgroundImage: `url(${G.artUrl(G.CARDS[top].art)})` } : null }), String(pl.discard.length)));
     }
-    picks() { const a = this.askState; return a && a.req.from === 'board' ? new Set(a.req.options) : null; }
+    picks() { if (this.tmode) return new Set(this.tmode.acts.map((a) => a.target).filter(Boolean)); const a = this.askState; return a && a.req.from === 'board' ? new Set(a.req.options) : null; }
+    enterTarget(u) {
+      const acts = this.actsFor(u).filter((a) => a.target || a.type === 'bench'); if (!acts.length) return;
+      this.tmode = { u, acts }; this.render(); if (this.tPrompt) this.tPrompt.remove();
+      this.tPrompt = el('div.prompt', el('span', t('d.pickTarget', { c: G.cardName(this.g.inst[u].id) })), el('button.btn.small', { onclick: () => this.exitTarget() }, t('cancel')));
+      this.root.appendChild(this.tPrompt);
+    }
+    exitTarget() { this.tmode = null; if (this.tPrompt) this.tPrompt.remove(); this.tPrompt = null; this.render(); }
     token(u, big) {
       const g = this.g; const I = g.inst[u]; const c = g.c(u); const max = g.maxHP(u); const left = Math.max(0, max - (I.dmg || 0)); const pct = 100 * left / max;
       const conds = Object.keys(I.conds || {}).filter((k) => I.conds[k]).map((k) => el('i', { style: { color: CC[k], borderColor: CC[k] } }, t('cs.' + k)));
@@ -140,7 +207,8 @@
     renderBench(p) {
       const g = this.g; const z = this.z['bench' + p]; const pl = g.P[p];
       const kids = pl.bench.map((u) => this.token(u));
-      for (let i = pl.bench.length; i < G.CFG.BENCH; i++) kids.push(el('div.slot', t('d.reserve')));
+      const ba = this.tmode && p === g.cur && this.tmode.acts.find((a) => a.type === 'bench');
+      for (let i = pl.bench.length; i < G.CFG.BENCH; i++) kids.push(ba ? el('div.slot.pick', { onclick: () => { this.exitTarget(); this.doAct(ba); } }, t('d.reserve')) : el('div.slot', t('d.reserve')));
       G.fill(z, ...kids);
     }
     renderRow(p) {
@@ -251,12 +319,14 @@
         box.appendChild(el('button.btn.primary', { onclick: () => { sh.close(); this.doAct(a); } }, lb));
       });
       if (!acts.length && this.humans[g.inst[u].owner] && !this.cfg.spectate) { const w2 = this.whyNot(u); if (w2) box.appendChild(el('div.why', w2)); }
+      if (acts.some((a) => a.target || a.type === 'bench')) box.appendChild(el('button.btn', { onclick: () => { sh.close(); this.enterTarget(u); } }, t('d.pickOnBoard')));
       if (acts.length) box.appendChild(el('small.muted', t('d.dragHint')));
       box.appendChild(el('button.btn.ghost', { onclick: () => sh.close() }, t('close')));
       sh = G.ui.sheet([G.ui.card(id, { w }), box]);
     }
     onTok(u) {
       const g = this.g; const a = this.askState;
+      if (this.tmode) { const ac = this.tmode.acts.find((x) => x.target === u); if (ac) { G.click(); this.exitTarget(); this.doAct(ac); } else G.audio.play('error'); return; }
       if (a && a.req.from === 'board') { if (a.req.options.includes(u)) { G.click(); a.finish([u]); } else G.audio.play('error'); return; }
       const I = g.inst[u]; const c = g.c(u); const p = I.owner; const w = Math.min(innerWidth * 0.6, 250); let sh;
       const info = el('div.info',
@@ -474,18 +544,20 @@
         case 'turn': this.render(); G.audio.play('turn'); return this.banner(this.humans[d.p] && !this.hotseat && !this.cfg.spectate ? t('d.yourTurn') : t('d.turnOf', { n: g.P[d.p].name }), t('d.turnN', { n: g.turn }), 1000);
         case 'coin': return this.coin(d);
         case 'play': G.audio.play('place'); this.render(); await this.wait(380); { const n = this.tokEl(d.u); if (n) { const [x, y] = this.center(n); G.fx.burst(x, y, { n: 18, color: ['#e8dcc2', '#c9a24e'], spd: 2.2, grav: 0.05, size: 2, life: 30 }); } } return;
-        case 'attach': { G.audio.play('charge'); this.render(); await this.wait(360); const n = this.tokEl(d.target); if (n) { const [x, y] = this.center(n); G.fx.ring(x, y, [G.AFF[g.c(d.u).aff].glow]); } return; }
-        case 'relic': G.audio.play('place'); this.render(); return this.wait(380);
-        case 'ascend': { G.audio.play('rare'); this.render(); await this.wait(380); const n = this.tokEl(d.u); if (n) { const [x, y] = this.center(n); G.fx.soul(x, y, [G.AFF[g.c(d.u).aff].glow, '#fff']); } return this.wait(350); }
-        case 'god': G.audio.play('choir', [57, 64, 69]); await this.showcase(d.u, 1000); this.render(); return this.wait(300);
+        case 'attach': { G.audio.play('charge'); const col = G.AFF[g.c(d.u).aff].glow; const src = d.from ? this.tokEl(d.from) : null; const sc = src ? this.center(src) : null; this.render(); await this.wait(d.steal ? 120 : 300); const n = this.tokEl(d.target); if (n) { const [x, y] = this.center(n); if (sc) await this.orbFly(sc[0], sc[1], x, y, [col, '#fff'], this.dur(420)); G.fx.ring(x, y, [col]); G.fx.burst(x, y, { n: 14, color: [col, '#fff'], spd: 1.8, grav: -0.04, size: 2, life: 30 }); if (d.steal) { this.floatAt(n, t('d.stolen'), 'txt'); await this.wait(420); } } return; }
+        case 'relic': { G.audio.play('place'); this.render(); await this.wait(300); const n = this.tokEl(d.target || d.u); if (n) { const [x, y] = this.center(n); G.fx.ring(x, y, ['#ffe08a']); this.mcircle(n, '#e7c873'); } return this.wait(200); }
+        case 'ascend': { G.audio.play('rare'); this.render(); await this.wait(380); const n = this.tokEl(d.u); if (n) { const [x, y] = this.center(n); this.beam(x, y, G.AFF[g.c(d.u).aff].glow); G.fx.soul(x, y, [G.AFF[g.c(d.u).aff].glow, '#fff']); } return this.wait(350); }
+        case 'god': { G.audio.play('choir', [57, 64, 69]); await this.showcase(d.u, 1000); this.render(); const dz = this.z.dom; if (dz) { const [x, y] = this.center(dz); this.beam(x, y, '#ffe08a'); } return this.wait(400); }
         case 'reveal': { const kk = g.c(d.u).kind; if (kk === 'effect' || kk === 'action' || kk === 'god') this.mcircleXY(innerWidth / 2, innerHeight * 0.45, kk === 'action' ? '#7fa8ff' : kk === 'god' ? '#ffe08a' : '#6fe3d6'); return this.showcase(d.u, d.marker ? 900 : (this.humans[d.p] && !this.cfg.spectate ? 550 : 1000)); }
         case 'ability': { const n = this.tokEl(d.u); G.audio.play('charge'); this.mcircle(n, '#c98bff'); this.floatAt(n, t('gift') + ': ' + G.L(d.a.name), 'txt'); return this.wait(550); }
         case 'attackStart': { const n = this.tokEl(d.u); if (n) n.classList.add('acting'); G.audio.play('whoosh'); this.floatAt(n, G.L(g.c(d.u).attacks[d.i].name), 'txt', -40); await this.wait(480); if (n) n.classList.remove('acting'); return; }
         case 'hit': {
           const a = this.tokEl(d.from), b = this.tokEl(d.to); if (!b) return;
-          if (a && (d.bench || d.splash)) await this.projectile(a, b, G.AFF[d.aff].glow);
-          else if (a) { const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); a.animate([{ transform: 'none' }, { transform: `translate(${(rb.left - ra.left) * 0.4}px,${(rb.top - ra.top) * 0.4}px) scale(1.08)` }, { transform: 'none' }], { duration: this.dur(380), easing: 'ease-in-out' }); await this.wait(170); }
-          this.slash(b, G.AFF[d.aff].glow); G.audio.play('slash');
+          const aid = d.from && g.inst[d.from] ? g.inst[d.from].id : null; let stl = aid ? G.styleOf(aid) : 'blade'; const pal = aid ? G.pal(aid) : [G.AFF[d.aff].glow, '#ffffff'];
+          if ((d.bench || d.splash) && !['arrow', 'gun', 'orb'].includes(stl)) stl = 'orb';
+          const ranged = ['arrow', 'gun', 'orb'].includes(stl);
+          if (a && ranged) await this.ranged(a, b, stl, pal); else if (a) await this.melee(a, b, stl);
+          this.styledSlash(b, stl, d.aff, pal); G.audio.play(stl === 'gun' ? 'hit' : 'slash');
           if (d.v > 0) {
             G.audio.play('hit'); if (d.v >= 30) G.audio.play('blood');
             b.classList.remove('dmgshake'); void b.offsetWidth; b.classList.add('dmgshake');
@@ -497,7 +569,7 @@
         case 'damage': { const n = this.tokEl(d.u); if (!n) return; this.floatAt(n, '−' + d.v, 'placed'); n.classList.remove('dmgshake'); void n.offsetWidth; n.classList.add('dmgshake'); G.audio.play(d.cond ? 'cond' : 'hit'); if (d.cond) this.floatAt(n, G.L(G.COND_NOUN[d.cond]), 'txt', 30); return this.wait(450); }
         case 'heal': { const n = this.tokEl(d.u); if (!n || !d.v) return; this.floatAt(n, '+' + d.v, 'heal'); const [x, y] = this.center(n); G.fx.heal(x, y); G.audio.play('heal'); return this.wait(380); }
         case 'cond': { this.render(); const n = this.tokEl(d.u); G.audio.play('cond'); this.mcircle(n, CC[d.k]); this.floatAt(n, G.L(G.COND[d.k]), 'txt'); if (n) { const [x, y] = this.center(n); G.fx.burst(x, y, { n: 16, color: [CC[d.k]], spd: 1.5, grav: -0.03, size: 2.2, life: 40 }); } return this.wait(450); }
-        case 'ko': { const n = this.tokEl(d.u); if (n) { n.classList.add('ko', 'dmgshake'); const [x, y] = this.center(n); G.fx.soul(x, y); G.fx.splat(x, y); this.decal(n); this.shake(7); } G.audio.play('ko'); return this.wait(780); }
+        case 'ko': { const n = this.tokEl(d.u); if (n) { n.classList.add('ko', 'dmgshake'); const [x, y] = this.center(n); if (G.gfxLevel() >= 2) this.pulverize(n, G.pal(g.inst[d.u].id)); else G.fx.soul(x, y); G.fx.splat(x, y); this.decal(n); this.shake(7); } G.audio.play('ko'); return this.wait(780); }
         case 'prize': {
           const from = this.rectOf(this.pileEl(d.p, 'prize')); const to = this.rectOf(this.handP() === d.p ? this.z.hand : this.z['bar' + d.p]);
           if (from && to) for (let i = 0; i < d.n; i++) { const b = G.ui.back(40); Object.assign(b.style, { position: 'fixed', left: from.left + 'px', top: from.top + 'px', zIndex: 800 }); this.root.appendChild(b); b.animate([{ transform: 'none' }, { transform: `translate(${to.left + to.width / 2 - from.left}px,${to.top - from.top}px) rotate(${10 - i * 8}deg)`, opacity: 0.2 }], { duration: this.dur(600), easing: 'ease-in-out' }).onfinish = () => b.remove(); }
@@ -537,5 +609,9 @@
     }
   }
   D.View = View;
-  D.start = async function (cfg) { await G.App.loader(1300); const v = new View(cfg); D.current = v; return v.run(); };
+  D.start = async function (cfg) {
+    const ids = ['coin_sun']; const scan = (o, dep) => { if (!o || dep > 3) return; if (Array.isArray(o)) o.forEach((x) => { if (typeof x === 'string' && G.CARDS[x]) ids.push(G.CARDS[x].art); else scan(x, dep + 1); }); else if (typeof o === 'object') Object.keys(o).forEach((k) => scan(o[k], dep + 1)); }; scan(cfg, 0);
+    const work = Promise.all([G.preloadArt(ids.filter((x) => G.CARDS[x] || /^[a-z]\d/.test(x))), G.audio.renderMood ? G.audio.renderMood('arena_' + ((cfg.arena || G.Prog.ARENAS[0]).id)) : null]).catch(() => { });
+    await G.App.loader(1300, Promise.race([work, G.sleep(5000)])); const v = new View(cfg); D.current = v; return v.run();
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

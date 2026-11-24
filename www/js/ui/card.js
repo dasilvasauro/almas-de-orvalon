@@ -47,7 +47,7 @@
     if (c.kind === 'creature') head.appendChild(el('span.chp', el('small', t('hp')), String(c.hp + (o.hpBonus || 0))));
     if (c.kind === 'creature' || c.kind === 'charge' || c.kind === 'god') head.appendChild(G.orb(c.aff));
     const art = el('div.cart', { style: { backgroundImage: `url(${G.artUrl(c.art)})` } });
-    if (c.kind === 'creature') { art.appendChild(el('span.cbadge', c.stage ? t('stage.asc') : t('stage.basic'))); if (c.legend) art.appendChild(el('span.cbadge.leg', t('legend'))); if (c.variantOf) art.appendChild(el('span.cbadge.var', t('variant'))); }
+    if (c.kind === 'creature') { art.appendChild(el('span.cbadge', c.stage ? t('stage.asc') : t('stage.basic'))); if (c.legend) art.appendChild(el('span.cbadge.leg', t('legend'))); if (c.variantOf) art.appendChild(el('span.cbadge.var', t('variant'))); if (c.faction && G.FACTIONS) art.appendChild(el('span.cfac.s-' + G.FACTIONS[c.faction].side, G.L(G.FACTIONS[c.faction].name))); }
     if (c.kind === 'effect' && c.mode === 'cont') art.appendChild(el('span.cbadge', t('cont')));
     const reg = c.region ? G.L(G.REGIONS[c.region].name) : '';
     const type = el('div.ctype', el('span', G.kindLabel(c) + (c.kind === 'creature' ? ' · ' + G.L(G.AFF[c.aff]) : '')), el('span', reg));
@@ -78,7 +78,11 @@
     node.appendChild(cin);
     return node;
   };
-  G.ui.back = (w) => el('div.cback', { style: { '--cw': (w || 100) + 'px' } }, el('span', 'ORVALON'));
+  G.ui.back = (w) => el('div.cback' + ((w || 100) < 56 ? '.tiny' : ''), { style: { '--cw': (w || 100) + 'px' } }, el('span', 'ORVALON'));
+  G.pal = (id) => (G.PALETTE && (G.PALETTE[id] || G.PALETTE[(G.CARDS[id] || {}).art])) || ['#c98bff', '#6fe3d6'];
+  // pré-carrega e decodifica artes (mantidas em memória para evitar engasgos durante o duelo)
+  G._imgCache = G._imgCache || {};
+  G.preloadArt = (ids) => Promise.race([Promise.all(G.uniq(ids).map((id) => { if (G._imgCache[id]) return Promise.resolve(); const im = new Image(); im.src = G.artUrl(id); G._imgCache[id] = im; return im.decode ? im.decode().catch(() => { }) : Promise.resolve(); })), G.sleep(4000)]);
 
   // ---------- modais ----------
   const mroot = () => document.getElementById('modal-root');
@@ -103,8 +107,8 @@
     box.appendChild(n); setTimeout(() => { n.style.transition = 'opacity .4s'; n.style.opacity = 0; setTimeout(() => n.remove(), 400); }, ms || 2600);
   };
   G.ui.confirm = (text, ok, cancel) => new Promise((res) => {
-    let m; const done = (v) => { m.close(); res(v); };
-    m = G.ui.modal(el('div.col', el('p', text), el('div.row', { style: { justifyContent: 'flex-end' } }, el('button.btn.ghost', { onclick: () => done(false) }, cancel || G.t('cancel')), el('button.btn.primary', { onclick: () => done(true) }, ok || G.t('confirm')))), { narrow: true, onClose: () => res(false) });
+    let m; let settled = false; const done = (v) => { if (settled) return; settled = true; res(v); m.close(); };
+    m = G.ui.modal(el('div.col', el('p', text), el('div.row', { style: { justifyContent: 'flex-end' } }, el('button.btn.ghost', { onclick: () => done(false) }, cancel || G.t('cancel')), el('button.btn.primary', { onclick: () => done(true) }, ok || G.t('confirm')))), { narrow: true, onClose: () => { if (!settled) { settled = true; res(false); } } });
   });
   G.ui.zoom = function (id, extra) {
     const w = Math.min(window.innerWidth * 0.82, 330);
@@ -131,4 +135,14 @@ body.cur-wait .board,body.cur-wait .board *{cursor:${C.wait}!important}.dragging
     document.head.appendChild(el('style', { text: css }));
   };
   G.click = () => G.audio && G.audio.play('ui');
+})(typeof window !== 'undefined' ? window : globalThis);
+
+(function (root) {
+  const G = root.G;
+  G.gfxDefault = () => { const cap = !!(root.Capacitor && root.Capacitor.isNativePlatform && root.Capacitor.isNativePlatform()); const mob = root.matchMedia && matchMedia('(pointer:coarse)').matches; return cap || mob ? 'med' : 'high'; };
+  G.gfx = () => { const s = G.Prog && G.Prog.d && G.Prog.d.settings; if (s && !s.gfx && s.particles === 'low') s.gfx = 'low'; return (s && s.gfx) || G.gfxDefault(); };
+  G.gfxLevel = () => ({ low: 0, med: 1, high: 2, ultra: 3 })[G.gfx()] || 1;
+  G.applyGfx = () => { const b = document.body; const v = G.gfx(); ['low', 'med', 'high', 'ultra'].forEach((k) => b.classList.toggle('gfx-' + k, v === k)); if (G.fx && G.fx.resize) G.fx.resize(); };
+  const _card = G.ui.card; G.ui.card = function (id, o) { const n = _card(id, o); if (!(o && o.mini) && G.gfxLevel() >= 2) n.appendChild(G.el('div.gloss')); return n; };
+  if (typeof document !== 'undefined') document.addEventListener('pointermove', (e) => { if (G.gfxLevel() < 2) return; const c = e.target && e.target.closest && e.target.closest('.card'); if (!c) return; const r = c.getBoundingClientRect(); c.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%'); c.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%'); }, { passive: true });
 })(typeof window !== 'undefined' ? window : globalThis);

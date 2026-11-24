@@ -1,5 +1,5 @@
 global.window = undefined;
-require('../www/js/core/util.js'); require('../www/js/data/cards.js'); require('../www/js/core/engine.js'); require('../www/js/core/ai.js');
+require('../www/js/core/util.js'); require('../www/js/data/lore.js'); require('../www/js/data/cards.js'); require('../www/js/core/engine.js'); require('../www/js/core/ai.js');
 const G = globalThis.G;
 const N = +process.argv[2] || 20;
 const AFFS = [['ign','pri'],['sac','pri'],['occ','ene'],['ene','sac'],['pri','occ']];

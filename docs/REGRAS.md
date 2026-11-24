@@ -158,7 +158,7 @@ _Cartas de exemplo: Auryel, Azhur_
 6. Você pega 1 Alma. O oponente escolhe um novo Ativo da Reserva.
 7. Entre Turnos: o novo Ativo do oponente não tem Condições; nada acontece. Fim do turno.
 
-_Cartas de exemplo: Gota Astral, Isolde Corda-Leve, Cinzal, Pacto dos Espíritos_
+_Cartas de exemplo: Gota Astral, Isolde, Ignarr, Pacto dos Espíritos_
 
 Pronto! Agora pratique no **Treino Avançado**: o Mentor sugere cada jogada e explica o porquê.
 

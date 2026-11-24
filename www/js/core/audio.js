@@ -76,8 +76,10 @@
     turn: (t) => { S.bell(t, 330); },
     error: (t) => { tone('square', 160, t, 0.12, 0.05); }
   };
+  A._last = {};
   A.play = function (name, opt) {
-    if (!A.ctx || A.vol.sfx <= 0) return; try { if (playSample(name)) return; const fn = S[name]; if (fn) fn(now() + 0.01, opt); } catch (e) { }
+    if (!A.ctx || A.vol.sfx <= 0 || A.ctx.state !== 'running') return;
+    const now2 = performance.now(); if (A._last[name] && now2 - A._last[name] < 45) return; A._last[name] = now2; try { if (playSample(name)) return; const fn = S[name]; if (fn) fn(now() + 0.01, opt); } catch (e) { }
   };
   // ---------- Música: pads etéreos (menu) e trilhas macabras por arena ----------
   const mf = (m) => 440 * Math.pow(2, (m - 69) / 12);
@@ -107,10 +109,10 @@
     });
     const o = c.createOscillator(); o.type = 'sine'; o.frequency.value = mf(notes[0] - 12); const og = c.createGain(); og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(0.08, t + att); og.gain.exponentialRampToValueAtTime(0.0001, t + dur + rel); o.connect(og); og.connect(bus); o.start(t); o.stop(t + dur + rel + 0.1);
   }
-  function drone(bus, root, filt) {
-    const c = A.ctx; const gd = c.createGain(); gd.gain.value = 0.0001; gd.gain.setTargetAtTime(0.06, c.currentTime, 2);
-    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = filt * 0.35; const lfo = c.createOscillator(); lfo.frequency.value = 0.07; const lg = c.createGain(); lg.gain.value = filt * 0.15; lfo.connect(lg); lg.connect(lp.frequency); lfo.start(); A._drone.push(lfo);
-    [0, 6, 12].forEach((iv) => { const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mf(root + iv); o.detune.value = Math.random() * 8 - 4; o.connect(lp); o.start(); A._drone.push(o); });
+  function drone(bus, root, filt, t0, t1) {
+    const c = A.ctx; t0 = t0 || 0; const gd = c.createGain(); gd.gain.setValueAtTime(0.0001, t0); gd.gain.setTargetAtTime(0.06, t0, 2);
+    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = filt * 0.35; const lfo = c.createOscillator(); lfo.frequency.value = 0.07; const lg = c.createGain(); lg.gain.value = filt * 0.15; lfo.connect(lg); lg.connect(lp.frequency); lfo.start(t0); if (t1) lfo.stop(t1);
+    [0, 6, 12].forEach((iv) => { const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mf(root + iv); o.detune.value = Math.random() * 8 - 4; o.connect(lp); o.start(t0); if (t1) o.stop(t1); });
     lp.connect(gd); gd.connect(bus);
   }
   function war(t, v, bus) { const o = A.ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(78, t); o.frequency.exponentialRampToValueAtTime(36, t + 0.35); const gg = A.ctx.createGain(); env(gg, t, 0.004, 0.42, 0.26 * v); o.connect(gg); gg.connect(bus); o.start(t); o.stop(t + 0.5); noiseBurst(t, 0.07, 'lowpass', 700, 0.8, 0.1 * v, bus); }
@@ -137,25 +139,45 @@
     if (ar.bell && i % ar.bell === 0) [1, 2, 2.4, 3].forEach((m, k) => tone('sine', mf(ar.root + 12) * m, t + 0.2, 3 / (1 + k * 0.5), 0.05 / (1 + k), bus));
     if (ar.noise) texture(t, ar.noise, ar.dur, bus);
   }
+  // Renderiza a trilha UMA vez (OfflineAudioContext) e toca como loop: nada é sintetizado durante o jogo.
+  A._loops = {}; A._rendering = {};
+  A.renderMood = function (mood) {
+    if (A._loops[mood]) return Promise.resolve(A._loops[mood]);
+    if (A._rendering[mood]) return A._rendering[mood];
+    const OAC = root.OfflineAudioContext || root.webkitOfflineAudioContext; if (!OAC || !A.ctx) return Promise.resolve(null);
+    const ar = mood.indexOf('arena_') === 0 ? (AR[mood.slice(6)] || AR.coliseum) : null; const pr = ar ? null : (PROG[mood] || PROG.duel);
+    const loop = !(mood === 'victory' || mood === 'defeat');
+    const cfg = ar || pr; const N = cfg.chords.length; const L = cfg.dur * N; const tail = loop ? 6 : cfg.dur * 0.8 + 2;
+    const sr = 24000; const oc = new OAC(2, Math.ceil(sr * (L + tail)), sr);
+    const sv = { ctx: A.ctx, rev: A.rev, sfx: A.sfx };
+    A.ctx = oc;
+    const out = oc.createGain(); out.connect(oc.destination);
+    const rev = oc.createConvolver(); rev.buffer = A.impulse(3.4, 2.4); const rg = oc.createGain(); rg.gain.value = 0.42; rev.connect(rg); rg.connect(out); A.rev = rev; A.sfx = out;
+    try {
+      if (ar) { drone(out, ar.root, ar.filt, 0, L + tail); for (let k = 0; k < N; k++) arenaStep(k * ar.dur, ar, k, out); }
+      else for (let k = 0; k < N; k++) { const t = k * pr.dur; padChord(t, pr.chords[k], pr.dur, out); if (k % 4 === 0 && mood === 'menu') voice(t + 1, mf(pr.chords[k][1] + 12), pr.dur * 0.9, 'a', 0.025, { att: 2, vibD: 0.01, rev: 1.2, dest: out }); }
+    } finally { A.ctx = sv.ctx; A.rev = sv.rev; A.sfx = sv.sfx; }
+    const pr2 = oc.startRendering().then((buf) => {
+      let res = buf;
+      if (loop) { const n = Math.floor(sr * L); const nb = A.ctx.createBuffer(2, n, sr); for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); const o = new Float32Array(n); o.set(d.subarray(0, n)); for (let k = n; k < d.length; k++) o[k - n] += d[k]; nb.copyToChannel(o, ch); } res = nb; }
+      A._loops[mood] = res; delete A._rendering[mood];
+      const keys = Object.keys(A._loops); if (keys.length > 3) { const drop = keys.find((k) => k !== mood && k !== A.mood && k !== 'menu'); if (drop) delete A._loops[drop]; }
+      return res;
+    }).catch(() => { delete A._rendering[mood]; return null; });
+    A._rendering[mood] = pr2; return pr2;
+  };
   A.music = function (mood) {
     if (!A.ctx) return; if (A.mood === mood) return; A.mood = mood;
-    const c = A.ctx; const old = A._musBus; if (old) { old.gain.setTargetAtTime(0.0001, c.currentTime, 0.8); setTimeout(() => { try { old.disconnect(); } catch (e) { } }, 4000); }
-    (A._drone || []).forEach((o) => { try { o.stop(c.currentTime + 3); } catch (e) { } }); A._drone = [];
-    clearTimeout(A._musT); if (!mood) return;
-    const bus = A._musBus = c.createGain(); bus.gain.value = 0.0001; bus.connect(A.mus); bus.gain.setTargetAtTime(1, c.currentTime, 1.2);
-    if (mood.indexOf('arena_') === 0) {
-      const ar = AR[mood.slice(6)] || AR.coliseum; drone(bus, ar.root, ar.filt); let i = 0;
-      const stepA = () => { if (A.mood !== mood || A._musBus !== bus) return; arenaStep(c.currentTime + 0.05, ar, i, bus); i++; A._musT = setTimeout(stepA, ar.dur * 1000 - 50); };
-      stepA(); return;
-    }
-    const pr = PROG[mood] || PROG.duel; let i = 0;
-    const step = () => {
-      if (A.mood !== mood || A._musBus !== bus) return;
-      const t = c.currentTime + 0.05; padChord(t, pr.chords[i % pr.chords.length], pr.dur, bus);
-      if (i % 4 === 0 && mood === 'menu') { const m = pr.chords[i % pr.chords.length]; voice(t + 1, mf(m[1] + 12), pr.dur * 0.9, 'a', 0.025, { att: 2, vibD: 0.01, rev: 1.2, dest: bus }); }
-      i++; if ((mood === 'victory' || mood === 'defeat') && i >= 4) return;
-      A._musT = setTimeout(step, pr.dur * 1000 - 50);
-    };
-    step();
+    const c = A.ctx; const old = A._musSrc; A._musSrc = null;
+    if (old) { try { old.g.gain.setTargetAtTime(0.0001, c.currentTime, 0.6); old.s.stop(c.currentTime + 3); } catch (e) { } }
+    if (!mood) return;
+    A.renderMood(mood).then((buf) => {
+      if (!buf || A.mood !== mood || A._musSrc) return;
+      const s = c.createBufferSource(); s.buffer = buf; s.loop = !(mood === 'victory' || mood === 'defeat');
+      const gg = c.createGain(); gg.gain.value = 0.0001; s.connect(gg); gg.connect(A.mus); gg.gain.setTargetAtTime(1, c.currentTime, 1.2); s.start();
+      A._musSrc = { s, g: gg };
+    });
   };
+  // pausa todo o áudio quando o app vai para o fundo (tela bloqueada): evita estalos e economiza bateria
+  if (typeof document !== 'undefined') document.addEventListener('visibilitychange', () => { if (!A.ctx) return; try { if (document.hidden) A.ctx.suspend(); else A.ctx.resume(); } catch (e) { } });
 })(typeof window !== 'undefined' ? window : globalThis);
